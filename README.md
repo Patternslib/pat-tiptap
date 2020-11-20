@@ -1,18 +1,27 @@
-pat-tiptap
-====================
+# pat-tiptap
 
 ## Documentation
 
-This is simple pattern project bootstrap template.
+Pattern implementation of the TipTap editor with collaboration features realized by the YJS library.
 
-Usage:
+See:
 
-    ./create.sh PROJECTNAME
+- https://tiptap.dev/
 
-This will create a directory within this directory with the name ``pat-PROJECTNAME``.
-You can use it for developing a new pattern.
+- https://yjs.dev/
 
 
+When invoking on a textarea element, the textarea is hidden and it's value is synchronized with updates in the editor.
+
+
+### Usage
+
+    <textarea
+        name="text"
+        class="pat-tiptap">
+      <h1>hello</h1>
+      <p>I am some text content</p>
+    </textarea>
 
 
 ### Options reference

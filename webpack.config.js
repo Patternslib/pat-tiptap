@@ -2,6 +2,7 @@ const path = require("path");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
 const DuplicatePackageCheckerPlugin = require("duplicate-package-checker-webpack-plugin");
+const VueLoaderPlugin = require("vue-loader/lib/plugin");
 
 module.exports = (env) => {
     return {
@@ -33,12 +34,22 @@ module.exports = (env) => {
                 }),
             ],
         },
+        resolve: {
+            alias: {
+                vue$: "vue/dist/vue.esm.js",
+            },
+            extensions: ["*", ".js", ".vue", ".json"],
+        },
         module: {
             rules: [
                 {
                     test: /\.js$/,
                     exclude: /node_modules\/(?!(patternslib)\/).*/,
                     loader: "babel-loader",
+                },
+                {
+                    test: /\.vue$/,
+                    loader: "vue-loader",
                 },
             ],
         },
@@ -52,6 +63,7 @@ module.exports = (env) => {
                 verbose: true,
                 emitError: true,
             }),
+            new VueLoaderPlugin(),
         ],
     };
 };
