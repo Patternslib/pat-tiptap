@@ -1,8 +1,6 @@
 import "regenerator-runtime/runtime"; // needed for ``await`` support
 import Base from "patternslib/src/core/base";
 import Parser from "patternslib/src/core/parser";
-import Vue from "vue";
-import { Editor, EditorContent } from "tiptap";
 
 const parser = new Parser("tiptap");
 parser.addArgument("example-option", [1, 2, 3]);
@@ -12,6 +10,10 @@ export default Base.extend({
     trigger: ".pat-tiptap",
 
     async init() {
+        let Vue = await import("vue");
+        Vue = Vue.default;
+        const { Editor, EditorContent } = await import("tiptap");
+
         Vue.component("tiptap-editor", {
             template: `<editor-content :editor="editor" />`,
             components: {
@@ -35,9 +37,6 @@ export default Base.extend({
         new Vue({ el: this.el });
 
         //this.options = parser.parse(this.el, this.options);
-        //let external_library = await import("EXTERNAL_LIBRARY");
-        //external_library = external_library.default;
-
         //const example_option = this.options.exampleOption;
     },
 });
