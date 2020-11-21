@@ -12,29 +12,13 @@ export default Base.extend({
     async init() {
         let Vue = await import("vue");
         Vue = Vue.default;
-        const { Editor, EditorContent } = await import("tiptap");
+        let Editor = await import("./tiptap-editor.vue");
+        Editor = Editor.default;
 
-        Vue.component("tiptap-editor", {
-            template: `<editor-content :editor="editor" />`,
-            components: {
-                EditorContent,
-            },
-            data() {
-                return {
-                    // Create an `Editor` instance with some default content. The editor is
-                    // then passed to the `EditorContent` component as a `prop`
-                    editor: new Editor({
-                        content: "<p>This is just some sample text.</p>",
-                    }),
-                };
-            },
-            beforeDestroy() {
-                // Always destroy your editor instance when it's no longer needed
-                this.editor.destroy();
-            },
-        });
-
-        new Vue({ el: this.el });
+        const editor_app = new Vue({
+            render: (h) => h(Editor),
+        }).$mount();
+        this.el.appendChild(editor_app.$el);
 
         //this.options = parser.parse(this.el, this.options);
         //const example_option = this.options.exampleOption;

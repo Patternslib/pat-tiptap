@@ -12,6 +12,7 @@
   "dependencies": {
     "patternslib": "https://github.com/Patternslib/Patterns#master",
     "tiptap": "^1.30.0",
+    "tiptap-extensions": "^1.33.2",
     "vue": "^2.5"
   },
   "devDependencies": {
