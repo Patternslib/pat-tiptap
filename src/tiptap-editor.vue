@@ -6,7 +6,7 @@
         <button
           class="tiptap-menubar__button"
           :class="{ 'tiptap-is-active': isActive.bold() }"
-          @click="commands.bold"
+          @click.prevent="commands.bold"
         >
           <icon name="bold" />
         </button>
@@ -14,7 +14,7 @@
         <button
           class="tiptap-menubar__button"
           :class="{ 'tiptap-is-active': isActive.italic() }"
-          @click="commands.italic"
+          @click.prevent="commands.italic"
         >
           <icon name="italic" />
         </button>
@@ -22,7 +22,7 @@
         <button
           class="tiptap-menubar__button"
           :class="{ 'tiptap-is-active': isActive.strike() }"
-          @click="commands.strike"
+          @click.prevent="commands.strike"
         >
           <icon name="strike" />
         </button>
@@ -30,7 +30,7 @@
         <button
           class="tiptap-menubar__button"
           :class="{ 'tiptap-is-active': isActive.underline() }"
-          @click="commands.underline"
+          @click.prevent="commands.underline"
         >
           <icon name="underline" />
         </button>
@@ -38,7 +38,7 @@
         <button
           class="tiptap-menubar__button"
           :class="{ 'tiptap-is-active': isActive.code() }"
-          @click="commands.code"
+          @click.prevent="commands.code"
         >
           <icon name="code" />
         </button>
@@ -46,7 +46,7 @@
         <button
           class="tiptap-menubar__button"
           :class="{ 'tiptap-is-active': isActive.paragraph() }"
-          @click="commands.paragraph"
+          @click.prevent="commands.paragraph"
         >
           <icon name="paragraph" />
         </button>
@@ -54,7 +54,7 @@
         <button
           class="tiptap-menubar__button"
           :class="{ 'tiptap-is-active': isActive.heading({ level: 1 }) }"
-          @click="commands.heading({ level: 1 })"
+          @click.prevent="commands.heading({ level: 1 })"
         >
           H1
         </button>
@@ -62,7 +62,7 @@
         <button
           class="tiptap-menubar__button"
           :class="{ 'tiptap-is-active': isActive.heading({ level: 2 }) }"
-          @click="commands.heading({ level: 2 })"
+          @click.prevent="commands.heading({ level: 2 })"
         >
           H2
         </button>
@@ -70,7 +70,7 @@
         <button
           class="tiptap-menubar__button"
           :class="{ 'tiptap-is-active': isActive.heading({ level: 3 }) }"
-          @click="commands.heading({ level: 3 })"
+          @click.prevent="commands.heading({ level: 3 })"
         >
           H3
         </button>
@@ -78,7 +78,7 @@
         <button
           class="tiptap-menubar__button"
           :class="{ 'tiptap-is-active': isActive.bullet_list() }"
-          @click="commands.bullet_list"
+          @click.prevent="commands.bullet_list"
         >
           <icon name="ul" />
         </button>
@@ -86,7 +86,7 @@
         <button
           class="tiptap-menubar__button"
           :class="{ 'tiptap-is-active': isActive.ordered_list() }"
-          @click="commands.ordered_list"
+          @click.prevent="commands.ordered_list"
         >
           <icon name="ol" />
         </button>
@@ -94,7 +94,7 @@
         <button
           class="tiptap-menubar__button"
           :class="{ 'tiptap-is-active': isActive.blockquote() }"
-          @click="commands.blockquote"
+          @click.prevent="commands.blockquote"
         >
           <icon name="quote" />
         </button>
@@ -102,28 +102,28 @@
         <button
           class="tiptap-menubar__button"
           :class="{ 'tiptap-is-active': isActive.code_block() }"
-          @click="commands.code_block"
+          @click.prevent="commands.code_block"
         >
           <icon name="code" />
         </button>
 
         <button
           class="tiptap-menubar__button"
-          @click="commands.horizontal_rule"
+          @click.prevent="commands.horizontal_rule"
         >
           <icon name="hr" />
         </button>
 
         <button
           class="tiptap-menubar__button"
-          @click="commands.undo"
+          @click.prevent="commands.undo"
         >
           <icon name="undo" />
         </button>
 
         <button
           class="tiptap-menubar__button"
-          @click="commands.redo"
+          @click.prevent="commands.redo"
         >
           <icon name="redo" />
         </button>
