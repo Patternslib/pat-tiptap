@@ -15,10 +15,23 @@ export default Base.extend({
         let Editor = await import("./tiptap-editor.vue");
         Editor = Editor.default;
 
+        // Hide textarea which will be replaced with tiptap instance
+        this.el.style.display = "none";
+
+        const getText = () => {
+            // Textarea value getter
+            return this.el.value;
+        };
+
+        const setText = (text) => {
+            // Textarea value setter
+            this.el.value = text;
+        };
+
         const editor_app = new Vue({
-            render: (h) => h(Editor),
+            render: (h) => h(Editor, {props: {getText: getText, setText: setText}}),
         }).$mount();
-        this.el.appendChild(editor_app.$el);
+        this.el.parentNode.insertBefore(editor_app.$el, this.el);
 
         //this.options = parser.parse(this.el, this.options);
         //const example_option = this.options.exampleOption;
