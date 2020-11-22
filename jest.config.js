@@ -7,6 +7,7 @@ module.exports = {
     ],
     transform: {
         "^.+\\.[t|j]sx?$": "babel-jest",
+        "^.+\\.vue$": "vue-jest",
     },
     moduleNameMapper: {
         "\\.(css|less|sass|scss)$": "identity-obj-proxy",

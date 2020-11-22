@@ -8,12 +8,14 @@ describe("pat-tiptap", () => {
     });
 
     it("is initialized correctly", async (done) => {
-        document.body.innerHTML = `<div class="pat-tiptap" />`;
+        document.body.innerHTML = `<textarea class="pat-tiptap">hello</textarea>`;
 
         const instance = pattern.init(document.querySelector(".pat-tiptap"));
         await utils.timeout(1);
 
-        expect().toBe("");
+        expect(document.querySelector(".pat-tiptap").style.display).toBe("none");
+        expect(document.querySelector(".tiptap-editor *[contenteditable]").textContent).toBe("hello");
+        expect(document.querySelector(".tiptap-editor *[contenteditable]").innerHTML).toBe("<p>hello</p>");
 
         done();
     });
