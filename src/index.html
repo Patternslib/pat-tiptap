@@ -4,15 +4,33 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <title>tiptap demo</title>
     <script src="/dist/bundle.js" type="text/javascript" charset="utf-8"></script>
+    <style type="text/css">
+      section {
+        margin-bottom: 6em;
+      }
+    </style>
   </head>
   <body>
 
-    <form>
-      <textarea name="text" class="pat-tiptap">
-        <h1>hello</h1>
-        <p>I am some text content</p>
-      </textarea>
-    </form>
+    <h1>TipTap examples</h1>
+
+    <section>
+      <h2>Textarea example</h2>
+      <form>
+        <textarea name="text" class="pat-tiptap">
+          <h1>hello</h1>
+          <p>I am some text content</p>
+        </textarea>
+      </form>
+    </section>
+
+    <section>
+      <h2>Collaboration example</h2>
+      <p>connecting to wss://demos.yjs.dev, document name "patternslib-demo"</p>
+      <div class="pat-tiptap"
+          data-pat-tiptap="collaboration-server: wss://demos.yjs.dev; collaboration-document: patternslib-demo">
+      </div>
+    </section>
 
   </body>
 </html>

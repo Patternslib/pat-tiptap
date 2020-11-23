@@ -156,43 +156,58 @@ import {
 } from 'tiptap-extensions';
 import Icon from './tiptap-icon.vue';
 import IconSource from './tiptap-icon-source.vue';
-import RealtimeExtension from './tiptap-yjs';
 
 export default {
-  props: ["getText", "setText"],
+  props: ["getText", "setText", "options"],
   components: {
     EditorContent,
     EditorMenuBar,
     Icon,
     IconSource,
   },
-  data() {
-    return {
-      editor: new Editor({
-        extensions: [
-          new Blockquote(),
-          new BulletList(),
-          new CodeBlock(),
-          new HardBreak(),
-          new Heading({ levels: [1, 2, 3] }),
-          new HorizontalRule(),
-          new ListItem(),
-          new OrderedList(),
-          new TodoItem(),
-          new TodoList(),
-          new Link(),
-          new Bold(),
-          new Code(),
-          new Italic(),
-          new Strike(),
-          new Underline(),
-          new History(),
-          new RealtimeExtension(),
-        ],
-        content: this.getText(),
-        onUpdate: ({ getHTML }) => { this.setText(getHTML()); }
-      }),
-    };
+  asyncComputed: {
+      async editor() {
+        const tiptap_options = {
+          extensions: [
+            new Blockquote(),
+            new BulletList(),
+            new CodeBlock(),
+            new HardBreak(),
+            new Heading({ levels: [1, 2, 3] }),
+            new HorizontalRule(),
+            new ListItem(),
+            new OrderedList(),
+            new TodoItem(),
+            new TodoList(),
+            new Link(),
+            new Bold(),
+            new Code(),
+            new Italic(),
+            new Strike(),
+            new Underline(),
+            new History(),
+          ],
+        };
+        if (
+          this.options.collaboration.server &&
+          this.options.collaboration.document
+        ) {
+          // Syncing text remotely
+          let rt_ext = await import("./tiptap-yjs");
+          rt_ext = rt_ext.default;
+          tiptap_options.extensions.push(
+            new rt_ext(
+              this.options.collaboration.server,
+              this.options.collaboration.document
+            )
+          );
+        } else {
+          // Syncing text with <textarea>
+          tiptap_options.content = this.getText();
+          tiptap_options.onUpdate = ({ getHTML }) => { this.setText(getHTML()); }
+        }
+        return new Editor(tiptap_options);
+    },
   },
   beforeDestroy() {
     this.editor.destroy();

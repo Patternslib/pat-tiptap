@@ -12,10 +12,15 @@ import * as Y from "yjs";
 import "./tiptap-yjs.css";
 
 const ydoc = new Y.Doc();
-const provider = new WebsocketProvider("wss://demos.yjs.dev", "tiptap", ydoc);
 const type = ydoc.getXmlFragment("prosemirror");
 
 export default class RealtimeExtension extends Extension {
+    constructor(server_url, document_name) {
+        super();
+        // Open websocket connection.
+        this.provider = new WebsocketProvider(server_url, document_name, ydoc);
+    }
+
     get name() {
         return "realtime";
     }
@@ -23,7 +28,7 @@ export default class RealtimeExtension extends Extension {
     get plugins() {
         return [
             ySyncPlugin(type),
-            yCursorPlugin(provider.awareness),
+            yCursorPlugin(this.provider.awareness),
             yUndoPlugin(),
             keymap({
                 "Mod-z": undo,
