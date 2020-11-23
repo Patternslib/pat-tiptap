@@ -12,6 +12,8 @@ export default Base.extend({
     async init() {
         let Vue = await import("vue");
         Vue = Vue.default;
+        let VueAsyncComputed = await import("vue-async-computed");
+        VueAsyncComputed = VueAsyncComputed.default;
         let Editor = await import("./tiptap-editor.vue");
         Editor = Editor.default;
 
@@ -28,6 +30,7 @@ export default Base.extend({
             this.el.value = text;
         };
 
+        Vue.use(VueAsyncComputed); // Allow ``async`` for computed properties.
         const editor_app = new Vue({
             render: (h) => h(Editor, {props: {getText: getText, setText: setText}}),
         }).$mount();
