@@ -156,6 +156,7 @@ import {
 } from 'tiptap-extensions';
 import Icon from './tiptap-icon.vue';
 import IconSource from './tiptap-icon-source.vue';
+import RealtimeExtension from './tiptap-yjs';
 
 export default {
   props: ["getText", "setText"],
@@ -186,6 +187,7 @@ export default {
           new Strike(),
           new Underline(),
           new History(),
+          new RealtimeExtension(),
         ],
         content: this.getText(),
         onUpdate: ({ getHTML }) => { this.setText(getHTML()); }
