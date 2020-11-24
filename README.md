@@ -11,11 +11,14 @@ See:
 - https://yjs.dev/
 
 
-When invoking on a textarea element, the textarea is hidden and it's value is synchronized with updates in the editor.
+When invoking on an element, the element is hidden and it's value is synchronized with updates in the editor.
+
 If the collaboration feature is used by defining a collaboration server and a document name, the changes are synchronized with the websocket backend service but not with the element where the texteditor was invoked.
 
 
 ### Usage
+
+Invokation on a textarea element
 
     <textarea
         name="text"
@@ -23,6 +26,17 @@ If the collaboration feature is used by defining a collaboration server and a do
       <h1>hello</h1>
       <p>I am some text content</p>
     </textarea>
+
+
+Invocation on a div element
+
+    <div
+        name="text"
+        class="pat-tiptap"
+        contenteditable>
+      <h1>hello</h1>
+      <p>I am some text content</p>
+    </div>
 
 
 Example with collaboration support:

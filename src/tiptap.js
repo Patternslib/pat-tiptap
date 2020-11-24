@@ -20,17 +20,23 @@ export default Base.extend({
 
         this.options = parser.parse(this.el, this.options);
 
-        // Hide textarea which will be replaced with tiptap instance
+        // Hide element which will be replaced with tiptap instance
         this.el.style.display = "none";
+
+        const is_form_el = ["TEXTAREA", "INPUT"].includes(this.el.tagName);
 
         const getText = () => {
             // Textarea value getter
-            return this.el.value;
+            return is_form_el ? this.el.value : this.el.innerHTML;
         };
 
         const setText = (text) => {
             // Textarea value setter
-            this.el.value = text;
+            if (is_form_el) {
+                this.el.value = text;
+            } else {
+                this.el.innerHTML = text;
+            }
         };
 
         // Initialize editor

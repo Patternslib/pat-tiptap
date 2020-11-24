@@ -202,7 +202,7 @@ export default {
             )
           );
         } else {
-          // Syncing text with <textarea>
+          // Syncing text with original element
           tiptap_options.content = this.getText();
           tiptap_options.onUpdate = ({ getHTML }) => { this.setText(getHTML()); }
         }
