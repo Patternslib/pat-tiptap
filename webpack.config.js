@@ -3,6 +3,7 @@ const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
 const DuplicatePackageCheckerPlugin = require("duplicate-package-checker-webpack-plugin");
 const VueLoaderPlugin = require("vue-loader/lib/plugin");
+const webpack_helpers = require("patternslib/webpack/webpack-helpers");
 
 module.exports = (env) => {
     return {
@@ -53,7 +54,12 @@ module.exports = (env) => {
                 },
                 {
                     test: /\.css$/,
-                    use: ["style-loader", "css-loader"],
+                    use: [{
+                        loader: "style-loader",
+                        options: {
+                            insert: webpack_helpers.top_head_insert
+                        },
+                    }, "css-loader"],
                 },
             ],
         },
