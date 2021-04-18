@@ -4,6 +4,7 @@ module.exports = {
     watchPlugins: ["jest-watch-typeahead/filename", "jest-watch-typeahead/testname"],
     transform: {
         "^.+\\.[t|j]sx?$": "babel-jest",
+        "^.+\\.vue$": "vue-jest",
     },
     moduleNameMapper: {
         "\\.(css|less|sass|scss)$": "identity-obj-proxy",

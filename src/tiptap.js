@@ -1,6 +1,6 @@
 import "regenerator-runtime/runtime"; // needed for ``await`` support
-import Base from "patternslib/src/core/base";
-import Parser from "patternslib/src/core/parser";
+import Base from "@patternslib/patternslib/src/core/base";
+import Parser from "@patternslib/patternslib/src/core/parser";
 
 const parser = new Parser("tiptap");
 parser.addArgument("collaboration-server", null);
@@ -11,12 +11,9 @@ export default Base.extend({
     trigger: ".pat-tiptap",
 
     async init() {
-        let Vue = await import("vue");
-        Vue = Vue.default;
-        let VueAsyncComputed = await import("vue-async-computed");
-        VueAsyncComputed = VueAsyncComputed.default;
-        let Editor = await import("./tiptap-editor.vue");
-        Editor = Editor.default;
+        const Vue = (await import("vue")).default;
+        const VueAsyncComputed = (await import("vue-async-computed")).default;
+        const Editor = (await import("./tiptap-editor.vue")).default;
 
         this.options = parser.parse(this.el, this.options);
 

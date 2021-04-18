@@ -8,6 +8,13 @@
       section {
         margin-bottom: 6em;
       }
+      .tiptap-editor__content {
+        border: 1px solid black;
+        padding: 1em;
+      }
+      .ProseMirror:focus {
+        outline: none;
+      }
     </style>
   </head>
   <body>
@@ -16,6 +23,7 @@
 
     <section>
       <h2>Collaboration example</h2>
+      <p>Open this window in another browser to see simultanous editing.</p>
       <p>connecting to wss://demos.yjs.dev, document name "patternslib-demo"</p>
       <div class="pat-tiptap"
           data-pat-tiptap="collaboration-server: wss://demos.yjs.dev; collaboration-document: patternslib-demo">

@@ -1,6 +1,7 @@
 process.traceDeprecation = true;
 const path = require("path");
 const patternslib_config = require("@patternslib/patternslib/webpack/webpack.config.js");
+const VueLoaderPlugin = require("vue-loader/lib/plugin");
 
 module.exports = async (env, argv) => {
     const config = patternslib_config(env, argv);
@@ -12,6 +13,15 @@ module.exports = async (env, argv) => {
 
     // Correct moment alias
     config.resolve.alias.moment = path.resolve(__dirname, "node_modules/moment"); // prettier-ignore
+
+    // Vue Plugin
+    config.resolve.alias.vue$ = "vue/dist/vue.esm.js";
+    config.resolve.extensions = ["*", ".js", ".vue", ".json"];
+    config.module.rules.push({
+        test: /\.vue$/,
+        loader: "vue-loader",
+    });
+    config.plugins.push(new VueLoaderPlugin());
 
     if (argv.mode === "production") {
         // Also create minified bundles along with the non-minified ones.
