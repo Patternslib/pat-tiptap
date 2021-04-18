@@ -8,8 +8,8 @@ trim_trailing_whitespace = true
 [*{js,jsx,vue,ts}]
 indent_size = 4
 
-[*.{css,scss,xml,html,json,yml}]
+[*.{css,scss,xml,html,yml}]
 indent_size = 2
 
-[{Makefile,**.mk}]
+[Makefile]
 indent_style = tab
