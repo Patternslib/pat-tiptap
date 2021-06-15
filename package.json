@@ -5,7 +5,7 @@
     "license": "MIT",
     "main": "./src/tiptap.js",
     "dependencies": {
-        "@patternslib/patternslib": "4",
+        "@patternslib/patternslib": "^4.4.0",
         "tiptap": "^1.32.2",
         "tiptap-extensions": "^1.35.2",
         "vue": "^2.6.12",
