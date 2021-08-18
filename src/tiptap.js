@@ -11,43 +11,51 @@ export default Base.extend({
     trigger: ".pat-tiptap",
 
     async init() {
-        const Vue = (await import("vue")).default;
-        const VueAsyncComputed = (await import("vue-async-computed")).default;
-        const Editor = (await import("./tiptap-editor.vue")).default;
+        const Editor = (await import("@tiptap/core")).Editor;
+        const StarterKit = (await import("@tiptap/starter-kit")).default;
 
-        this.options = parser.parse(this.el, this.options);
+        new Editor({
+            element: this.el,
+            extensions: [StarterKit],
+        });
 
-        // Hide element which will be replaced with tiptap instance
-        this.el.style.display = "none";
+        //const Vue = (await import("vue")).default;
+        //const VueAsyncComputed = (await import("vue-async-computed")).default;
+        //const Editor = (await import("./tiptap-editor.vue")).default;
 
-        const is_form_el = ["TEXTAREA", "INPUT"].includes(this.el.tagName);
+        //this.options = parser.parse(this.el, this.options);
 
-        const getText = () => {
-            // Textarea value getter
-            return is_form_el ? this.el.value : this.el.innerHTML;
-        };
+        //// Hide element which will be replaced with tiptap instance
+        //this.el.style.display = "none";
 
-        const setText = (text) => {
-            // Textarea value setter
-            if (is_form_el) {
-                this.el.value = text;
-            } else {
-                this.el.innerHTML = text;
-            }
-        };
+        //const is_form_el = ["TEXTAREA", "INPUT"].includes(this.el.tagName);
 
-        // Initialize editor
-        Vue.use(VueAsyncComputed); // Allow ``async`` for computed properties.
-        const editor_app = new Vue({
-            render: (h) =>
-                h(Editor, {
-                    props: {
-                        getText: getText,
-                        setText: setText,
-                        options: this.options,
-                    },
-                }),
-        }).$mount();
-        this.el.parentNode.insertBefore(editor_app.$el, this.el);
+        //const getText = () => {
+        //    // Textarea value getter
+        //    return is_form_el ? this.el.value : this.el.innerHTML;
+        //};
+
+        //const setText = (text) => {
+        //    // Textarea value setter
+        //    if (is_form_el) {
+        //        this.el.value = text;
+        //    } else {
+        //        this.el.innerHTML = text;
+        //    }
+        //};
+
+        //// Initialize editor
+        //Vue.use(VueAsyncComputed); // Allow ``async`` for computed properties.
+        //const editor_app = new Vue({
+        //    render: (h) =>
+        //        h(Editor, {
+        //            props: {
+        //                getText: getText,
+        //                setText: setText,
+        //                options: this.options,
+        //            },
+        //        }),
+        //}).$mount();
+        //this.el.parentNode.insertBefore(editor_app.$el, this.el);
     },
 });
