@@ -193,8 +193,7 @@ export default {
           this.options.collaboration.document
         ) {
           // Syncing text remotely
-          let rt_ext = await import("./tiptap-yjs");
-          rt_ext = rt_ext.default;
+          const rt_ext = (await import("./tiptap-yjs")).default;
           tiptap_options.extensions.push(
             new rt_ext(
               this.options.collaboration.server,
