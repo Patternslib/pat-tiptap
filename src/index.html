@@ -15,13 +15,69 @@
       .ProseMirror:focus {
         outline: none;
       }
+      .active {
+        background-color: green;
+      }
     </style>
   </head>
   <body>
 
-    <h1>TipTap example</h1>
+    <h1>TipTap examples</h1>
 
     <section>
+      <h2>TipTap basic example</h2>
+
+      <div id="tiptap-external-toolbar">
+        <!-- formatting -->
+        <button type="button" class="button-heading-level-1">Header level 1</button>
+        <button type="button" class="button-heading-level-2">Header level 2</button>
+        <button type="button" class="button-heading-level-3">Header level 3</button>
+        <button type="button" class="button-heading-level-4">Header level 4</button>
+        <button type="button" class="button-heading-level-5">Header level 5</button>
+        <button type="button" class="button-heading-level-6">Header level 6</button>
+        <button type="button" class="button-paragraph">Normal</button>
+        <button type="button" class="button-blockquote">Quote</button>
+        <button type="button" class="button-code-block">Code</button>
+        <button type="button" class="button-bold">Bold</button>
+        <button type="button" class="button-italic">Italic</button>
+        <button type="button" class="button-strike">Strike</button>
+        <button type="button" class="button-link">Link</button>
+        <button type="button" class="button-horizontal-rule">Horizontal rule</button>
+        <button type="button" class="button-unordered-list">Bullet list</button>
+        <button type="button" class="button-ordered-list">Ordered list</button>
+
+        <!-- tables -->
+        <button type="button" class="button-table-create">Create table</button>
+        <button type="button" class="button-table-remove">Remove table</button>
+        <button type="button" class="button-table-add-column-left">Add column to the left</button>
+        <button type="button" class="button-table-add-column-right">Add column to the right</button>
+        <button type="button" class="button-table-remove-column-right">Remove column</button>
+        <button type="button" class="button-table-add-row-above">Add row above</button>
+        <button type="button" class="button-table-add-row-below">Add row below</button>
+        <button type="button" class="button-table-remove-row-right">Remove row</button>
+
+        <!-- undo / redo -->
+        <button type="button" class="button-undo">Undo</button>
+        <button type="button" class="button-redo">Redo</button>
+
+        <a
+            class="button-image pat-modal"
+            data-pat-modal="class: medium panel image-picker"
+            href="#panel-select-upload-image">Image</a>
+
+      </div>
+
+      <textarea
+          class="pat-tiptap"
+          data-pat-tiptap="toolbar-external: #tiptap-external-toolbar">
+          <h1>editor example</h1>
+          <p>some text in paragraph 1</p>
+          <p>some text in paragraph 2</p>
+      </textarea>
+
+    </section>
+
+    <!--section>
       <h2>Collaboration example</h2>
       <p>Open this window in another browser to see simultanous editing.</p>
       <p>connecting to wss://demos.yjs.dev, document name "patternslib-demo"</p>
@@ -29,7 +85,7 @@
           data-pat-tiptap="collaboration-server: wss://demos.yjs.dev; collaboration-document: patternslib-demo">
           yo, hello!
       </div>
-    </section>
+    </section-->
 
   </body>
 </html>
