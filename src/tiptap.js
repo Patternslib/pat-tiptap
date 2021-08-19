@@ -12,9 +12,15 @@ export default Base.extend({
     name: "tiptap",
     trigger: ".pat-tiptap",
 
+    extra_extensions: [],
+    post_init: [],
+
     async init() {
         const TipTap = (await import("@tiptap/core")).Editor;
         const StarterKit = (await import("@tiptap/starter-kit")).default;
+        const ExtDocument = (await import("@tiptap/extension-document")).default;
+        const ExtParagraph = (await import("@tiptap/extension-paragraph")).default;
+        const ExtText = (await import("@tiptap/extension-text")).default;
 
         this.options = parser.parse(this.el, this.options);
 
@@ -41,13 +47,23 @@ export default Base.extend({
             }
         };
 
+        // Collect toolbar buttons functionality in post_init callback handler
+        // array and collect extra extensions.
+        await this.connect_toolbar();
+
         this.editor = new TipTap({
             element: container,
-            extensions: [StarterKit],
+            extensions: [
+                ExtDocument,
+                ExtText,
+                ExtParagraph,
+                ...this.extra_extensions
+            ],
             content: getText(),
         });
 
-        this.connect_toolbar();
+        // initialize post-init handlers
+        this.post_init.map((cb) => cb());
     },
 
     async connect_toolbar() {
@@ -67,7 +83,10 @@ export default Base.extend({
         const h6 = toolbar.querySelector(".button-heading-level-6");
 
         if (h1 || h2 || h3 || h4 || h5 || h6) {
-            //const ext_heading = (await import("@tiptap/heading")).Heading;
+            this.extra_extensions.push(
+                (await import("@tiptap/extension-heading")).Heading
+            );
+
             const set_heading_button = (_el, _level) => {
                 _el.addEventListener("click", () => {
                     this.editor.chain().focus().toggleHeading({ level: _level }).run();
@@ -79,12 +98,12 @@ export default Base.extend({
                         : _el.classList.remove("active");
                 });
             };
-            h1 && set_heading_button(h1, 1);
-            h2 && set_heading_button(h2, 2);
-            h3 && set_heading_button(h3, 3);
-            h4 && set_heading_button(h4, 4);
-            h5 && set_heading_button(h5, 5);
-            h6 && set_heading_button(h6, 6);
+            h1 && this.post_init.push(() => set_heading_button(h1, 1));
+            h2 && this.post_init.push(() => set_heading_button(h2, 2));
+            h3 && this.post_init.push(() => set_heading_button(h3, 3));
+            h4 && this.post_init.push(() => set_heading_button(h4, 4));
+            h5 && this.post_init.push(() => set_heading_button(h5, 5));
+            h6 && this.post_init.push(() => set_heading_button(h6, 6));
         }
     },
 });
