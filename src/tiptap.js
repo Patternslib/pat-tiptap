@@ -12,12 +12,8 @@ export default Base.extend({
     name: "tiptap",
     trigger: ".pat-tiptap",
 
-    extra_extensions: [],
-    post_init: [],
-
     async init() {
         const TipTap = (await import("@tiptap/core")).Editor;
-        const StarterKit = (await import("@tiptap/starter-kit")).default;
         const ExtDocument = (await import("@tiptap/extension-document")).default;
         const ExtParagraph = (await import("@tiptap/extension-paragraph")).default;
         const ExtText = (await import("@tiptap/extension-text")).default;
@@ -47,288 +43,248 @@ export default Base.extend({
             }
         };
 
-        // Collect toolbar buttons functionality in post_init callback handler
-        // array and collect extra extensions.
-        await this.connect_toolbar();
-
+        this.toolbar_pre_init();
         this.editor = new TipTap({
             element: container,
-            extensions: [ExtDocument, ExtText, ExtParagraph, ...this.extra_extensions],
+            extensions: [
+                ExtDocument,
+                ExtText,
+                ExtParagraph,
+                ...(await this.toolbar_extensions()),
+            ],
             content: getText(),
         });
-
-        // initialize post-init handlers
-        this.post_init.map((cb) => cb());
+        this.toolbar_post_init();
     },
 
-    async connect_toolbar() {
-        const toolbar = this.options.toolbarExternal
+    toolbar_pre_init() {
+        this.toolbar = {};
+
+        const tb = this.options.toolbarExternal
             ? document.querySelector(this.options.toolbarExternal)
             : null;
-        if (!toolbar) {
+        if (!tb) {
             return;
         }
 
-        // connect heading
-        const h1 = toolbar.querySelector(".button-heading-level-1");
-        const h2 = toolbar.querySelector(".button-heading-level-2");
-        const h3 = toolbar.querySelector(".button-heading-level-3");
-        const h4 = toolbar.querySelector(".button-heading-level-4");
-        const h5 = toolbar.querySelector(".button-heading-level-5");
-        const h6 = toolbar.querySelector(".button-heading-level-6");
+        // paragraph formating
+        this.toolbar.heading_level_1 = tb.querySelector(".button-heading-level-1");
+        this.toolbar.heading_level_2 = tb.querySelector(".button-heading-level-2");
+        this.toolbar.heading_level_3 = tb.querySelector(".button-heading-level-3");
+        this.toolbar.heading_level_4 = tb.querySelector(".button-heading-level-4");
+        this.toolbar.heading_level_5 = tb.querySelector(".button-heading-level-5");
+        this.toolbar.heading_level_6 = tb.querySelector(".button-heading-level-6");
+        this.toolbar.paragraph = tb.querySelector(".button-paragraph");
+        this.toolbar.blockquote = tb.querySelector(".button-blockquote");
+        this.toolbar.code_block = tb.querySelector(".button-code-block");
 
-        if (h1 || h2 || h3 || h4 || h5 || h6) {
-            this.extra_extensions.push(
-                (await import("@tiptap/extension-heading")).Heading
-            );
+        // character formating
+        this.toolbar.bold = tb.querySelector(".button-bold");
+        this.toolbar.italic = tb.querySelector(".button-italic");
+        this.toolbar.strike = tb.querySelector(".button-strike");
+        this.toolbar.code = tb.querySelector(".button-code");
 
-            const set_heading_button = (_el, _level) => {
-                _el.addEventListener("click", () => {
-                    this.editor.chain().focus().toggleHeading({ level: _level }).run();
-                    this.editor.emit("selectionUpdate");
-                });
-                this.editor.on("selectionUpdate", () => {
-                    this.editor.isActive("heading", { level: _level })
-                        ? _el.classList.add("active")
-                        : _el.classList.remove("active");
-                });
-            };
-            h1 && this.post_init.push(() => set_heading_button(h1, 1));
-            h2 && this.post_init.push(() => set_heading_button(h2, 2));
-            h3 && this.post_init.push(() => set_heading_button(h3, 3));
-            h4 && this.post_init.push(() => set_heading_button(h4, 4));
-            h5 && this.post_init.push(() => set_heading_button(h5, 5));
-            h6 && this.post_init.push(() => set_heading_button(h6, 6));
+        // lists
+        this.toolbar.unordered_list = tb.querySelector(".button-unordered-list");
+        this.toolbar.ordered_list = tb.querySelector(".button-ordered-list");
+
+        // tables
+        this.toolbar.table_create = tb.querySelector(".button-table-create");
+        this.toolbar.table_add_row_above = tb.querySelector(".button-table-add-row-above"); // prettier-ignore
+        this.toolbar.table_add_row_below = tb.querySelector(".button-table-add-row-below"); // prettier-ignore
+        this.toolbar.table_add_column_left = tb.querySelector(".button-table-add-column-left"); // prettier-ignore
+        this.toolbar.table_add_column_right = tb.querySelector(".button-table-add-column-right"); // prettier-ignore
+        this.toolbar.table_header_cell = tb.querySelector(".button-table-header-cell");
+        this.toolbar.table_header_row = tb.querySelector(".button-table-header-row");
+        this.toolbar.table_header_column = tb.querySelector(".button-table-header-column"); // prettier-ignore
+        this.toolbar.table_merge_cells = tb.querySelector(".button-table-merge-cells");
+        this.toolbar.table_remove = tb.querySelector(".button-table-remove");
+        this.toolbar.table_remove_row = tb.querySelector(".button-table-remove-row");
+        this.toolbar.table_remove_column = tb.querySelector(".button-table-remove-column"); // prettier-ignore
+
+        // other
+        this.toolbar.horizontal_rule = tb.querySelector(".button-horizontal-rule");
+
+        // functionality
+        this.toolbar.undo = tb.querySelector(".button-undo");
+        this.toolbar.redo = tb.querySelector(".button-redo");
+    },
+
+    async toolbar_extensions() {
+        // we need to import the toolbar extension upfront for the editor to be initialized
+
+        const extensions = [];
+
+        if (Object.values(this.toolbar).length === 0) {
+            return [];
         }
 
-        const btn_par = toolbar.querySelector(".button-paragraph");
-        // paragraph extension already loaded.
-        btn_par &&
-            this.post_init.push(() => {
-                btn_par.addEventListener("click", () => {
-                    this.editor.chain().focus().setParagraph().run();
-                    this.editor.emit("selectionUpdate");
-                });
-                this.editor.on("selectionUpdate", () => {
-                    this.editor.isActive("paragraph")
-                        ? btn_par.classList.add("active")
-                        : btn_par.classList.remove("active");
-                });
-            });
-
-        const btn_bq = toolbar.querySelector(".button-blockquote");
-        btn_bq &&
-            this.extra_extensions.push(
-                (await import("@tiptap/extension-blockquote")).Blockquote
-            );
-        btn_bq &&
-            this.post_init.push(() => {
-                btn_bq.addEventListener("click", () => {
-                    this.editor.chain().focus().toggleBlockquote().run();
-                    this.editor.emit("selectionUpdate");
-                });
-                this.editor.on("selectionUpdate", () => {
-                    this.editor.isActive("blockquote")
-                        ? btn_bq.classList.add("active")
-                        : btn_bq.classList.remove("active");
-                });
-            });
-
-        const btn_cb = toolbar.querySelector(".button-code-block");
-        btn_cb &&
-            this.extra_extensions.push(
-                (await import("@tiptap/extension-code-block")).CodeBlock
-            );
-        btn_cb &&
-            this.post_init.push(() => {
-                btn_cb.addEventListener("click", () => {
-                    this.editor.chain().focus().toggleCodeBlock().run();
-                    this.editor.emit("selectionUpdate");
-                });
-                this.editor.on("selectionUpdate", () => {
-                    this.editor.isActive("codeBlock")
-                        ? btn_cb.classList.add("active")
-                        : btn_cb.classList.remove("active");
-                });
-            });
-
-        const btn_code = toolbar.querySelector(".button-code");
-        btn_code &&
-            this.extra_extensions.push((await import("@tiptap/extension-code")).Code);
-        btn_code &&
-            this.post_init.push(() => {
-                btn_code.addEventListener("click", () => {
-                    this.editor.chain().focus().toggleCode().run();
-                    this.editor.emit("selectionUpdate");
-                });
-                this.editor.on("selectionUpdate", () => {
-                    this.editor.isActive("code")
-                        ? btn_code.classList.add("active")
-                        : btn_code.classList.remove("active");
-                });
-            });
-
-        const btn_bold = toolbar.querySelector(".button-bold");
-        btn_bold &&
-            this.extra_extensions.push((await import("@tiptap/extension-bold")).Bold);
-        btn_bold &&
-            this.post_init.push(() => {
-                btn_bold.addEventListener("click", () => {
-                    this.editor.chain().focus().toggleBold().run();
-                    this.editor.emit("selectionUpdate");
-                });
-                this.editor.on("selectionUpdate", () => {
-                    this.editor.isActive("bold")
-                        ? btn_bold.classList.add("active")
-                        : btn_bold.classList.remove("active");
-                });
-            });
-
-        const btn_italic = toolbar.querySelector(".button-italic");
-        btn_italic &&
-            this.extra_extensions.push(
-                (await import("@tiptap/extension-italic")).Italic
-            );
-        btn_italic &&
-            this.post_init.push(() => {
-                btn_italic.addEventListener("click", () => {
-                    this.editor.chain().focus().toggleItalic().run();
-                    this.editor.emit("selectionUpdate");
-                });
-                this.editor.on("selectionUpdate", () => {
-                    this.editor.isActive("italic")
-                        ? btn_italic.classList.add("active")
-                        : btn_italic.classList.remove("active");
-                });
-            });
-
-        const btn_strike = toolbar.querySelector(".button-strike");
-        btn_strike &&
-            this.extra_extensions.push(
-                (await import("@tiptap/extension-strike")).Strike
-            );
-        btn_strike &&
-            this.post_init.push(() => {
-                btn_strike.addEventListener("click", () => {
-                    this.editor.chain().focus().toggleStrike().run();
-                    this.editor.emit("selectionUpdate");
-                });
-                this.editor.on("selectionUpdate", () => {
-                    this.editor.isActive("strike")
-                        ? btn_strike.classList.add("active")
-                        : btn_strike.classList.remove("active");
-                });
-            });
-
-        const btn_ul = toolbar.querySelector(".button-unordered-list");
-        const btn_ol = toolbar.querySelector(".button-ordered-list");
-        if (btn_ul || btn_ol) {
-            this.extra_extensions.push(
-                (await import("@tiptap/extension-list-item")).ListItem
-            );
+        const tb = this.toolbar;
+        if (
+            tb.heading_level_1 ||
+            tb.heading_level_2 ||
+            tb.heading_level_3 ||
+            tb.heading_level_4 ||
+            tb.heading_level_5 ||
+            tb.heading_level_6
+        ) {
+            extensions.push((await import("@tiptap/extension-heading")).Heading);
         }
-        // ordered list
-        btn_ul &&
-            this.extra_extensions.push(
-                (await import("@tiptap/extension-bullet-list")).BulletList
-            );
-        btn_ul &&
-            this.post_init.push(() => {
-                btn_ul.addEventListener("click", () => {
-                    this.editor.chain().focus().toggleBulletList().run();
-                    this.editor.emit("selectionUpdate");
-                });
-                this.editor.on("selectionUpdate", () => {
-                    this.editor.isActive("bulletList")
-                        ? btn_ul.classList.add("active")
-                        : btn_ul.classList.remove("active");
-                });
-            });
-        // unordered list
-        btn_ol &&
-            this.extra_extensions.push(
+
+        if (tb.blockquote) {
+            extensions.push((await import("@tiptap/extension-blockquote")).Blockquote);
+        }
+
+        if (tb.code_block) {
+            extensions.push((await import("@tiptap/extension-code-block")).CodeBlock);
+        }
+
+        if (tb.bold) {
+            extensions.push((await import("@tiptap/extension-bold")).Bold);
+        }
+
+        if (tb.italic) {
+            extensions.push((await import("@tiptap/extension-italic")).Italic);
+        }
+
+        if (tb.strike) {
+            extensions.push((await import("@tiptap/extension-strike")).Strike);
+        }
+
+        if (tb.code) {
+            extensions.push((await import("@tiptap/extension-code")).Code);
+        }
+
+        if (tb.unordered_list || tb.ordered_list) {
+            extensions.push((await import("@tiptap/extension-list-item")).ListItem);
+        }
+
+        if (tb.unordered_list) {
+            extensions.push((await import("@tiptap/extension-bullet-list")).BulletList);
+        }
+
+        if (tb.ordered_list) {
+            extensions.push(
                 (await import("@tiptap/extension-ordered-list")).OrderedList
             );
-        btn_ol &&
-            this.post_init.push(() => {
-                btn_ol.addEventListener("click", () => {
-                    this.editor.chain().focus().toggleOrderedList().run();
-                    this.editor.emit("selectionUpdate");
-                });
-                this.editor.on("selectionUpdate", () => {
-                    this.editor.isActive("orderedList")
-                        ? btn_ol.classList.add("active")
-                        : btn_ol.classList.remove("active");
-                });
-            });
+        }
 
-        const btn_hr = toolbar.querySelector(".button-horizontal-rule");
-        btn_hr &&
-            this.extra_extensions.push(
+        if (
+            tb.table_create ||
+            tb.table_add_row_above ||
+            tb.table_add_row_below ||
+            tb.table_add_column_left ||
+            tb.table_add_column_right ||
+            tb.table_header_cell ||
+            tb.table_header_row ||
+            tb.table_header_column ||
+            tb.table_merge_cells ||
+            tb.table_remove ||
+            tb.table_remove_column ||
+            tb.table_remove_row
+        ) {
+            extensions.push(
+                (await import("@tiptap/extension-table")).default.configure({
+                    resizable: true,
+                })
+            );
+            extensions.push((await import("@tiptap/extension-table-cell")).default);
+            extensions.push((await import("@tiptap/extension-table-header")).default);
+            extensions.push((await import("@tiptap/extension-table-row")).default);
+        }
+
+        if (tb.horizontal_rule) {
+            extensions.push(
                 (await import("@tiptap/extension-horizontal-rule")).HorizontalRule
             );
-        btn_hr &&
-            this.post_init.push(() => {
-                btn_hr.addEventListener("click", () => {
-                    this.editor.chain().focus().setHorizontalRule().run();
-                });
-            });
-
-        const btn_undo = toolbar.querySelector(".button-undo");
-        const btn_redo = toolbar.querySelector(".button-redo");
-        if (btn_undo || btn_redo) {
-            this.extra_extensions.push(
-                (await import("@tiptap/extension-history")).History
-            );
         }
-        btn_undo &&
-            this.post_init.push(() => {
-                btn_undo.addEventListener("click", () => {
-                    this.editor.chain().focus().undo().run();
-                });
+
+        if (tb.undo || tb.redo) {
+            extensions.push((await import("@tiptap/extension-history")).History);
+        }
+
+        return extensions;
+    },
+
+    toolbar_post_init() {
+        if (Object.values(this.toolbar).length === 0) {
+            return;
+        }
+
+        const connect_button = (btn, method, active_name, check_disabled, args = []) => {
+            if (!btn) {
+                return;
+            }
+            btn.addEventListener("click", () => {
+                this.editor
+                    .chain()
+                    .focus()
+                    [method](...args)
+                    .run();
+                if (active_name || check_disabled) {
+                    this.editor.emit("selectionUpdate");
+                }
             });
-        btn_redo &&
-            this.post_init.push(() => {
-                btn_redo.addEventListener("click", () => {
-                    this.editor.chain().focus().redo().run();
+            if (active_name || check_disabled) {
+                this.editor.on("selectionUpdate", () => {
+                    if (active_name) {
+                        this.editor.isActive(active_name, ...args)
+                            ? btn.classList.add("active")
+                            : btn.classList.remove("active");
+                    }
+                    if (check_disabled) {
+                        btn.disabled = !this.editor.can()[method];
+                    }
                 });
+            }
+        };
+
+        const tb = this.toolbar;
+
+        connect_button(tb.heading_level_1, "toggleHeading", "heading", false, [{ level: 1 }]); // prettier-ignore
+        connect_button(tb.heading_level_2, "toggleHeading", "heading", false, [{ level: 2 }]); // prettier-ignore
+        connect_button(tb.heading_level_3, "toggleHeading", "heading", false, [{ level: 3 }]); // prettier-ignore
+        connect_button(tb.heading_level_4, "toggleHeading", "heading", false, [{ level: 4 }]); // prettier-ignore
+        connect_button(tb.heading_level_5, "toggleHeading", "heading", false, [{ level: 5 }]); // prettier-ignore
+        connect_button(tb.heading_level_6, "toggleHeading", "heading", false, [{ level: 6 }]); // prettier-ignore
+        connect_button(tb.paragraph, "setParagraph", "paragraph");
+        connect_button(tb.blockquote, "toggleBlockquote", "blockquote");
+        connect_button(tb.code_block, "toggleCodeBlock", "codeBlock");
+        connect_button(tb.bold, "toggleBold", "bold");
+        connect_button(tb.italic, "toggleItalic", "italic");
+        connect_button(tb.strike, "toggleStrike", "strike");
+        connect_button(tb.code, "toggleCode", "code");
+        connect_button(tb.unordered_list, "toggleBulletList", "bulletList");
+        connect_button(tb.ordered_list, "toggleOrderedList", "orderedList");
+        connect_button(tb.table_create, "insertTable", null, false, [{ rows: 3, cols: 3, withHeaderRow: true }]); // prettier-ignore
+        connect_button(tb.table_add_row_above, "addRowBefore", null, true);
+        connect_button(tb.table_add_row_below, "addRowAfter", null, true);
+        connect_button(tb.table_add_column_left, "addColumnBefore", null, true);
+        connect_button(tb.table_add_column_right, "addColumnAfter", null, true);
+        connect_button(tb.table_header_cell, "toggleHeaderCell", null, true);
+        connect_button(tb.table_header_row, "toggleHeaderRow", null, true);
+        connect_button(tb.table_header_column, "toggleHeaderColumn", null, true);
+        connect_button(tb.table_remove, "deleteTable", null, true);
+        connect_button(tb.table_remove_row, "deleteRow", null, true);
+        connect_button(tb.table_remove_column, "deleteColumn", null, true);
+        connect_button(tb.horizontal_rule, "setHorizontalRule");
+        connect_button(tb.undo, "undo");
+        connect_button(tb.redo, "redo");
+
+        if (tb.table_merge_cells) {
+            tb.table_merge_cells.addEventListener("click", () => {
+                this.editor.chain().focus().mergeOrSplit().run();
+                this.editor.emit("selectionUpdate");
             });
-
-        //const register_button = async (
-        //    selector,
-        //    ext_name,
-        //    ext_method,
-        //    ext_import_path,
-        //    ext_import_name
-        //) => {
-        //    const _el = toolbar.querySelector(selector);
-        //    if (!_el) {
-        //        // button not available, so don't register functionality
-        //        return;
-        //    }
-
-        //    if (ext_import_path && ext_import_name) {
-        //        // register necessary extionsion
-        //        this.extra_extensions.push(
-        //            (await import(`@tiptap/extension-${ext_import_path}`))[
-        //                ext_import_name
-        //            ]
-        //        );
-        //    }
-
-        //    this.post_init.push(() => {
-        //        btn_cb.addEventListener("click", () => {
-        //            this.editor.chain().focus()[ext_method]().run();
-        //            this.editor.emit("selectionUpdate");
-        //        });
-        //        this.editor.on("selectionUpdate", () => {
-        //            this.editor.isActive(ext_name)
-        //                ? btn_cb.classList.add("active")
-        //                : btn_cb.classList.remove("active");
-        //        });
-        //    });
-        //};
-
-        //register_button(".button-code", "code", "toggleCode", "code", "Code");
+            this.editor.on("selectionUpdate", () => {
+                if (this.editor.can().mergeCells()) {
+                    tb.table_merge_cells.classList.add("active");
+                }
+                if (this.editor.can().splitCell()) {
+                    tb.table_merge_cells.classList.remove("active");
+                }
+                tb.table_merge_cells.disabled = !this.editor.can().mergeOrSplit();
+            });
+        }
     },
 });
