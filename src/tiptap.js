@@ -53,6 +53,9 @@ export default Base.extend({
                 ...(await this.toolbar_extensions()),
             ],
             content: getText(),
+            onUpdate() {
+                setText(this.getHTML());
+            },
         });
         this.toolbar_post_init();
     },
