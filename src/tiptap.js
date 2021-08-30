@@ -12,6 +12,8 @@ export default Base.extend({
     name: "tiptap",
     trigger: ".pat-tiptap",
 
+    toolbar: {},
+
     async init() {
         const TipTap = (await import("@tiptap/core")).Editor;
         const ExtDocument = (await import("@tiptap/extension-document")).default;
@@ -61,7 +63,8 @@ export default Base.extend({
     },
 
     toolbar_pre_init() {
-        this.toolbar = {};
+        // pre-initialization step:
+        // Search for available toolbar buttons.
 
         const tb = this.options.toolbarExternal
             ? document.querySelector(this.options.toolbarExternal)
@@ -114,7 +117,10 @@ export default Base.extend({
     },
 
     async toolbar_extensions() {
-        // we need to import the toolbar extension upfront for the editor to be initialized
+        // Compile a list of TipTap extensions based on available toolbar buttons.
+
+        // Btw, we need to import the toolbar extensions upfront for the editor to be initialized.
+        // See: https://github.com/ueberdosis/tiptap/issues/1044
 
         const extensions = [];
 
