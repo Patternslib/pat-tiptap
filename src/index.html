@@ -82,11 +82,12 @@
         <button type="button" class="button-redo">Redo</button>
 
         <!-- media/links -->
-        <button type="button" class="button-link">Link</button>
+        <a
+            class="button-link pat-modal"
+            href="#modal-link">Link</a>
         <a
             class="button-image pat-modal"
-            data-pat-modal="class: medium panel image-picker"
-            href="#panel-select-upload-image">Image</a>
+            href="#modal-image">Image</a>
 
       </div>
 
@@ -109,6 +110,22 @@
           yo, hello!
       </div>
     </section-->
+
+    <div id="modal-link" hidden>
+        <h1>Add Link</h1>
+        <form>
+          <input type="text" name="url"/>
+          <button type="submit">submit</button>
+        </form>
+    </div>
+
+    <div id="modal-image" hidden>
+        <h1>Add Image</h1>
+        <form enctype="multipart/form-data">
+          <input type="file" name="image"/>
+          <button type="submit">submit</button>
+        </form>
+    </div>
 
   </body>
 </html>

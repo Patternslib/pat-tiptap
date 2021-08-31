@@ -1,8 +1,12 @@
 import "regenerator-runtime/runtime"; // needed for ``await`` support
 import Base from "@patternslib/patternslib/src/core/base";
+import logging from "@patternslib/patternslib/src/core/logging";
 import Parser from "@patternslib/patternslib/src/core/parser";
+import utils from "@patternslib/patternslib/src/core/utils";
 
-const parser = new Parser("tiptap");
+const log = logging.getLogger("tiptap");
+
+export const parser = new Parser("tiptap");
 parser.addArgument("collaboration-server", null);
 parser.addArgument("collaboration-document", null);
 
@@ -114,6 +118,10 @@ export default Base.extend({
         // functionality
         this.toolbar.undo = tb.querySelector(".button-undo");
         this.toolbar.redo = tb.querySelector(".button-redo");
+
+        // media/links
+        this.toolbar.link = tb.querySelector(".button-link");
+        this.toolbar.image = tb.querySelector(".button-image");
     },
 
     async toolbar_extensions() {
@@ -127,6 +135,8 @@ export default Base.extend({
         if (Object.values(this.toolbar).length === 0) {
             return [];
         }
+
+        let has_tables = false;
 
         const tb = this.toolbar;
         if (
@@ -200,6 +210,7 @@ export default Base.extend({
             extensions.push((await import("@tiptap/extension-table-cell")).default);
             extensions.push((await import("@tiptap/extension-table-header")).default);
             extensions.push((await import("@tiptap/extension-table-row")).default);
+            has_tables = true;
         }
 
         if (tb.horizontal_rule) {
@@ -210,6 +221,24 @@ export default Base.extend({
 
         if (tb.undo || tb.redo) {
             extensions.push((await import("@tiptap/extension-history")).History);
+        }
+
+        if (tb.link) {
+            extensions.push(
+                (await import("@tiptap/extension-link")).default.configure({
+                    HTMLAttributes: { target: null, rel: null }, // don't set these attributes.
+                    openOnClick: false, // don't open documents while editing.
+                    linkOnPaste: false,
+                })
+            );
+        }
+
+        if (tb.image) {
+            extensions.push((await import("@tiptap/extension-image")).default);
+        }
+
+        if (tb.image || has_tables) {
+            extensions.push((await import("@tiptap/extension-dropcursor")).default);
         }
 
         return extensions;
@@ -293,6 +322,45 @@ export default Base.extend({
                     tb.table_merge_cells.classList.remove("active");
                 }
                 tb.table_merge_cells.disabled = !this.editor.can().mergeOrSplit();
+            });
+        }
+
+        // non-standard functionality
+        if (tb.link) {
+            tb.link.addEventListener("click", async () => {
+                // Initialization based on pat-modal.
+                await utils.timeout(1); // wait for modal to be shown.
+                const modal = document.querySelector("#pat-modal");
+                const form = modal?.querySelector("form");
+                if (!form) {
+                    log.warn("Failed to initialize link form.");
+                    return;
+                }
+                form.addEventListener(
+                    "submit",
+                    (e) => {
+                        e.preventDefault();
+                        const data = new FormData(form);
+                        const url = data.get("url");
+                        if (url) {
+                            this.editor.chain().focus().setLink({ href: url }).run();
+                        } else {
+                            log.warn("No link defined.");
+                        }
+                        modal["pattern-modal"].destroy(); // Close modal.
+                        this.editor.emit("selectionUpdate");
+                    },
+                    { once: true }
+                );
+            });
+
+            this.editor.on("selectionUpdate", () => {
+                this.editor.isActive("link")
+                    ? tb.link.classList.add("active")
+                    : tb.link.classList.remove("active");
+                this.editor.can().chain().setLink().run()
+                    ? tb.link.classList.remove("disabled")
+                    : tb.link.classList.add("disabled");
             });
         }
     },
