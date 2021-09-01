@@ -332,8 +332,8 @@ export default Base.extend({
                 const attrs = this.editor.getAttributes("link");
                 if (attrs?.href) {
                     const form_data = new FormData();
-                    form_data.append("url", attrs.href);
-                    form_data.append("new_window", !!attrs.target);
+                    form_data.append("href", attrs.href);
+                    form_data.append("target", !!attrs.target);
                     document.dispatchEvent(
                         new CustomEvent("editor-link-widget--init", {
                             detail: { form_data: form_data },
@@ -347,17 +347,17 @@ export default Base.extend({
                     "editor-link-widget--submit",
                     (e) => {
                         const form_data = e?.detail?.form_data;
-                        const url = form_data?.get?.("url");
-                        if (!url) {
+                        const href = form_data?.get?.("href");
+                        if (!href) {
                             log.warn("No link defined.");
                             return;
                         }
-                        const target = form_data.get("new_window") ? "_blank" : null;
+                        const target = form_data.get("target") ? "_blank" : null;
                         this.editor
                             .chain()
                             .focus()
                             .setLink({
-                                href: url,
+                                href: href,
                                 target: target,
                             })
                             .run();
