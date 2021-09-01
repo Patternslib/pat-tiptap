@@ -26,7 +26,8 @@ export default Base.extend({
         if (this.options.event["name-init"]) {
             document.addEventListener(
                 this.options.event["name-init"],
-                this.handle_init.bind(this)
+                this.handle_init.bind(this),
+                { once: true }
             );
         }
     },
