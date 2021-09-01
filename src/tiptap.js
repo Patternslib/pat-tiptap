@@ -327,40 +327,32 @@ export default Base.extend({
 
         // non-standard functionality
         if (tb.link) {
-            tb.link.addEventListener("click", async () => {
-                // Initialization based on pat-modal.
-                await utils.timeout(1); // wait for modal to be shown.
-                const modal = document.querySelector("#pat-modal");
-                const form = modal?.querySelector("form");
-                if (!form) {
-                    log.warn("Failed to initialize link form.");
-                    return;
-                }
-                form.addEventListener(
-                    "submit",
+            tb.link.addEventListener("click", () => {
+                // Add the document event listener on link selector click only once.
+                // That way we can register this handler each time for any number of tiptap instances.
+                document.addEventListener(
+                    "editor-link-widget--link-selected",
                     (e) => {
-                        e.preventDefault();
-                        const data = new FormData(form);
-                        const url = data.get("url");
-                        if (url) {
-                            this.editor.chain().focus().setLink({ href: url }).run();
-                        } else {
+                        const form_data = e?.detail?.form_data;
+                        const url = form_data?.get?.("url");
+                        if (!url) {
                             log.warn("No link defined.");
+                            return;
                         }
-                        modal["pattern-modal"].destroy(); // Close modal.
+                        this.editor.chain().focus().setLink({ href: url }).run();
                         this.editor.emit("selectionUpdate");
                     },
                     { once: true }
                 );
-            });
 
-            this.editor.on("selectionUpdate", () => {
-                this.editor.isActive("link")
-                    ? tb.link.classList.add("active")
-                    : tb.link.classList.remove("active");
-                this.editor.can().chain().setLink().run()
-                    ? tb.link.classList.remove("disabled")
-                    : tb.link.classList.add("disabled");
+                this.editor.on("selectionUpdate", () => {
+                    this.editor.isActive("link")
+                        ? tb.link.classList.add("active")
+                        : tb.link.classList.remove("active");
+                    this.editor.can().chain().setLink().run()
+                        ? tb.link.classList.remove("disabled")
+                        : tb.link.classList.add("disabled");
+                });
             });
         }
 
