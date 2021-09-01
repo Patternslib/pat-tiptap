@@ -88,6 +88,9 @@
         <a
             class="button-image pat-modal"
             href="#modal-image">Image</a>
+        <a
+            class="button-source pat-modal"
+            href="#modal-source">Source</a>
 
       </div>
 
@@ -132,6 +135,21 @@
           <label>
             Image URL:
             <input type="text" name="src"/>
+          </label>
+          <button type="submit">submit</button>
+        </form>
+    </div>
+
+    <div id="modal-source" hidden>
+        <h1>Add Source</h1>
+        <form
+            class="pat-form-data-event"
+            data-pat-form-data-event="
+              event-name: editor-source-widget--source-set;
+              initialization-event-name: editor-source-widget--source-get">
+          <label>
+            Source:
+            <textarea name="source"></textarea>
           </label>
           <button type="submit">submit</button>
         </form>

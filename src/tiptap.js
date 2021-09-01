@@ -122,6 +122,7 @@ export default Base.extend({
         // media/links
         this.toolbar.link = tb.querySelector(".button-link");
         this.toolbar.image = tb.querySelector(".button-image");
+        this.toolbar.source = tb.querySelector(".button-source");
     },
 
     async toolbar_extensions() {
@@ -378,6 +379,35 @@ export default Base.extend({
                                 title: form_data.get("title"),
                             })
                             .run();
+                    },
+                    { once: true }
+                );
+            });
+        }
+
+        if (tb.source) {
+            tb.source.addEventListener("click", async () => {
+                await utils.timeout(1); // wait for stuff to settle.
+
+                const form_data = new FormData();
+                form_data.append("source", this.editor.getHTML());
+
+                document.dispatchEvent(
+                    new CustomEvent("editor-source-widget--source-get", {
+                        detail: { form_data: form_data },
+                    })
+                );
+
+                document.addEventListener(
+                    "editor-source-widget--source-set",
+                    (e) => {
+                        const form_data = e?.detail?.form_data;
+                        const source = form_data?.get?.("source");
+                        if (!source) {
+                            log.warn("No source defined.");
+                            return;
+                        }
+                        this.editor.chain().focus().setContent(source).run();
                     },
                     { once: true }
                 );
