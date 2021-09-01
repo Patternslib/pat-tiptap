@@ -5,8 +5,8 @@ import logging from "@patternslib/patternslib/src/core/logging";
 const log = logging.getLogger("form-data-event");
 
 export const parser = new Parser("form-data-event");
-parser.addArgument("event-name");
-parser.addArgument("initialization-event-name");
+parser.addArgument("event-name-submit");
+parser.addArgument("event-name-init");
 parser.addArgument("prevent-submit", true);
 parser.addArgument("close-modal", true);
 
@@ -20,10 +20,12 @@ export default Base.extend({
             log.warn("pattern must be initialized on a form element.");
             return;
         }
-        this.el.addEventListener("submit", this.handle_submit.bind(this));
-        if (this.options.initializationEventName) {
+        if (this.options.eventNameSubmit) {
+            this.el.addEventListener("submit", this.handle_submit.bind(this));
+        }
+        if (this.options.eventNameInit) {
             document.addEventListener(
-                this.options.initializationEventName,
+                this.options.eventNameInit,
                 this.handle_init.bind(this)
             );
         }
@@ -34,7 +36,7 @@ export default Base.extend({
             e.preventDefault();
         }
         const form_data = new FormData(this.el);
-        const ev = new CustomEvent(this.options.eventName, {
+        const ev = new CustomEvent(this.options.eventNameSubmit, {
             detail: { form_data: form_data },
         });
         document.dispatchEvent(ev);
@@ -44,11 +46,8 @@ export default Base.extend({
                 modal["pattern-modal"].destroy();
             }
         }
-        if (this.options.initializationEventName) {
-            document.removeEventListener(
-                this.options.initializationEventName,
-                this.handle_init
-            );
+        if (this.options.eventNameInit) {
+            document.removeEventListener(this.options.eventNameInit, this.handle_init);
         }
     },
 
