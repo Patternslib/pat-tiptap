@@ -57,8 +57,13 @@ export default Base.extend({
     handle_init(e) {
         const form_data = e?.detail?.form_data;
         for (const [key, value] of form_data.entries()) {
-            if (this.el[key]) {
-                this.el[key].value = value;
+            const _el = this.el[key];
+            if (_el) {
+                if (_el.type === "checkbox") {
+                    _el.checked = value === "true";
+                } else {
+                    _el.value = value;
+                }
             }
         }
     },
