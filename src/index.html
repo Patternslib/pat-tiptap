@@ -114,15 +114,23 @@
     <div id="modal-link" hidden>
         <h1>Add Link</h1>
         <form>
-          <input type="text" name="url"/>
+          <label>
+            Link URL:
+            <input type="text" name="url"/>
+          </label>
           <button type="submit">submit</button>
         </form>
     </div>
 
     <div id="modal-image" hidden>
         <h1>Add Image</h1>
-        <form enctype="multipart/form-data">
-          <input type="file" name="image"/>
+        <form
+            class="pat-form-data-event"
+            data-pat-form-data-event="event-name: editor-image-widget--image-selected">
+          <label>
+            Image URL:
+            <input type="text" name="src"/>
+          </label>
           <button type="submit">submit</button>
         </form>
     </div>

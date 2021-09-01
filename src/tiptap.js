@@ -363,5 +363,33 @@ export default Base.extend({
                     : tb.link.classList.add("disabled");
             });
         }
+
+        if (tb.image) {
+            tb.image.addEventListener("click", () => {
+                // Add the document event listener on image selector click only once.
+                // That way we can register this handler each time for any number of tiptap instances.
+                document.addEventListener(
+                    "editor-image-widget--image-selected",
+                    (e) => {
+                        const form_data = e?.detail?.form_data;
+                        const src = form_data?.get?.("src");
+                        if (!src) {
+                            log.warn("No image selected.");
+                            return;
+                        }
+                        this.editor
+                            .chain()
+                            .focus()
+                            .setImage({
+                                src: src,
+                                alt: form_data.get("alt"),
+                                title: form_data.get("title"),
+                            })
+                            .run();
+                    },
+                    { once: true }
+                );
+            });
+        }
     },
 });
