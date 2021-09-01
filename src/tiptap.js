@@ -332,7 +332,7 @@ export default Base.extend({
                 // Add the document event listener on link selector click only once.
                 // That way we can register this handler each time for any number of tiptap instances.
                 document.addEventListener(
-                    "editor-link-widget--link-selected",
+                    "editor-link-widget--submit",
                     (e) => {
                         const form_data = e?.detail?.form_data;
                         const url = form_data?.get?.("url");
@@ -362,7 +362,7 @@ export default Base.extend({
                 // Add the document event listener on image selector click only once.
                 // That way we can register this handler each time for any number of tiptap instances.
                 document.addEventListener(
-                    "editor-image-widget--image-selected",
+                    "editor-image-widget--submit",
                     (e) => {
                         const form_data = e?.detail?.form_data;
                         const src = form_data?.get?.("src");
@@ -393,13 +393,13 @@ export default Base.extend({
                 form_data.append("source", this.editor.getHTML());
 
                 document.dispatchEvent(
-                    new CustomEvent("editor-source-widget--source-get", {
+                    new CustomEvent("editor-source-widget--init", {
                         detail: { form_data: form_data },
                     })
                 );
 
                 document.addEventListener(
-                    "editor-source-widget--source-set",
+                    "editor-source-widget--submit",
                     (e) => {
                         const form_data = e?.detail?.form_data;
                         const source = form_data?.get?.("source");

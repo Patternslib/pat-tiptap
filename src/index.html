@@ -118,7 +118,7 @@
         <h1>Add Link</h1>
         <form
             class="pat-form-data-event"
-            data-pat-form-data-event="event-name: editor-link-widget--link-selected">
+            data-pat-form-data-event="event-name-submit: editor-link-widget--submit">
           <label>
             Link URL:
             <input type="text" name="url"/>
@@ -131,7 +131,7 @@
         <h1>Add Image</h1>
         <form
             class="pat-form-data-event"
-            data-pat-form-data-event="event-name: editor-image-widget--image-selected">
+            data-pat-form-data-event="event-name-submit: editor-image-widget--submit">
           <label>
             Image URL:
             <input type="text" name="src"/>
@@ -145,8 +145,8 @@
         <form
             class="pat-form-data-event"
             data-pat-form-data-event="
-              event-name: editor-source-widget--source-set;
-              initialization-event-name: editor-source-widget--source-get">
+              event-name-init: editor-source-widget--init;
+              event-name-submit: editor-source-widget--submit">
           <label>
             Source:
             <textarea name="source"></textarea>
