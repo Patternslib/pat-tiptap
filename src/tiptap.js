@@ -329,6 +329,18 @@ export default Base.extend({
         // non-standard functionality
         if (tb.link) {
             tb.link.addEventListener("click", () => {
+                const attrs = this.editor.getAttributes("link");
+                if (attrs?.href) {
+                    const form_data = new FormData();
+                    form_data.append("url", attrs.href);
+                    form_data.append("new_window", !!attrs.target);
+                    document.dispatchEvent(
+                        new CustomEvent("editor-link-widget--init", {
+                            detail: { form_data: form_data },
+                        })
+                    );
+                }
+
                 // Add the document event listener on link selector click only once.
                 // That way we can register this handler each time for any number of tiptap instances.
                 document.addEventListener(
@@ -358,7 +370,7 @@ export default Base.extend({
                     this.editor.isActive("link")
                         ? tb.link.classList.add("active")
                         : tb.link.classList.remove("active");
-                    this.editor.can().chain().setLink().run()
+                    this.editor.can().setLink()
                         ? tb.link.classList.remove("disabled")
                         : tb.link.classList.add("disabled");
                 });
