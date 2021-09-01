@@ -340,7 +340,15 @@ export default Base.extend({
                             log.warn("No link defined.");
                             return;
                         }
-                        this.editor.chain().focus().setLink({ href: url }).run();
+                        const target = form_data.get("new_window") ? "_blank" : null;
+                        this.editor
+                            .chain()
+                            .focus()
+                            .setLink({
+                                href: url,
+                                target: target,
+                            })
+                            .run();
                         this.editor.emit("selectionUpdate");
                     },
                     { once: true }
