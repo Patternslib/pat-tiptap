@@ -37,6 +37,9 @@ export default Base.extend({
             e.preventDefault();
         }
         const form_data = new FormData(this.el);
+        if (e.submitter?.name) {
+            form_data.append("action", e.submitter.name);
+        }
         const ev = new CustomEvent(this.options.event["name-submit"], {
             detail: { form_data: form_data },
         });
