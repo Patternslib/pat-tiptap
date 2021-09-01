@@ -20,12 +20,12 @@ export default Base.extend({
             log.warn("pattern must be initialized on a form element.");
             return;
         }
-        if (this.options.eventNameSubmit) {
+        if (this.options.event["name-submit"]) {
             this.el.addEventListener("submit", this.handle_submit.bind(this));
         }
-        if (this.options.eventNameInit) {
+        if (this.options.event["name-init"]) {
             document.addEventListener(
-                this.options.eventNameInit,
+                this.options.event["name-init"],
                 this.handle_init.bind(this)
             );
         }
@@ -36,7 +36,7 @@ export default Base.extend({
             e.preventDefault();
         }
         const form_data = new FormData(this.el);
-        const ev = new CustomEvent(this.options.eventNameSubmit, {
+        const ev = new CustomEvent(this.options.event["name-submit"], {
             detail: { form_data: form_data },
         });
         document.dispatchEvent(ev);
@@ -46,8 +46,11 @@ export default Base.extend({
                 modal["pattern-modal"].destroy();
             }
         }
-        if (this.options.eventNameInit) {
-            document.removeEventListener(this.options.eventNameInit, this.handle_init);
+        if (this.options.event["name-init"]) {
+            document.removeEventListener(
+                this.options.event["name-init"],
+                this.handle_init
+            );
         }
     },
 
