@@ -347,6 +347,13 @@ export default Base.extend({
                     "editor-link-widget--submit",
                     (e) => {
                         const form_data = e?.detail?.form_data;
+
+                        const action = form_data?.get?.("action");
+                        if (action === "remove") {
+                            this.editor.chain().focus().unsetLink().run();
+                            return;
+                        }
+
                         const href = form_data?.get?.("href");
                         if (!href) {
                             log.warn("No link defined.");
