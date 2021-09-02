@@ -5,7 +5,7 @@
     "license": "MIT",
     "main": "./src/tiptap.js",
     "dependencies": {
-        "@patternslib/patternslib": "^4.6.1",
+        "@patternslib/patternslib": "git://github.com/Patternslib/Patterns.git#form-data-event",
         "@tiptap/core": "^2.0.0-beta.102",
         "@tiptap/extension-image": "^2.0.0-beta.15",
         "@tiptap/extension-link": "^2.0.0-beta.19",
