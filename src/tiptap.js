@@ -329,12 +329,13 @@ export default Base.extend({
 
         // non-standard functionality
         if (tb.link) {
-            tb.link.addEventListener("click", () => {
+            tb.link.addEventListener("click", async () => {
                 const attrs = this.editor.getAttributes("link");
                 if (attrs?.href) {
                     const form_data = new FormData();
                     form_data.append("href", attrs.href);
                     form_data.append("target", !!attrs.target);
+                    await utils.timeout(10); // wait for modal to be shown
                     document.dispatchEvent(
                         new CustomEvent("editor-link-widget--init", {
                             detail: { form_data: form_data },
@@ -415,10 +416,10 @@ export default Base.extend({
 
         if (tb.source) {
             tb.source.addEventListener("click", async () => {
-                await utils.timeout(1); // wait for stuff to settle.
-
                 const form_data = new FormData();
                 form_data.append("source", this.editor.getHTML());
+
+                await utils.timeout(10); // wait for modal to be shown
 
                 document.dispatchEvent(
                     new CustomEvent("editor-source-widget--init", {
