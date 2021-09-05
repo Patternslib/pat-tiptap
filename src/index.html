@@ -96,7 +96,10 @@
 
       <textarea
           class="pat-tiptap"
-          data-pat-tiptap="toolbar-external: #tiptap-external-toolbar">
+          data-pat-tiptap="
+            toolbar-external: #tiptap-external-toolbar;
+            image-panel: #pat-modal .image-panel;
+            link-panel: #pat-modal .link-panel">
           <h1>editor example</h1>
           <p>some text in paragraph 1</p>
           <p>some text in paragraph 2</p>
@@ -116,42 +119,40 @@
 
     <div id="modal-link" hidden>
         <h1>Add Link</h1>
-        <form
-            class="form-data-event"
-            data-form-data-event="
-              event-name-init: editor-link-widget--init;
-              event-name-submit: editor-link-widget--submit">
+        <form class="link-panel">
           <label>
             Link URL:
-            <input type="text" name="href"/>
+            <input type="text" name="tiptap-href"/>
+          </label>
+          <label>
+            Link Text:
+            <input type="text" name="tiptap-text"/>
           </label>
           <label>
             Open in new window:
-            <input type="checkbox" name="target" value="_blank" />
+            <input type="checkbox" name="tiptap-target" value="_blank" />
           </label>
-          <button class="close-panel" type="submit">submit</button>
-          <button class="close-panel" type="submit" name="remove" value="remove">remove link</button>
+          <button class="close-panel" type="button" name="tiptap-confirm">submit</button>
+          <button class="close-panel" type="button" name="tiptap-remove">remove link</button>
         </form>
     </div>
 
     <div id="modal-image" hidden>
         <h1>Add Image</h1>
-        <form
-            class="form-data-event"
-            data-form-data-event="event-name-submit: editor-image-widget--submit">
+        <form class="image-panel">
           <label>
             Image URL:
-            <input type="text" name="src"/>
+            <input type="text" name="tiptap-src"/>
           </label>
           <label>
             Title:
-            <input type="text" name="title"/>
+            <input type="text" name="tiptap-title"/>
           </label>
           <label>
             Alternative text:
-            <input type="text" name="alt"/>
+            <input type="text" name="tiptap-alt"/>
           </label>
-          <button class="close-panel" type="submit">submit</button>
+          <button type="button" name="tiptap-confirm">submit</button>
         </form>
     </div>
 

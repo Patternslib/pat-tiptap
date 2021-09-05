@@ -12,6 +12,9 @@ parser.addArgument("collaboration-server", null);
 parser.addArgument("collaboration-document", null);
 
 parser.addArgument("toolbar-external", null);
+parser.addArgument("image-panel", null);
+parser.addArgument("link-panel", null);
+parser.addArgument("source-panel", null);
 
 export default Base.extend({
     name: "tiptap",
@@ -328,52 +331,54 @@ export default Base.extend({
         }
 
         // non-standard functionality
-        if (tb.link) {
+        if (tb.link && this.options.linkPanel) {
             tb.link.addEventListener("click", async () => {
-                const attrs = this.editor.getAttributes("link");
-                if (attrs?.href) {
-                    const form_data = new FormData();
-                    form_data.append("href", attrs.href);
-                    form_data.append("target", !!attrs.target);
-                    await utils.timeout(10); // wait for modal to be shown
-                    document.dispatchEvent(
-                        new CustomEvent("editor-link-widget--init", {
-                            detail: { form_data: form_data },
-                        })
-                    );
+                await utils.timeout(10); // wait for modal to be shown
+
+                const link_panel = document.querySelector(this.options.linkPanel);
+                const link_href = link_panel?.querySelector("[name=tiptap-href]");
+
+                if (!link_panel || !link_href) {
+                    log.warn("No link panel found.");
+                    return;
                 }
+                const link_text = link_panel.querySelector("[name=tiptap-text]");
+                const link_target = link_panel.querySelector("[name=tiptap-target]");
+                const link_confirm = link_panel.querySelector("[name=tiptap-confirm]");
+                const link_remove = link_panel.querySelector("[name=tiptap-remove]");
 
-                // Add the document event listener on link selector click only once.
-                // That way we can register this handler each time for any number of tiptap instances.
-                document.addEventListener(
-                    "editor-link-widget--submit",
-                    (e) => {
-                        const form_data = e?.detail?.form_data;
+                // set form to initial values
+                const attrs = this.editor
+                    .chain()
+                    .extendMarkRange("link")
+                    .getAttributes("link")
+                    .run();
+                if (attrs?.href) {
+                    link_href.value = attrs.href;
+                }
+                // TODO: target, text
 
-                        const action = form_data?.get?.("action");
-                        if (action === "remove") {
-                            this.editor.chain().focus().unsetLink().run();
-                            return;
-                        }
+                const update_callback = (set_focus) => {
+                    const cmd = this.editor.chain();
+                    if (set_focus === true) {
+                        cmd.focus();
+                    }
+                    cmd.setLink({
+                        href: link_href.value,
+                        target: link_target?.value || null,
+                    });
+                    cmd.run();
+                };
 
-                        const href = form_data?.get?.("href");
-                        if (!href) {
-                            log.warn("No link defined.");
-                            return;
-                        }
-                        const target = form_data.get("target") ? "_blank" : null;
-                        this.editor
-                            .chain()
-                            .focus()
-                            .setLink({
-                                href: href,
-                                target: target,
-                            })
-                            .run();
-                        this.editor.emit("selectionUpdate");
-                    },
-                    { once: true }
-                );
+                if (link_confirm) {
+                    // update on click on confirm
+                    link_confirm.addEventListener("click", () => update_callback(true));
+                } else {
+                    // update on input/change
+                    link_href.addEventListener("input", update_callback.bind(this));
+                    link_text?.addEventListener("input", update_callback.bind(this));
+                    link_target?.addEventListener("change", update_callback.bind(this));
+                }
 
                 this.editor.on("selectionUpdate", () => {
                     this.editor.isActive("link")
@@ -386,31 +391,44 @@ export default Base.extend({
             });
         }
 
-        if (tb.image) {
-            tb.image.addEventListener("click", () => {
-                // Add the document event listener on image selector click only once.
-                // That way we can register this handler each time for any number of tiptap instances.
-                document.addEventListener(
-                    "editor-image-widget--submit",
-                    (e) => {
-                        const form_data = e?.detail?.form_data;
-                        const src = form_data?.get?.("src");
-                        if (!src) {
-                            log.warn("No image selected.");
-                            return;
-                        }
-                        this.editor
-                            .chain()
-                            .focus()
-                            .setImage({
-                                src: src,
-                                alt: form_data.get("alt"),
-                                title: form_data.get("title"),
-                            })
-                            .run();
-                    },
-                    { once: true }
-                );
+        if (tb.image && this.options.imagePanel) {
+            tb.image.addEventListener("click", async () => {
+                await utils.timeout(10); // wait for modal to be shown
+
+                const image_panel = document.querySelector(this.options.imagePanel);
+                const image_src = image_panel?.querySelector("[name=tiptap-src]");
+                if (!image_panel || !image_src) {
+                    log.warn("No image panel found.");
+                    return;
+                }
+                const image_alt = image_panel.querySelector("[name=tiptap-alt]");
+                const image_title = image_panel.querySelector("[name=tiptap-title]");
+
+                const update_callback = (set_focus) => {
+                    const cmd = this.editor.chain();
+                    cmd.setImage({
+                        src: image_src.value,
+                        alt: image_alt?.value || null,
+                        title: image_title?.value || null,
+                    });
+                    if (set_focus === true) {
+                        // set focus after setting image, otherwise image is
+                        // selected and right away deleted when starting typing.
+                        cmd.focus();
+                    }
+                    cmd.run();
+                };
+
+                const image_confirm = image_panel.querySelector("[name=tiptap-confirm]");
+                if (image_confirm) {
+                    // update on click on confirm
+                    image_confirm.addEventListener("click", () => update_callback(true));
+                } else {
+                    // update on input/change
+                    image_src.addEventListener("change", update_callback.bind(this));
+                    image_alt?.addEventListener("change", update_callback.bind(this));
+                    image_title?.addEventListener("change", update_callback.bind(this));
+                }
             });
         }
 
