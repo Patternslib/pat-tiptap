@@ -348,15 +348,15 @@ export default Base.extend({
                 const link_remove = link_panel.querySelector("[name=tiptap-remove]");
 
                 // set form to initial values
-                const attrs = this.editor
-                    .chain()
-                    .extendMarkRange("link")
-                    .getAttributes("link")
-                    .run();
+                this.editor.commands.extendMarkRange("link");
+                const attrs = this.editor.getAttributes("link");
                 if (attrs?.href) {
                     link_href.value = attrs.href;
                 }
-                // TODO: target, text
+                if (attrs?.target) {
+                    link_target.checked = true;
+                }
+                // TODO: text
 
                 const update_callback = (set_focus) => {
                     const cmd = this.editor.chain();
@@ -365,7 +365,7 @@ export default Base.extend({
                     }
                     cmd.setLink({
                         href: link_href.value,
-                        target: link_target?.value || null,
+                        target: link_target.checked ? link_target?.value : null,
                     });
                     cmd.run();
                 };
@@ -378,6 +378,12 @@ export default Base.extend({
                     link_href.addEventListener("input", update_callback.bind(this));
                     link_text?.addEventListener("input", update_callback.bind(this));
                     link_target?.addEventListener("change", update_callback.bind(this));
+                }
+
+                if (link_remove) {
+                    link_remove.addEventListener("click", () => {
+                        this.editor.chain().focus().unsetLink().run();
+                    });
                 }
 
                 this.editor.on("selectionUpdate", () => {
@@ -434,30 +440,40 @@ export default Base.extend({
 
         if (tb.source) {
             tb.source.addEventListener("click", async () => {
-                const form_data = new FormData();
-                form_data.append("source", this.editor.getHTML());
-
                 await utils.timeout(10); // wait for modal to be shown
 
-                document.dispatchEvent(
-                    new CustomEvent("editor-source-widget--init", {
-                        detail: { form_data: form_data },
-                    })
+                const source_panel = document.querySelector(this.options.sourcePanel);
+                const source_text = source_panel?.querySelector("[name=tiptap-source]");
+
+                if (!source_panel || !source_text) {
+                    log.warn("No source panel found.");
+                    return;
+                }
+                const source_confirm = source_panel.querySelector(
+                    "[name=tiptap-confirm]"
                 );
 
-                document.addEventListener(
-                    "editor-source-widget--submit",
-                    (e) => {
-                        const form_data = e?.detail?.form_data;
-                        const source = form_data?.get?.("source");
-                        if (!source) {
-                            log.warn("No source defined.");
-                            return;
-                        }
-                        this.editor.chain().focus().setContent(source).run();
-                    },
-                    { once: true }
-                );
+                // set form to initial values
+                source_text.value = this.editor.getHTML();
+
+                const update_callback = (set_focus) => {
+                    const cmd = this.editor.chain();
+                    if (set_focus === true) {
+                        cmd.focus();
+                    }
+                    cmd.setContent(source_text.value);
+                    cmd.run();
+                };
+
+                if (source_confirm) {
+                    // update on click on confirm
+                    source_confirm.addEventListener("click", () =>
+                        update_callback(true)
+                    );
+                } else {
+                    // update on input/change
+                    source_text.addEventListener("input", update_callback.bind(this));
+                }
             });
         }
     },
