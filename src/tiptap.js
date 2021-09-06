@@ -353,19 +353,38 @@ export default Base.extend({
                 if (attrs?.href) {
                     link_href.value = attrs.href;
                 }
-                if (attrs?.target) {
+                if (attrs?.target && link_target) {
                     link_target.checked = true;
                 }
-                // TODO: text
+                const text_content = this.editor.state.doc.textBetween(
+                    this.editor.state.selection.from,
+                    this.editor.state.selection.to
+                );
+                if (text_content && link_text) {
+                    link_text.value = text_content;
+                }
 
                 const update_callback = (set_focus) => {
                     const cmd = this.editor.chain();
                     if (set_focus === true) {
                         cmd.focus();
                     }
-                    cmd.setLink({
-                        href: link_href.value,
-                        target: link_target.checked ? link_target?.value : null,
+                    const link_text_value =
+                        (link_text ? link_text.value : text_content) || "";
+                    cmd.command(({ tr }) => {
+                        // create prosemirror tree mark and node
+                        const link_mark = this.editor.state.schema.marks.link.create({
+                            href: link_href.value,
+                            target:
+                                link_target && link_target.checked
+                                    ? link_target?.value
+                                    : null,
+                        });
+                        const link_node = this.editor.state.schema
+                            .text(link_text_value)
+                            .mark([link_mark]);
+                        tr.replaceSelectionWith(link_node, false);
+                        return true;
                     });
                     cmd.run();
                 };
