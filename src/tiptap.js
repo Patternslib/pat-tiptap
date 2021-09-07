@@ -402,7 +402,7 @@ export default Base.extend({
                             link_confirm,
                             "click",
                             "tiptap_link_confirm",
-                            () => update_callback(true)
+                            () => update_callback.bind(this)(true)
                         );
                     } else {
                         // update on input/change
@@ -572,7 +572,7 @@ export default Base.extend({
                             source_confirm,
                             "click",
                             "tiptap_source_confirm",
-                            () => update_callback(true)
+                            () => update_callback.bind(this)(true)
                         );
                     } else {
                         // update on input/change
