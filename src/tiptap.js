@@ -469,9 +469,18 @@ export default Base.extend({
                     const image_confirm = image_panel.querySelector(".tiptap-confirm, [name=tiptap-confirm]"); // prettier-ignore
 
                     function update_callback(set_focus) {
+                        // Get the selected image on time of submitting
+                        const selected_image_src = image_panel.querySelector(
+                            `[name=tiptap-src][type=radio]:checked,
+                                 [name=tiptap-src][type=checkbox]:checked,
+                                 [name=tiptap-src][type=option]:checked,
+                                 [name=tiptap-src][type=hidden],
+                                 [name=tiptap-src][type=text]`
+                        );
+
                         const cmd = this.editor.chain();
                         cmd.setImage({
-                            src: image_src.value,
+                            src: selected_image_src.value,
                             alt: image_alt?.value || null,
                             title: image_title?.value || null,
                         });
