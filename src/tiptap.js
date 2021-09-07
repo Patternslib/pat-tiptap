@@ -23,7 +23,9 @@ export default Base.extend({
 
     toolbar: {},
 
+    observer_link_panel: null,
     observer_image_panel: null,
+    observer_source_panel: null,
 
     async init() {
         const TipTap = (await import("@tiptap/core")).Editor;
@@ -435,8 +437,11 @@ export default Base.extend({
                 }
 
                 reinit();
-                const observer = new MutationObserver(reinit.bind(this));
-                observer.observe(link_panel, {
+                if (this.observer_link_panel) {
+                    this.observer_link_panel.disconnect();
+                }
+                this.observer_link_panel = new MutationObserver(reinit.bind(this));
+                this.observer_link_panel.observe(link_panel, {
                     childList: true,
                     subtree: true,
                     attributes: false,
@@ -586,8 +591,11 @@ export default Base.extend({
                 }
 
                 reinit();
-                const observer = new MutationObserver(reinit.bind(this));
-                observer.observe(source_panel, {
+                if (this.observer_source_panel) {
+                    this.observer_source_panel.disconnect();
+                }
+                this.observer_source_panel = new MutationObserver(reinit.bind(this));
+                this.observer_source_panel.observe(source_panel, {
                     childList: true,
                     subtree: true,
                     attributes: false,
