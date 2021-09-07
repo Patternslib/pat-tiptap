@@ -463,9 +463,7 @@ export default Base.extend({
                 }
 
                 const reinit = () => {
-                    console.log("REINIT IMAGE");
-
-                    const image_src = image_panel?.querySelector("[name=tiptap-src]");
+                    const image_src = image_panel.querySelector("[name=tiptap-src]");
                     const image_alt = image_panel.querySelector("[name=tiptap-alt]");
                     const image_title = image_panel.querySelector("[name=tiptap-title]");
                     const image_confirm = image_panel.querySelector(".tiptap-confirm, [name=tiptap-confirm]"); // prettier-ignore
