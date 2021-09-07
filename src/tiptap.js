@@ -343,9 +343,7 @@ export default Base.extend({
                 }
 
                 const reinit = () => {
-                    console.log("REINIT LINK");
-
-                    const link_href = link_panel?.querySelector("[name=tiptap-href]");
+                    const link_href = link_panel.querySelector("[name=tiptap-href]");
                     const link_text = link_panel.querySelector("[name=tiptap-text]");
                     const link_target = link_panel.querySelector("[name=tiptap-target]");
                     const link_confirm = link_panel.querySelector(
@@ -545,10 +543,7 @@ export default Base.extend({
                 }
 
                 const reinit = () => {
-                    console.log("REINIT SOURCE");
-
-                    const source_text =
-                        source_panel?.querySelector("[name=tiptap-source]");
+                    const source_text = source_panel.querySelector("[name=tiptap-source]"); // prettier-ignore
                     const source_confirm = source_panel.querySelector(
                         "[name=tiptap-confirm]"
                     );
