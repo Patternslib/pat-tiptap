@@ -346,7 +346,7 @@ export default Base.extend({
                     return;
                 }
 
-                function reinit() {
+                const reinit = () => {
                     const link_href = link_panel.querySelector("[name=tiptap-href]");
                     const link_text = link_panel.querySelector("[name=tiptap-text]");
                     const link_target = link_panel.querySelector("[name=tiptap-target]");
@@ -370,7 +370,7 @@ export default Base.extend({
                         link_text.value = text_content;
                     }
 
-                    function update_callback(set_focus) {
+                    const update_callback = (set_focus) => {
                         const cmd = this.editor.chain();
                         if (set_focus === true) {
                             cmd.focus();
@@ -395,7 +395,7 @@ export default Base.extend({
                             return true;
                         });
                         cmd.run();
-                    }
+                    };
 
                     // FORM UPDATE
                     if (link_confirm) {
@@ -434,7 +434,7 @@ export default Base.extend({
                         "tiptap_link_remove",
                         () => this.editor.chain().focus().unsetLink().run()
                     );
-                }
+                };
 
                 reinit();
                 if (this.observer_link_panel) {
@@ -469,13 +469,13 @@ export default Base.extend({
                     return;
                 }
 
-                function reinit() {
+                const reinit = () => {
                     const image_src = image_panel.querySelector("[name=tiptap-src]");
                     const image_alt = image_panel.querySelector("[name=tiptap-alt]");
                     const image_title = image_panel.querySelector("[name=tiptap-title]");
                     const image_confirm = image_panel.querySelector(".tiptap-confirm, [name=tiptap-confirm]"); // prettier-ignore
 
-                    function update_callback(set_focus) {
+                    const update_callback = (set_focus) => {
                         // Get the selected image on time of submitting
                         const selected_image_src = image_panel.querySelector(
                             `[name=tiptap-src][type=radio]:checked,
@@ -497,7 +497,7 @@ export default Base.extend({
                             cmd.focus();
                         }
                         cmd.run();
-                    }
+                    };
 
                     // FORM UPDATE
                     if (image_confirm) {
@@ -529,7 +529,7 @@ export default Base.extend({
                             update_callback.bind(this)
                         );
                     }
-                }
+                };
 
                 reinit();
                 if (this.observer_image_panel) {
@@ -555,21 +555,21 @@ export default Base.extend({
                     return;
                 }
 
-                function reinit() {
+                const reinit = () => {
                     const source_text = source_panel.querySelector("[name=tiptap-source]"); // prettier-ignore
                     const source_confirm = source_panel.querySelector(".tiptap-confirm, [name=tiptap-confirm]"); // prettier-ignore
 
                     // set form to initial values
                     source_text.value = this.editor.getHTML();
 
-                    function update_callback(set_focus) {
+                    const update_callback = (set_focus) => {
                         const cmd = this.editor.chain();
                         if (set_focus === true) {
                             cmd.focus();
                         }
                         cmd.setContent(source_text.value);
                         cmd.run();
-                    }
+                    };
 
                     if (source_confirm) {
                         // update on click on confirm
@@ -588,7 +588,7 @@ export default Base.extend({
                             update_callback.bind(this)
                         );
                     }
-                }
+                };
 
                 reinit();
                 if (this.observer_source_panel) {
