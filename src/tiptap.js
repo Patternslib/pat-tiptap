@@ -346,9 +346,7 @@ export default Base.extend({
                     const link_href = link_panel.querySelector("[name=tiptap-href]");
                     const link_text = link_panel.querySelector("[name=tiptap-text]");
                     const link_target = link_panel.querySelector("[name=tiptap-target]");
-                    const link_confirm = link_panel.querySelector(
-                        "[name=tiptap-confirm]"
-                    );
+                    const link_confirm = link_panel.querySelector(".tiptap-confirm, [name=tiptap-confirm]"); // prettier-ignore
                     const link_remove = link_panel.querySelector("[name=tiptap-remove]");
 
                     // FORM INITIALIZATION
@@ -470,9 +468,7 @@ export default Base.extend({
                     const image_src = image_panel?.querySelector("[name=tiptap-src]");
                     const image_alt = image_panel.querySelector("[name=tiptap-alt]");
                     const image_title = image_panel.querySelector("[name=tiptap-title]");
-                    const image_confirm = image_panel.querySelector(
-                        "[name=tiptap-confirm]"
-                    );
+                    const image_confirm = image_panel.querySelector(".tiptap-confirm, [name=tiptap-confirm]"); // prettier-ignore
 
                     const update_callback = (set_focus) => {
                         const cmd = this.editor.chain();
@@ -544,9 +540,7 @@ export default Base.extend({
 
                 const reinit = () => {
                     const source_text = source_panel.querySelector("[name=tiptap-source]"); // prettier-ignore
-                    const source_confirm = source_panel.querySelector(
-                        "[name=tiptap-confirm]"
-                    );
+                    const source_confirm = source_panel.querySelector(".tiptap-confirm, [name=tiptap-confirm]"); // prettier-ignore
 
                     // set form to initial values
                     source_text.value = this.editor.getHTML();
