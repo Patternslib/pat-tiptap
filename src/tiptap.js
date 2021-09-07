@@ -501,7 +501,7 @@ export default Base.extend({
                             image_confirm,
                             "click",
                             "tiptap_image_confirm",
-                            () => update_callback(true)
+                            () => update_callback.bind(this)(true)
                         );
                     } else {
                         // update on input/change
