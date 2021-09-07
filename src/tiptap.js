@@ -23,6 +23,8 @@ export default Base.extend({
 
     toolbar: {},
 
+    observer_image_panel: null,
+
     async init() {
         const TipTap = (await import("@tiptap/core")).Editor;
         const ExtDocument = (await import("@tiptap/extension-document")).default;
@@ -525,8 +527,11 @@ export default Base.extend({
                 }
 
                 reinit();
-                const observer = new MutationObserver(reinit.bind(this));
-                observer.observe(image_panel, {
+                if (this.observer_image_panel) {
+                    this.observer_image_panel.disconnect();
+                }
+                this.observer_image_panel = new MutationObserver(reinit.bind(this));
+                this.observer_image_panel.observe(image_panel, {
                     childList: true,
                     subtree: true,
                     attributes: false,
