@@ -1,5 +1,4 @@
 import "regenerator-runtime/runtime"; // needed for ``await`` support
-import "@patternslib/patternslib/src/core/form-data-event";
 import Base from "@patternslib/patternslib/src/core/base";
 import logging from "@patternslib/patternslib/src/core/logging";
 import Parser from "@patternslib/patternslib/src/core/parser";
