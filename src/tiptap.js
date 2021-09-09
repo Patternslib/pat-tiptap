@@ -337,7 +337,7 @@ export default Base.extend({
         // non-standard functionality
         if (tb.link && this.options.linkPanel) {
             tb.link.addEventListener("click", async () => {
-                await utils.timeout(10); // wait for modal to be shown
+                await utils.timeout(200); // wait for modal to be shown
 
                 const link_panel = document.querySelector(this.options.linkPanel);
                 if (!link_panel) {
@@ -460,7 +460,7 @@ export default Base.extend({
 
         if (tb.image && this.options.imagePanel) {
             tb.image.addEventListener("click", async () => {
-                await utils.timeout(10); // wait for modal to be shown
+                await utils.timeout(200); // wait for modal to be shown
 
                 const image_panel = document.querySelector(this.options.imagePanel);
                 if (!image_panel) {
@@ -546,7 +546,7 @@ export default Base.extend({
 
         if (tb.source) {
             tb.source.addEventListener("click", async () => {
-                await utils.timeout(10); // wait for modal to be shown
+                await utils.timeout(200); // wait for modal to be shown
 
                 const source_panel = document.querySelector(this.options.sourcePanel);
                 if (!source_panel) {
