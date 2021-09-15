@@ -5,7 +5,7 @@
     "license": "MIT",
     "main": "./src/tiptap.js",
     "dependencies": {
-        "@patternslib/patternslib": "git://github.com/Patternslib/Patterns.git#add-remove-events",
+        "@patternslib/patternslib": "git://github.com/Patternslib/Patterns.git#master",
         "@tiptap/core": "^2.0.0-beta.103",
         "@tiptap/extension-image": "^2.0.0-beta.15",
         "@tiptap/extension-link": "^2.0.0-beta.19",
