@@ -453,15 +453,16 @@ export default Base.extend({
                     attributes: false,
                     characterData: false,
                 });
+            });
 
-                this.editor.on("selectionUpdate", () => {
-                    this.editor.isActive("link")
-                        ? tb.link.classList.add("active")
-                        : tb.link.classList.remove("active");
-                    this.editor.can().setLink()
-                        ? tb.link.classList.remove("disabled")
-                        : tb.link.classList.add("disabled");
-                });
+            this.editor.on("selectionUpdate", () => {
+                this.editor.commands.extendMarkRange("link");
+                this.editor.isActive("link")
+                    ? tb.link.classList.add("active")
+                    : tb.link.classList.remove("active");
+                this.editor.can().setLink()
+                    ? tb.link.classList.remove("disabled")
+                    : tb.link.classList.add("disabled");
             });
         }
 
