@@ -5,6 +5,8 @@ import Parser from "@patternslib/patternslib/src/core/parser";
 import utils from "@patternslib/patternslib/src/core/utils";
 import dom from "@patternslib/patternslib/src/core/dom";
 
+import patTooltip from "@patternslib/patternslib/src/pat/tooltip/tooltip";
+
 const log = logging.getLogger("tiptap");
 
 export const parser = new Parser("tiptap");
@@ -16,11 +18,15 @@ parser.addArgument("image-panel", null);
 parser.addArgument("link-panel", null);
 parser.addArgument("source-panel", null);
 
+parser.addArgument("context-menu-link", null);
+
 export default Base.extend({
     name: "tiptap",
     trigger: ".pat-tiptap",
 
     toolbar: {},
+
+    tooltip: null, // reference to open tooltips.
 
     observer_link_panel: null,
     observer_image_panel: null,
@@ -31,7 +37,7 @@ export default Base.extend({
         const ExtDocument = (await import("@tiptap/extension-document")).default;
         const ExtParagraph = (await import("@tiptap/extension-paragraph")).default;
         const ExtText = (await import("@tiptap/extension-text")).default;
-
+        this.tiptap_posToDOMRect = (await import("@tiptap/core")).posToDOMRect;
         this.options = parser.parse(this.el, this.options);
 
         // Hide element which will be replaced with tiptap instance
@@ -455,14 +461,37 @@ export default Base.extend({
                 });
             });
 
-            this.editor.on("selectionUpdate", () => {
-                this.editor.commands.extendMarkRange("link");
+            this.editor.on("selectionUpdate", async (options) => {
                 this.editor.isActive("link")
                     ? tb.link.classList.add("active")
                     : tb.link.classList.remove("active");
                 this.editor.can().setLink()
                     ? tb.link.classList.remove("disabled")
                     : tb.link.classList.add("disabled");
+
+                if (this.editor.isActive("link")) {
+                    if (this.tooltip) {
+                        this.tooltip.hide();
+                        //this.tooltip.destroy();
+                        this.tooltip = null;
+                    }
+                    this.tooltip = await new patTooltip(options.editor.options.element, {
+                        source: "ajax",
+                        url: this.options.contextMenuLink,
+                        trigger: "manual",
+                    });
+                    await utils.timeout(1);
+                    this.tooltip.tippy.setProps({
+                        getReferenceClientRect: () => {
+                            return this.tiptap_posToDOMRect(
+                                options.editor.view,
+                                options.editor.state.selection.from,
+                                options.editor.state.selection.to
+                            );
+                        },
+                    });
+                    this.tooltip.show();
+                }
             });
         }
 
