@@ -361,9 +361,11 @@ export default Base.extend({
                     const attrs = this.editor.getAttributes("link");
                     if (attrs?.href) {
                         link_href.value = attrs.href;
+                        link_href.dispatchEvent(new Event("input"));
                     }
                     if (attrs?.target && link_target) {
                         link_target.checked = true;
+                        link_target.dispatchEvent(new Event("input"));
                     }
                     const text_content = this.editor.state.doc.textBetween(
                         this.editor.state.selection.from,
@@ -371,6 +373,7 @@ export default Base.extend({
                     );
                     if (text_content && link_text) {
                         link_text.value = text_content;
+                        link_text.dispatchEvent(new Event("input"));
                     }
 
                     const update_callback = (set_focus) => {
@@ -564,6 +567,7 @@ export default Base.extend({
 
                     // set form to initial values
                     source_text.value = this.editor.getHTML();
+                    source_text.dispatchEvent(new Event("input"));
 
                     const update_callback = (set_focus) => {
                         const cmd = this.editor.chain();
