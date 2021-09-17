@@ -475,7 +475,11 @@ export default Base.extend({
                 this.context_menu_close();
 
                 if (this.editor.isActive("link")) {
-                    this.debounced_context_menu(this.options.contextMenuLink, options);
+                    this.debounced_context_menu(
+                        this.options.contextMenuLink,
+                        options,
+                        "link-panel"
+                    );
                 }
             });
         }
@@ -627,11 +631,12 @@ export default Base.extend({
         }
     },
 
-    async context_menu(url, editor_context) {
+    async context_menu(url, editor_context, extra_class = null) {
         this.tooltip = await new patTooltip(editor_context.editor.options.element, {
             source: "ajax",
             url: url,
             trigger: "none",
+            class: extra_class,
         });
         await utils.timeout(1);
         this.tooltip.tippy.setProps({
