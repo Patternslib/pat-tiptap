@@ -14,6 +14,7 @@ parser.addArgument("collaboration-server", null);
 parser.addArgument("collaboration-document", null);
 
 parser.addArgument("toolbar-external", null);
+
 parser.addArgument("image-panel", null);
 parser.addArgument("link-panel", null);
 parser.addArgument("source-panel", null);
@@ -78,6 +79,8 @@ export default Base.extend({
             },
         });
         this.toolbar_post_init();
+
+        this.debounced_context_menu = utils.debounce(this.context_menu.bind(this), 10);
     },
 
     toolbar_pre_init() {
@@ -469,28 +472,10 @@ export default Base.extend({
                     ? tb.link.classList.remove("disabled")
                     : tb.link.classList.add("disabled");
 
+                this.context_menu_close();
+
                 if (this.editor.isActive("link")) {
-                    if (this.tooltip) {
-                        this.tooltip.hide();
-                        //this.tooltip.destroy();
-                        this.tooltip = null;
-                    }
-                    this.tooltip = await new patTooltip(options.editor.options.element, {
-                        source: "ajax",
-                        url: this.options.contextMenuLink,
-                        trigger: "manual",
-                    });
-                    await utils.timeout(1);
-                    this.tooltip.tippy.setProps({
-                        getReferenceClientRect: () => {
-                            return this.tiptap_posToDOMRect(
-                                options.editor.view,
-                                options.editor.state.selection.from,
-                                options.editor.state.selection.to
-                            );
-                        },
-                    });
-                    this.tooltip.show();
+                    this.debounced_context_menu(this.options.contextMenuLink, options);
                 }
             });
         }
@@ -639,6 +624,33 @@ export default Base.extend({
                     characterData: false,
                 });
             });
+        }
+    },
+
+    async context_menu(url, editor_context) {
+        this.tooltip = await new patTooltip(editor_context.editor.options.element, {
+            source: "ajax",
+            url: url,
+            trigger: "none",
+        });
+        await utils.timeout(1);
+        this.tooltip.tippy.setProps({
+            getReferenceClientRect: () => {
+                return this.tiptap_posToDOMRect(
+                    editor_context.editor.view,
+                    editor_context.editor.state.selection.from,
+                    editor_context.editor.state.selection.to
+                );
+            },
+        });
+        this.tooltip.show();
+    },
+
+    context_menu_close() {
+        if (this.tooltip) {
+            this.tooltip.hide();
+            this.tooltip.destroy();
+            this.tooltip = null;
         }
     },
 });
