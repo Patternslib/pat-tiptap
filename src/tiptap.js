@@ -80,7 +80,7 @@ export default Base.extend({
         });
         this.toolbar_post_init();
 
-        this.debounced_context_menu = utils.debounce(this.context_menu.bind(this), 10);
+        this.debounced_context_menu = utils.debounce(this.context_menu.bind(this), 50);
     },
 
     toolbar_pre_init() {
