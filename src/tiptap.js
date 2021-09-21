@@ -28,6 +28,7 @@ export default Base.extend({
     toolbar: {},
 
     tooltip: null, // reference to open tooltips.
+    prev_node: null, // reference to previous selected node.
 
     observer_link_panel: null,
     observer_image_panel: null,
@@ -472,15 +473,12 @@ export default Base.extend({
                     ? tb.link.classList.remove("disabled")
                     : tb.link.classList.add("disabled");
 
-                this.context_menu_close();
-
-                if (this.editor.isActive("link")) {
-                    this.debounced_context_menu(
-                        this.options.contextMenuLink,
-                        options,
-                        "link-panel"
-                    );
-                }
+                this.debounced_context_menu(
+                    this.options.contextMenuLink,
+                    options,
+                    () => this.editor.isActive("link"),
+                    "link-panel"
+                );
             });
         }
 
@@ -631,14 +629,35 @@ export default Base.extend({
         }
     },
 
-    async context_menu(url, editor_context, extra_class = null) {
-        this.tooltip = await new patTooltip(editor_context.editor.options.element, {
-            source: "ajax",
-            url: url,
-            trigger: "none",
-            class: extra_class,
-        });
-        await utils.timeout(1);
+    async context_menu(url, editor_context, should_show_cb, extra_class = null) {
+        const prev_node = this.prev_node;
+        const cur_node = (this.prev_node = this.editor.state.doc.nodeAt(
+            editor_context.editor.state.selection.from
+        ));
+
+        if (cur_node !== prev_node) {
+            // Close context menu, when new node is selected.
+            this.context_menu_close();
+        }
+
+        if (!should_show_cb()) {
+            // Context menu should not be opened at all.
+            // If it should have been closed, it was done above.
+            // If not (e.g. a different kind of context menu than this one) it stays opened.
+            return;
+        }
+
+        if (!this.tooltip) {
+            // Only re-initialize when not already opened.
+            const editor_element = editor_context.editor.options.element;
+            this.tooltip = await new patTooltip(editor_element, {
+                source: "ajax",
+                url: url,
+                trigger: "none",
+                class: extra_class,
+            });
+            await utils.timeout(1);
+        }
         this.tooltip.tippy.setProps({
             getReferenceClientRect: () => {
                 return this.tiptap_posToDOMRect(
