@@ -367,7 +367,6 @@ export default Base.extend({
                     const link_remove = link_panel.querySelector("[name=tiptap-remove]");
 
                     // FORM INITIALIZATION
-                    this.editor.commands.extendMarkRange("link");
                     const attrs = this.editor.getAttributes("link");
                     if (attrs?.href) {
                         link_href.value = attrs.href;
@@ -377,10 +376,10 @@ export default Base.extend({
                         link_target.checked = true;
                         link_target.dispatchEvent(new Event("input"));
                     }
-                    const text_content = this.editor.state.doc.textBetween(
-                        this.editor.state.selection.from,
-                        this.editor.state.selection.to
+                    const node = this.editor.state.doc.nodeAt(
+                        this.editor.state.selection.from
                     );
+                    const text_content = node.text;
                     if (text_content && link_text) {
                         link_text.value = text_content;
                         link_text.dispatchEvent(new Event("input"));
