@@ -2,6 +2,7 @@ import "regenerator-runtime/runtime"; // needed for ``await`` support
 import Base from "@patternslib/patternslib/src/core/base";
 import logging from "@patternslib/patternslib/src/core/logging";
 import Parser from "@patternslib/patternslib/src/core/parser";
+import Registry from "@patternslib/patternslib/src/core/registry";
 import utils from "@patternslib/patternslib/src/core/utils";
 import dom from "@patternslib/patternslib/src/core/dom";
 
@@ -351,6 +352,9 @@ export default Base.extend({
         // non-standard functionality
         if (tb.link && this.options.linkPanel) {
             tb.link.addEventListener("click", async () => {
+                // Close eventual opened link context menus.
+                this.context_menu_close("tiptap-link-context-menu");
+
                 await utils.timeout(200); // wait for modal to be shown
 
                 const link_panel = document.querySelector(this.options.linkPanel);
@@ -476,6 +480,7 @@ export default Base.extend({
                     this.options.contextMenuLink,
                     options,
                     () => this.editor.isActive("link"),
+                    this.pattern_link_context_menu(),
                     "link-panel"
                 );
             });
@@ -628,7 +633,13 @@ export default Base.extend({
         }
     },
 
-    async context_menu(url, editor_context, should_show_cb, extra_class = null) {
+    async context_menu(
+        url,
+        editor_context,
+        should_show_cb,
+        register_pattern,
+        extra_class = null
+    ) {
         const prev_node = this.prev_node;
         const cur_node = (this.prev_node = this.editor.state.doc.nodeAt(
             editor_context.editor.state.selection.from
@@ -636,7 +647,7 @@ export default Base.extend({
 
         if (cur_node !== prev_node) {
             // Close context menu, when new node is selected.
-            this.context_menu_close();
+            this.context_menu_close(register_pattern.name);
         }
 
         if (!should_show_cb()) {
@@ -648,6 +659,13 @@ export default Base.extend({
 
         if (!this.tooltip) {
             // Only re-initialize when not already opened.
+
+            // 1) Dynamically register a pattern to be used in the context menu
+            if (register_pattern) {
+                Registry.patterns[register_pattern.name] = register_pattern;
+            }
+
+            // 2) Initialize the tooltip
             const editor_element = editor_context.editor.options.element;
             this.tooltip = await new patTooltip(editor_element, {
                 source: "ajax",
@@ -669,11 +687,51 @@ export default Base.extend({
         this.tooltip.show();
     },
 
-    context_menu_close() {
+    context_menu_close(unregister_pattern_name) {
         if (this.tooltip) {
             this.tooltip.hide();
             this.tooltip.destroy();
             this.tooltip = null;
         }
+        if (unregister_pattern_name) {
+            delete Registry.patterns[unregister_pattern_name];
+        }
+    },
+
+    pattern_link_context_menu() {
+        // Dynamic pattern for the link context menu
+        const that = this;
+        return {
+            name: "tiptap-link-context-menu",
+            trigger: ".tiptap-link-context-menu",
+            init($el) {
+                const el = $el[0];
+
+                const btn_open = el.querySelector(".tiptap-open-new-link");
+                const btn_edit = el.querySelector(".tiptap-edit-link");
+                const btn_unlink = el.querySelector(".tiptap-unlink");
+
+                if (btn_open) {
+                    const attrs = that.editor.getAttributes("link");
+                    if (attrs?.href) {
+                        btn_open.setAttribute("href", attrs.href);
+                    }
+                    btn_open.addEventListener("click", () =>
+                        that.context_menu_close(this.name)
+                    );
+                }
+
+                btn_edit &&
+                    btn_edit.addEventListener("click", () => {
+                        that.context_menu_close(this.name);
+                        that.toolbar.link.click();
+                    });
+                btn_unlink &&
+                    btn_unlink.addEventListener("click", () => {
+                        that.context_menu_close(this.name);
+                        that.editor.chain().focus().unsetLink().run();
+                    });
+            },
+        };
     },
 });
