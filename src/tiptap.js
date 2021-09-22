@@ -672,6 +672,9 @@ export default Base.extend({
             // Only re-initialize when not already opened.
 
             // 1) Dynamically register a pattern to be used in the context menu
+            //    We need to unregister it after use in ``context_menu_close``
+            //    to allow multiple tiptap editors on the same page because it
+            //    references the current editor instance.
             if (register_pattern) {
                 Registry.patterns[register_pattern.name] = register_pattern;
             }
