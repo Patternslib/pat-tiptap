@@ -572,7 +572,7 @@ export default Base.extend({
             });
         }
 
-        if (tb.source) {
+        if (tb.source && this.options.sourcePanel) {
             tb.source.addEventListener("click", async () => {
                 await utils.timeout(200); // wait for modal to be shown
 
