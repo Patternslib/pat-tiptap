@@ -66,6 +66,16 @@ export default Base.extend({
             }
         };
 
+        const extra_extensions = [];
+        const placeholder = this.el.getAttribute("placeholder");
+        if (placeholder) {
+            extra_extensions.push(
+                (await import("@tiptap/extension-placeholder")).Placeholder.configure({
+                    placeholder: placeholder,
+                })
+            );
+        }
+
         this.toolbar_pre_init();
         this.editor = new TipTap({
             element: container,
@@ -74,6 +84,7 @@ export default Base.extend({
                 ExtText,
                 ExtParagraph,
                 ...(await this.toolbar_extensions()),
+                ...extra_extensions,
             ],
             content: getText(),
             onUpdate() {

@@ -28,6 +28,24 @@
         font-weight: bold;
       }
 
+      /* Placeholder (at the top) */
+      .ProseMirror p.is-editor-empty:first-child::before {
+        content: attr(data-placeholder);
+        float: left;
+        color: #ced4da;
+        pointer-events: none;
+        height: 0;
+      }
+
+      /* Placeholder (on every new line) */
+      /*.ProseMirror p.is-empty::before {
+        content: attr(data-placeholder);
+        float: left;
+        color: #ced4da;
+        pointer-events: none;
+        height: 0;
+      }*/
+
     </style>
   </head>
   <body>
@@ -100,10 +118,8 @@
             toolbar-external: #tiptap-external-toolbar;
             image-panel: #pat-modal .image-panel;
             link-panel: #pat-modal .link-panel;
-            source-panel: #pat-modal .source-panel">
-          <h1>editor example</h1>
-          <p>some text in paragraph 1</p>
-          <p>some text in paragraph 2</p>
+            source-panel: #pat-modal .source-panel"
+          placeholder="Your poem goes here...">
       </textarea>
 
     </section>
