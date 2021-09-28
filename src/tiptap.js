@@ -682,10 +682,11 @@ export default Base.extend({
             // 2) Initialize the tooltip
             const editor_element = editor_context.editor.options.element;
             this.tooltip = await new patTooltip(editor_element, {
-                source: "ajax",
-                url: url,
-                trigger: "none",
-                class: extra_class,
+                "source": "ajax",
+                "url": url,
+                "trigger": "none",
+                "class": extra_class,
+                "position-list": ["tm"],
             });
             await utils.timeout(1);
         }
