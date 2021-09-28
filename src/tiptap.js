@@ -487,13 +487,14 @@ export default Base.extend({
                     ? tb.link.classList.remove("disabled")
                     : tb.link.classList.add("disabled");
 
-                this.debounced_context_menu(
-                    this.options.contextMenuLink,
-                    options,
-                    () => this.editor.isActive("link"),
-                    this.pattern_link_context_menu(),
-                    "link-panel"
-                );
+                this.options.contextMenuLink &&
+                    this.debounced_context_menu(
+                        this.options.contextMenuLink,
+                        options,
+                        () => this.editor.isActive("link"),
+                        this.pattern_link_context_menu(),
+                        "link-panel"
+                    );
             });
         }
 
