@@ -381,8 +381,14 @@ export default Base.extend({
                     const link_confirm = link_panel.querySelector(".tiptap-confirm, [name=tiptap-confirm]"); // prettier-ignore
                     const link_remove = link_panel.querySelector("[name=tiptap-remove]");
 
-                    // FORM INITIALIZATION
+                    const selection_from = this.editor.state.selection.from;
+                    const selection_to = this.editor.state.selection.to;
+
+                    const node = this.editor.state.doc.nodeAt(selection_from);
                     const attrs = this.editor.getAttributes("link");
+                    const is_link = attrs.href !== undefined;
+
+                    // FORM INITIALIZATION
                     if (attrs?.href) {
                         link_href.value = attrs.href;
                         link_href.dispatchEvent(new Event("input"));
@@ -391,11 +397,17 @@ export default Base.extend({
                         link_target.checked = true;
                         link_target.dispatchEvent(new Event("input"));
                     }
-                    const node = this.editor.state.doc.nodeAt(
-                        this.editor.state.selection.from
-                    );
-                    const text_content = node.text;
-                    if (text_content && link_text) {
+
+                    let text_content = null;
+                    if (selection_from !== selection_to) {
+                        text_content = this.editor.state.doc.textBetween(
+                            selection_from,
+                            selection_to
+                        );
+                    } else if (is_link) {
+                        text_content = node.text;
+                    }
+                    if (link_text && text_content) {
                         link_text.value = text_content;
                         link_text.dispatchEvent(new Event("input"));
                     }
@@ -408,20 +420,40 @@ export default Base.extend({
                         const link_text_value =
                             (link_text ? link_text.value : text_content) || "";
                         cmd.command(({ tr }) => {
-                            // create prosemirror tree mark and node
-                            const link_mark = this.editor.state.schema.marks.link.create(
-                                {
+                            let mark;
+                            if (is_link) {
+                                // update.
+                                const mark = node.marks.find(
+                                    (it) => it.type.name === "link"
+                                );
+                                if (!mark) {
+                                    log.warn("Could not update the link.");
+                                    return;
+                                }
+
+                                mark.attrs.href = link_href.value;
+                                if (link_target) {
+                                    mark.attrs.target =
+                                        link_target && link_target.checked
+                                            ? link_target?.value
+                                            : null;
+                                }
+                            } else {
+                                // create prosemirror tree mark and node
+                                mark = this.editor.state.schema.marks.link.create({
                                     href: link_href.value,
                                     target:
                                         link_target && link_target.checked
                                             ? link_target?.value
                                             : null,
-                                }
-                            );
+                                });
+                            }
                             const link_node = this.editor.state.schema
                                 .text(link_text_value)
-                                .mark([link_mark]);
-                            tr.replaceSelectionWith(link_node, false);
+                                .mark([mark]);
+
+                            // TODO: replaced text result does not always fit the intented replacement.
+                            tr.replaceSelectionWith(link_node, true);
                             return true;
                         });
                         cmd.run();
