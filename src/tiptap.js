@@ -50,6 +50,11 @@ export default Base.extend({
         container.setAttribute("class", "tiptap-container");
         this.el.after(container);
 
+        // Support for pat-autofocus and autofocus: Set focus depending on textarea's focus setting.
+        const set_focus =
+            this.el.classList.contains("pat-autofocus") ||
+            this.el.hasAttribute("autofocus");
+
         const is_form_el = ["TEXTAREA", "INPUT"].includes(this.el.tagName);
 
         const getText = () => {
@@ -90,6 +95,7 @@ export default Base.extend({
             onUpdate() {
                 setText(this.getHTML());
             },
+            autofocus: set_focus,
         });
         this.toolbar_post_init();
 
