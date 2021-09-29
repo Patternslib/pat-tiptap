@@ -2,11 +2,8 @@ import "regenerator-runtime/runtime"; // needed for ``await`` support
 import Base from "@patternslib/patternslib/src/core/base";
 import logging from "@patternslib/patternslib/src/core/logging";
 import Parser from "@patternslib/patternslib/src/core/parser";
-import Registry from "@patternslib/patternslib/src/core/registry";
 import utils from "@patternslib/patternslib/src/core/utils";
 import dom from "@patternslib/patternslib/src/core/dom";
-
-import patTooltip from "@patternslib/patternslib/src/pat/tooltip/tooltip";
 
 const log = logging.getLogger("tiptap");
 
@@ -40,7 +37,6 @@ export default Base.extend({
         const ExtDocument = (await import("@tiptap/extension-document")).default;
         const ExtParagraph = (await import("@tiptap/extension-paragraph")).default;
         const ExtText = (await import("@tiptap/extension-text")).default;
-        this.tiptap_posToDOMRect = (await import("@tiptap/core")).posToDOMRect;
         this.options = parser.parse(this.el, this.options);
 
         // Hide element which will be replaced with tiptap instance
@@ -103,7 +99,10 @@ export default Base.extend({
         });
         this.toolbar_post_init();
 
-        this.debounced_context_menu = utils.debounce(this.context_menu.bind(this), 50);
+        this.debounced_context_menu = utils.debounce(
+            (await import("./context_menu")).context_menu,
+            50
+        );
     },
 
     toolbar_pre_init() {
@@ -378,7 +377,9 @@ export default Base.extend({
         if (tb.link && this.options.linkPanel) {
             tb.link.addEventListener("click", async () => {
                 // Close eventual opened link context menus.
-                this.context_menu_close("tiptap-link-context-menu");
+                (await import("./context_menu")).context_menu_close(
+                    "tiptap-link-context-menu"
+                );
 
                 await utils.timeout(200); // wait for modal to be shown
 
@@ -691,87 +692,21 @@ export default Base.extend({
         }
     },
 
-    async context_menu(
-        url,
-        editor,
-        should_show_cb,
-        register_pattern,
-        extra_class = null
-    ) {
-        const prev_node = this.prev_node;
-        const cur_node = (this.prev_node = editor.state.doc.nodeAt(
-            editor.state.selection.from
-        ));
-
-        if (cur_node !== prev_node) {
-            // Close context menu, when new node is selected.
-            this.context_menu_close(register_pattern.name);
-        }
-
-        if (!should_show_cb()) {
-            // Context menu should not be opened at all.
-            // If it should have been closed, it was done above.
-            // If not (e.g. a different kind of context menu than this one) it stays opened.
-            return;
-        }
-
-        if (!this.tooltip) {
-            // Only re-initialize when not already opened.
-
-            // 1) Dynamically register a pattern to be used in the context menu
-            //    We need to unregister it after use in ``context_menu_close``
-            //    to allow multiple tiptap editors on the same page because it
-            //    references the current editor instance.
-            if (register_pattern) {
-                Registry.patterns[register_pattern.name] = register_pattern;
-            }
-
-            // 2) Initialize the tooltip
-            const editor_element = editor.options.element;
-            this.tooltip = await new patTooltip(editor_element, {
-                "source": "ajax",
-                "url": url,
-                "trigger": "none",
-                "class": extra_class,
-                "position-list": ["tm"],
-            });
-            await utils.timeout(1);
-        }
-        this.tooltip.tippy.setProps({
-            getReferenceClientRect: () => {
-                return this.tiptap_posToDOMRect(
-                    editor.view,
-                    editor.state.selection.from,
-                    editor.state.selection.to
-                );
-            },
-        });
-        this.tooltip.show();
-    },
-
-    context_menu_close(unregister_pattern_name) {
-        if (this.tooltip) {
-            this.tooltip.hide();
-            this.tooltip.destroy();
-            this.tooltip = null;
-        }
-        if (unregister_pattern_name) {
-            delete Registry.patterns[unregister_pattern_name];
-        }
-    },
-
     pattern_link_context_menu() {
         // Dynamic pattern for the link context menu
         const that = this;
         return {
             name: "tiptap-link-context-menu",
             trigger: ".tiptap-link-context-menu",
-            init($el) {
+            async init($el) {
                 const el = $el[0];
 
                 const btn_open = el.querySelector(".tiptap-open-new-link");
                 const btn_edit = el.querySelector(".tiptap-edit-link");
                 const btn_unlink = el.querySelector(".tiptap-unlink");
+
+                const context_menu_close = (await import("./context_menu"))
+                    .context_menu_close;
 
                 if (btn_open) {
                     const attrs = that.editor.getAttributes("link");
@@ -779,18 +714,18 @@ export default Base.extend({
                         btn_open.setAttribute("href", attrs.href);
                     }
                     btn_open.addEventListener("click", () =>
-                        that.context_menu_close(this.name)
+                        context_menu_close(this.name)
                     );
                 }
 
                 btn_edit &&
                     btn_edit.addEventListener("click", () => {
-                        that.context_menu_close(this.name);
+                        context_menu_close(this.name);
                         that.toolbar.link.click();
                     });
                 btn_unlink &&
                     btn_unlink.addEventListener("click", () => {
-                        that.context_menu_close(this.name);
+                        context_menu_close(this.name);
                         that.editor.chain().focus().unsetLink().run();
                     });
             },
