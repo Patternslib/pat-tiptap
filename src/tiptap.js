@@ -525,7 +525,7 @@ export default Base.extend({
                 });
             });
 
-            this.editor.on("selectionUpdate", async (options) => {
+            this.editor.on("selectionUpdate", async () => {
                 this.editor.isActive("link")
                     ? tb.link.classList.add("active")
                     : tb.link.classList.remove("active");
@@ -536,7 +536,7 @@ export default Base.extend({
                 this.options.contextMenuLink &&
                     this.debounced_context_menu(
                         this.options.contextMenuLink,
-                        options,
+                        this.editor,
                         () => this.editor.isActive("link"),
                         this.pattern_link_context_menu(),
                         "link-panel"
@@ -693,14 +693,14 @@ export default Base.extend({
 
     async context_menu(
         url,
-        editor_context,
+        editor,
         should_show_cb,
         register_pattern,
         extra_class = null
     ) {
         const prev_node = this.prev_node;
-        const cur_node = (this.prev_node = this.editor.state.doc.nodeAt(
-            editor_context.editor.state.selection.from
+        const cur_node = (this.prev_node = editor.state.doc.nodeAt(
+            editor.state.selection.from
         ));
 
         if (cur_node !== prev_node) {
@@ -727,7 +727,7 @@ export default Base.extend({
             }
 
             // 2) Initialize the tooltip
-            const editor_element = editor_context.editor.options.element;
+            const editor_element = editor.options.element;
             this.tooltip = await new patTooltip(editor_element, {
                 "source": "ajax",
                 "url": url,
@@ -740,9 +740,9 @@ export default Base.extend({
         this.tooltip.tippy.setProps({
             getReferenceClientRect: () => {
                 return this.tiptap_posToDOMRect(
-                    editor_context.editor.view,
-                    editor_context.editor.state.selection.from,
-                    editor_context.editor.state.selection.to
+                    editor.view,
+                    editor.state.selection.from,
+                    editor.state.selection.to
                 );
             },
         });
