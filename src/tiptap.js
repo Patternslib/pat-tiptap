@@ -75,13 +75,15 @@ export default Base.extend({
         const placeholder = this.el.getAttribute("placeholder");
         if (placeholder) {
             extra_extensions.push(
-                (
-                    await import("./extensions/placeholder-top-bottom")
-                ).PlaceholderTopBottom.configure({
-                    placeholder_text: placeholder,
+                (await import("@tiptap/extension-placeholder")).Placeholder.configure({
+                    placeholder: placeholder,
                 })
             );
         }
+        // Gapcursor for images, tables etc to be able to add content below/above
+        extra_extensions.push(
+            (await import("@tiptap/extension-gapcursor")).Gapcursor.configure()
+        );
 
         this.toolbar_pre_init();
         this.editor = new TipTap({
