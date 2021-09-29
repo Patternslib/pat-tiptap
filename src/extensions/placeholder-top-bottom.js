@@ -38,14 +38,19 @@ export const PlaceholderTopBottom = Extension.create({
                             });
                             decorations.push(deco_top);
                         } else {
-                            const deco_top = Decoration.node(0, 2, {
-                                "class": this.options.placeholder_top_class,
-                                "data-placeholder": this.options.placeholder_top_text,
-                            });
+                            const deco_top = Decoration.node(
+                                0,
+                                doc.firstChild.nodeSize,
+                                {
+                                    "class": this.options.placeholder_top_class,
+                                    "data-placeholder":
+                                        this.options.placeholder_top_text,
+                                }
+                            );
                             decorations.push(deco_top);
 
                             const deco_bottom = Decoration.node(
-                                doc.content.size - 2,
+                                doc.content.size - doc.lastChild.nodeSize,
                                 doc.content.size,
                                 {
                                     "class": this.options.placeholder_bottom_class,
@@ -55,6 +60,12 @@ export const PlaceholderTopBottom = Extension.create({
                             );
                             decorations.push(deco_bottom);
                         }
+
+                        console.log(decorations);
+                        console.log(doc.nodeSize);
+                        console.log(doc.content.size);
+                        console.log(doc.firstChild.nodeSize);
+                        console.log(doc.lastChild.nodeSize);
 
                         return DecorationSet.create(doc, decorations);
                     },
