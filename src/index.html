@@ -28,23 +28,15 @@
         font-weight: bold;
       }
 
-      /* Placeholder (at the top) */
-      .ProseMirror p.is-editor-empty:first-child::before {
+      .ProseMirror p.placeholder::before,
+      .ProseMirror p.placeholder-top::before,
+      .ProseMirror p.placeholder-bottom::before {
         content: attr(data-placeholder);
         float: left;
         color: #ced4da;
         pointer-events: none;
         height: 0;
       }
-
-      /* Placeholder (on every new line) */
-      /*.ProseMirror p.is-empty::before {
-        content: attr(data-placeholder);
-        float: left;
-        color: #ced4da;
-        pointer-events: none;
-        height: 0;
-      }*/
 
     </style>
   </head>

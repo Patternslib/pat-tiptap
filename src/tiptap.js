@@ -75,8 +75,10 @@ export default Base.extend({
         const placeholder = this.el.getAttribute("placeholder");
         if (placeholder) {
             extra_extensions.push(
-                (await import("@tiptap/extension-placeholder")).Placeholder.configure({
-                    placeholder: placeholder,
+                (
+                    await import("./extensions/placeholder-top-bottom")
+                ).PlaceholderTopBottom.configure({
+                    placeholder_text: placeholder,
                 })
             );
         }
@@ -303,6 +305,10 @@ export default Base.extend({
                 if (active_name || check_disabled) {
                     this.editor.emit("selectionUpdate");
                 }
+                // Dispatch a custom event for further customization
+                this.editor.options.element.dispatchEvent(
+                    new Event(`pat-tiptap--${method}`)
+                );
             });
             if (active_name || check_disabled) {
                 this.editor.on("selectionUpdate", () => {
