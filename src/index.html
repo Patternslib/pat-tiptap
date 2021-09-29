@@ -129,7 +129,8 @@
             toolbar-external: #tiptap-external-toolbar;
             image-panel: #pat-modal .image-panel;
             link-panel: #pat-modal .link-panel;
-            source-panel: #pat-modal .source-panel"
+            source-panel: #pat-modal .source-panel;
+            context-menu-link: #context-menu-link"
           placeholder="Your poem goes here...">
       </textarea>
 
@@ -193,6 +194,25 @@
           </label>
           <button class="close-panel" type="button" name="tiptap-confirm">submit</button>
         </form>
+    </div>
+
+    <div id="context-menu-link" hidden>
+      <ul class="tiptap-link-context-menu">
+        <li>
+          <a
+            class="close-panel tiptap-open-new-link"
+            target="_blank"
+            href="">Visit linked web page</a>
+        </li>
+        <li>
+          <a
+            class="close-panel tiptap-edit-link">Edit link</a>
+        </li>
+        <li>
+          <a
+            class="close-panel tiptap-unlink">Unlink</a>
+        </li>
+      </ul>
     </div>
 
   </body>
