@@ -9,7 +9,7 @@ let PREV_NODE = null;
 export async function context_menu(
     url,
     editor,
-    should_show_cb,
+    should_show_cb = null,
     register_pattern = null,
     extra_class = null
 ) {
@@ -21,7 +21,7 @@ export async function context_menu(
         context_menu_close(register_pattern.name);
     }
 
-    if (!should_show_cb()) {
+    if (should_show_cb && !should_show_cb()) {
         // Context menu should not be opened at all.
         // If it should have been closed, it was done above.
         // If not (e.g. a different kind of context menu than this one) it stays opened.
