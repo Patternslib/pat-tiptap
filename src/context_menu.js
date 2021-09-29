@@ -48,7 +48,7 @@ export async function context_menu(
             "class": extra_class,
             "position-list": ["tm"],
         });
-        await utils.timeout(1);
+        await utils.timeout(50); // wait some time until tippy is here.
     }
     TOOLTIP.tippy.setProps({
         getReferenceClientRect: () => {
