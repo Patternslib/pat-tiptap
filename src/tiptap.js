@@ -18,6 +18,7 @@ parser.addArgument("link-panel", null);
 parser.addArgument("source-panel", null);
 
 parser.addArgument("context-menu-link", null);
+parser.addArgument("context-menu-mentions", null);
 
 export default Base.extend({
     name: "tiptap",
@@ -80,6 +81,14 @@ export default Base.extend({
         extra_extensions.push(
             (await import("@tiptap/extension-gapcursor")).Gapcursor.configure()
         );
+        // Mentions extension
+        if (this.options.context["menu-mentions"]) {
+            extra_extensions.push(
+                (await import("./extensions/mentions")).Mentions.configure({
+                    url: this.options.context["menu-mentions"],
+                })
+            );
+        }
 
         this.toolbar_pre_init();
         this.editor = new TipTap({
@@ -534,9 +543,9 @@ export default Base.extend({
                     ? tb.link.classList.remove("disabled")
                     : tb.link.classList.add("disabled");
 
-                this.options.contextMenuLink &&
+                this.options.context["menu-link"] &&
                     this.debounced_context_menu(
-                        this.options.contextMenuLink,
+                        this.options.context["menu-link"],
                         this.editor,
                         () => this.editor.isActive("link"),
                         this.pattern_link_context_menu(),
