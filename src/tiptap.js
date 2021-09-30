@@ -477,7 +477,7 @@ export default Base.extend({
                                 .mark([mark]);
 
                             // TODO: replaced text result does not always fit the intented replacement.
-                            tr.replaceSelectionWith(link_node, true);
+                            tr.replaceSelectionWith(link_node, false);
                             return true;
                         });
                         cmd.run();
