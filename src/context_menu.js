@@ -50,7 +50,7 @@ export async function context_menu(
         });
         await utils.timeout(50); // wait some time until tippy is here.
     }
-    TOOLTIP.tippy.setProps({
+    TOOLTIP.tippy?.setProps({
         getReferenceClientRect: () => {
             return posToDOMRect(
                 editor.view,
