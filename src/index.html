@@ -57,6 +57,10 @@
         height: 0;
       }*/
 
+      .tooltip-container a,
+      .tooltip-container a:visited {
+        color: white;
+      }
     </style>
   </head>
   <body>
@@ -148,7 +152,7 @@
     </section-->
 
     <div id="modal-link" hidden>
-        <h1>Add Link</h1>
+        <h1>Add / Edit Link</h1>
         <form class="link-panel">
           <label>
             Link URL:
@@ -187,7 +191,7 @@
     </div>
 
     <div id="modal-source" hidden>
-        <h1>Add Source</h1>
+        <h1>Edit Source</h1>
         <form class="source-panel">
           <label>
             Source:
@@ -206,12 +210,14 @@
             href="">Visit linked web page</a>
         </li>
         <li>
-          <a
-            class="close-panel tiptap-edit-link">Edit link</a>
+          <button
+            type="button"
+            class="close-panel tiptap-edit-link">Edit link</button>
         </li>
         <li>
-          <a
-            class="close-panel tiptap-unlink">Unlink</a>
+          <button
+            type="button"
+            class="close-panel tiptap-unlink">Unlink</button>
         </li>
       </ul>
     </div>
