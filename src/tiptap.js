@@ -443,7 +443,7 @@ export default Base.extend({
                         }
                         const link_text_value =
                             (link_text ? link_text.value : text_content) || "";
-                        cmd.command(({ tr }) => {
+                        cmd.command(async ({ tr }) => {
                             let mark;
                             if (is_link) {
                                 // update.
@@ -462,6 +462,16 @@ export default Base.extend({
                                             ? link_target?.value
                                             : null;
                                 }
+                                //const getMarkType = (await import("@tiptap/core"))
+                                //    .getMarkType;
+                                //const getMarkRange = (await import("@tiptap/core"))
+                                //    .getMarkRange;
+                                //const link_pos = getMarkRange(
+                                //    this.editor.state.selection.$from,
+                                //    getMarkType("link", this.editor.state.schema)
+                                //);
+                                //// TODO: somehow resolve this position.
+                                //tr.setSelection(new Selection(link_pos.from, link_pos.to));
                             } else {
                                 // create prosemirror tree mark and node
                                 mark = this.editor.state.schema.marks.link.create({
@@ -475,8 +485,6 @@ export default Base.extend({
                             const link_node = this.editor.state.schema
                                 .text(link_text_value)
                                 .mark([mark]);
-
-                            // TODO: replaced text result does not always fit the intented replacement.
                             tr.replaceSelectionWith(link_node, false);
                             return true;
                         });
