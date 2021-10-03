@@ -1,5 +1,4 @@
-import { Node, mergeAttributes } from "@tiptap/core";
-import { PluginKey } from "prosemirror-state";
+import { Mark, mergeAttributes } from "@tiptap/core";
 import { context_menu, context_menu_close } from "../context_menu";
 
 function pattern_mentions_context_menu(plugin_context) {
@@ -16,15 +15,13 @@ function pattern_mentions_context_menu(plugin_context) {
                 //    nor the Submit() event.
                 e.preventDefault();
                 context_menu_close(this.name);
-                plugin_context.editor.commands.setNode("mentions");
+                plugin_context.editor.commands.setMentions();
             });
         },
     };
 }
 
-export const MentionsPluginKey = new PluginKey("mentions");
-
-export const Mentions = Node.create({
+export const Mentions = Mark.create({
     name: "mentions",
 
     defaultOptions: {
@@ -33,39 +30,40 @@ export const Mentions = Node.create({
         url: null,
     },
 
-    group: "inline",
-    inline: true,
-    selectable: false,
-    atom: true,
+    //group: "inline",
+    //inline: true,
+    //selectable: false,
+    //atom: true,
 
-    addAttributes() {
-        return {
-            id: {
-                default: null,
-                parseHTML: (element) => element.getAttribute("data-id"),
-                renderHTML: (attributes) => {
-                    if (!attributes.id) {
-                        return {};
-                    }
-                    return {
-                        "data-id": attributes.id,
-                    };
-                },
-            },
-            label: {
-                default: null,
-                parseHTML: (element) => element.getAttribute("data-label"),
-                renderHTML: (attributes) => {
-                    if (!attributes.label) {
-                        return {};
-                    }
-                    return {
-                        "data-label": attributes.label,
-                    };
-                },
-            },
-        };
-    },
+    //addAttributes() {
+    //    return {
+    //        testing: "okay",
+    //        //id: {
+    //        //    default: null,
+    //        //    parseHTML: (element) => element.getAttribute("data-id"),
+    //        //    renderHTML: (attributes) => {
+    //        //        if (!attributes.id) {
+    //        //            return {};
+    //        //        }
+    //        //        return {
+    //        //            "data-id": attributes.id,
+    //        //        };
+    //        //    },
+    //        //},
+    //        //label: {
+    //        //    default: null,
+    //        //    parseHTML: (element) => element.getAttribute("data-label"),
+    //        //    renderHTML: (attributes) => {
+    //        //        if (!attributes.label) {
+    //        //            return {};
+    //        //        }
+    //        //        return {
+    //        //            "data-label": attributes.label,
+    //        //        };
+    //        //    },
+    //        //},
+    //    };
+    //},
 
     parseHTML() {
         return [
@@ -75,7 +73,7 @@ export const Mentions = Node.create({
         ];
     },
 
-    renderHTML({ node, HTMLAttributes }) {
+    renderHTML({ HTMLAttributes }) {
         return [
             "span",
             mergeAttributes(
@@ -83,16 +81,37 @@ export const Mentions = Node.create({
                 this.options.HTMLAttributes,
                 HTMLAttributes
             ),
-            `${this.options.char}${node.attrs.label ?? node.attrs.id}`,
+            `${this.options.char}hello`, //${node.attrs.label ?? node.attrs.id}`,
         ];
     },
 
-    renderText({ node }) {
-        return `${this.options.char}${node.attrs.label ?? node.attrs.id}`;
+    //renderText({ node }) {
+    //    return `${this.options.char}hello`; //${node.attrs.label ?? node.attrs.id}`;
+    //},
+
+    addCommands() {
+        return {
+            setMentions:
+                () =>
+                ({ commands }) => {
+                    return commands.setMark("mentions");
+                },
+            toggleMentions:
+                () =>
+                ({ commands }) => {
+                    return commands.toggleMark("mentions");
+                },
+            unsetMentions:
+                () =>
+                ({ commands }) => {
+                    return commands.unsetMark("mentions");
+                },
+        };
     },
 
     addKeyboardShortcuts() {
         return {
+            "Mod-y": () => this.editor.commands.toggleMentions(),
             "@": () => {
                 context_menu(
                     this.options.url,
