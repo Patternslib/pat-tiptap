@@ -60,6 +60,7 @@ export async function context_menu(
         },
     });
     TOOLTIP.show();
+    return TOOLTIP;
 }
 
 export function context_menu_close(unregister_pattern_name) {
