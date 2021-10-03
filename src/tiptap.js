@@ -38,6 +38,11 @@ export default Base.extend({
         const ExtDocument = (await import("@tiptap/extension-document")).default;
         const ExtParagraph = (await import("@tiptap/extension-paragraph")).default;
         const ExtText = (await import("@tiptap/extension-text")).default;
+        this.debounced_context_menu = utils.debounce(
+            (await import("./context_menu")).context_menu,
+            50
+        );
+
         this.options = parser.parse(this.el, this.options);
 
         // Hide element which will be replaced with tiptap instance
@@ -84,8 +89,32 @@ export default Base.extend({
         // Mentions extension
         if (this.options.context["menu-mentions"]) {
             extra_extensions.push(
-                (await import("./extensions/mentions")).Mentions.configure({
-                    url: this.options.context["menu-mentions"],
+                (await import("@tiptap/extension-mention")).Mention.configure({
+                    suggestion: {
+                        render: () => {
+                            let tooltip;
+
+                            return {
+                                onStart: (props) => {
+                                    tooltip = this.debounced_context_menu(
+                                        this.options.context["menu-mentions"],
+                                        this.editor,
+                                        undefined,
+                                        this.pattern_mentions_context_menu(props)
+                                    );
+                                },
+                                onKeyDown(props) {
+                                    if (props.event.key === "Escape") {
+                                        tooltip?.hide();
+                                        return true;
+                                    }
+                                },
+                                onExit() {
+                                    tooltip?.destroy();
+                                },
+                            };
+                        },
+                    },
                 })
             );
         }
@@ -107,11 +136,6 @@ export default Base.extend({
             autofocus: set_focus,
         });
         this.toolbar_post_init();
-
-        this.debounced_context_menu = utils.debounce(
-            (await import("./context_menu")).context_menu,
-            50
-        );
     },
 
     toolbar_pre_init() {
@@ -745,6 +769,35 @@ export default Base.extend({
                         context_menu_close(this.name);
                         that.editor.chain().focus().unsetLink().run();
                     });
+            },
+        };
+    },
+
+    pattern_mentions_context_menu(props) {
+        // Dynamic pattern for the mentions context menu
+        return {
+            name: "tiptap-mentions-context-menu",
+            trigger: ".tiptap-mentions-context-menu",
+            async init($el) {
+                const context_menu_close = (await import("./context_menu"))
+                    .context_menu_close;
+
+                $el.on("submit", (e) => {
+                    // We need jQuery here:
+                    // 1) pat-autosubmit submits via $(form).submit(); which cannot be catched by addEventListener
+                    // 2) Safari (and IE) do not support form.requestSubmit()
+                    //    (which would dispatch a "submit" - in contrast to form.submit())
+                    //    nor the Submit() event.
+                    e.preventDefault();
+                    context_menu_close(this.name);
+                    const form_data = new FormData(e.target);
+                    const mention = form_data.get("mention");
+                    if (!mention) {
+                        log.warn("No mention selected.");
+                        return;
+                    }
+                    props.command({ id: mention });
+                });
             },
         };
     },
