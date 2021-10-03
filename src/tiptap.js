@@ -18,7 +18,9 @@ parser.addArgument("link-panel", null);
 parser.addArgument("source-panel", null);
 
 parser.addArgument("context-menu-link", null);
+
 parser.addArgument("context-menu-mentions", null);
+parser.addArgument("url-scheme-mentions", null);
 
 export default Base.extend({
     name: "tiptap",
@@ -89,7 +91,8 @@ export default Base.extend({
         // Mentions extension
         if (this.options.context["menu-mentions"]) {
             extra_extensions.push(
-                (await import("@tiptap/extension-mention")).Mention.configure({
+                (await import("./extensions/mention")).Mention.configure({
+                    url_scheme: this.options.urlSchemeMentions,
                     suggestion: {
                         render: () => {
                             let tooltip;
