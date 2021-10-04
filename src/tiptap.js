@@ -22,6 +22,9 @@ parser.addArgument("context-menu-link", null);
 parser.addArgument("context-menu-mentions", null);
 parser.addArgument("url-scheme-mentions", null);
 
+parser.addArgument("context-menu-tags", null);
+parser.addArgument("url-scheme-tags", null);
+
 export default Base.extend({
     name: "tiptap",
     trigger: ".pat-tiptap",
@@ -88,11 +91,12 @@ export default Base.extend({
         extra_extensions.push(
             (await import("@tiptap/extension-gapcursor")).Gapcursor.configure()
         );
+
         // Mentions extension
         if (this.options.context["menu-mentions"]) {
             extra_extensions.push(
                 (await import("./extensions/mention")).Mention.configure({
-                    url_scheme: this.options.urlSchemeMentions,
+                    url_scheme: this.options.url["scheme-mentions"],
                     suggestion: {
                         render: () => {
                             let tooltip;
@@ -104,6 +108,40 @@ export default Base.extend({
                                         this.editor,
                                         undefined,
                                         this.pattern_mentions_context_menu(props)
+                                    );
+                                },
+                                onKeyDown(props) {
+                                    if (props.event.key === "Escape") {
+                                        tooltip?.hide();
+                                        return true;
+                                    }
+                                },
+                                onExit() {
+                                    tooltip?.destroy();
+                                },
+                            };
+                        },
+                    },
+                })
+            );
+        }
+
+        // Tags extension
+        if (this.options.context["menu-tags"]) {
+            extra_extensions.push(
+                (await import("./extensions/tag")).Tag.configure({
+                    url_scheme: this.options.url["scheme-tags"],
+                    suggestion: {
+                        render: () => {
+                            let tooltip;
+
+                            return {
+                                onStart: (props) => {
+                                    tooltip = this.debounced_context_menu(
+                                        this.options.context["menu-tags"],
+                                        this.editor,
+                                        undefined,
+                                        this.pattern_tags_context_menu(props)
                                     );
                                 },
                                 onKeyDown(props) {
@@ -800,6 +838,35 @@ export default Base.extend({
                         return;
                     }
                     props.command({ id: mention });
+                });
+            },
+        };
+    },
+
+    pattern_tags_context_menu(props) {
+        // Dynamic pattern for the tags context menu
+        return {
+            name: "tiptap-tags-context-menu",
+            trigger: ".tiptap-tags-context-menu",
+            async init($el) {
+                const context_menu_close = (await import("./context_menu"))
+                    .context_menu_close;
+
+                $el.on("submit", (e) => {
+                    // We need jQuery here:
+                    // 1) pat-autosubmit submits via $(form).submit(); which cannot be catched by addEventListener
+                    // 2) Safari (and IE) do not support form.requestSubmit()
+                    //    (which would dispatch a "submit" - in contrast to form.submit())
+                    //    nor the Submit() event.
+                    e.preventDefault();
+                    context_menu_close(this.name);
+                    const form_data = new FormData(e.target);
+                    const tag = form_data.get("tag");
+                    if (!tag) {
+                        log.warn("No tag selected.");
+                        return;
+                    }
+                    props.command({ id: tag });
                 });
             },
         };

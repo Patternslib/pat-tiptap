@@ -136,7 +136,9 @@
             source-panel: #pat-modal .source-panel;
             context-menu-link: #context-menu-link;
             context-menu-mentions: #context-menu-mentions;
-            url-scheme-mentions: https://quaive.cornelis.amsterdam/users/{USER}"
+            url-scheme-mentions: https://quaive.cornelis.amsterdam/users/{USER};
+            context-menu-tags: #context-menu-tags;
+            url-scheme-tags: https://quaive.cornelis.amsterdam/tags/{TAG}"
           placeholder="Your poem goes here...">
       </textarea>
 
@@ -239,6 +241,21 @@
       </form>
     </div>
 
+    <div id="context-menu-tags" hidden>
+      <form class="pat-checklist pat-autosubmit tiptap-tags-context-menu">
+        <ul>
+          <li>
+            <label><input name="tag" type="checkbox" value="I ♥ UTF-8" />I ♥ UTF-8</label>
+          </li>
+          <li>
+            <label><input name="tag" type="checkbox" value="music" />music</label>
+          </li>
+          <li>
+            <label><input name="tag" type="checkbox" value="books" />books</label>
+          </li>
+        </ul>
+      </form>
+    </div>
 
   </body>
 </html>
