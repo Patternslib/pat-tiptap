@@ -38,6 +38,8 @@ export default Base.extend({
     observer_image_panel: null,
     observer_source_panel: null,
 
+    dont_open_context_menu: false,
+
     async init() {
         const TipTap = (await import("@tiptap/core")).Editor;
         const ExtDocument = (await import("@tiptap/extension-document")).default;
@@ -477,6 +479,15 @@ export default Base.extend({
                     const attrs = this.editor.getAttributes("link");
                     const is_link = attrs.href !== undefined;
 
+                    if (is_link) {
+                        // Extend the selection to whole link.
+                        // Necessary for link updates below in the update_callback
+                        // to get the selection right which is replaced.
+                        this.dont_open_context_menu = true; // setting a selection on a link would open the context menu.
+                        this.editor.commands.extendMarkRange("link");
+                        this.dont_open_context_menu = false;
+                    }
+
                     // FORM INITIALIZATION
                     if (attrs?.href) {
                         link_href.value = attrs.href;
@@ -509,44 +520,15 @@ export default Base.extend({
                         const link_text_value =
                             (link_text ? link_text.value : text_content) || "";
                         cmd.command(async ({ tr }) => {
-                            let mark;
-                            if (is_link) {
-                                // update.
-                                const mark = node.marks.find(
-                                    (it) => it.type.name === "link"
-                                );
-                                if (!mark) {
-                                    log.warn("Could not update the link.");
-                                    return;
-                                }
-
-                                mark.attrs.href = link_href.value;
-                                if (link_target) {
-                                    mark.attrs.target =
-                                        link_target && link_target.checked
-                                            ? link_target?.value
-                                            : null;
-                                }
-                                //const getMarkType = (await import("@tiptap/core"))
-                                //    .getMarkType;
-                                //const getMarkRange = (await import("@tiptap/core"))
-                                //    .getMarkRange;
-                                //const link_pos = getMarkRange(
-                                //    this.editor.state.selection.$from,
-                                //    getMarkType("link", this.editor.state.schema)
-                                //);
-                                //// TODO: somehow resolve this position.
-                                //tr.setSelection(new Selection(link_pos.from, link_pos.to));
-                            } else {
-                                // create prosemirror tree mark and node
-                                mark = this.editor.state.schema.marks.link.create({
-                                    href: link_href.value,
-                                    target:
-                                        link_target && link_target.checked
-                                            ? link_target?.value
-                                            : null,
-                                });
-                            }
+                            // create = update
+                            // create prosemirror tree mark and node
+                            const mark = this.editor.state.schema.marks.link.create({
+                                href: link_href.value,
+                                target:
+                                    link_target && link_target.checked
+                                        ? link_target?.value
+                                        : null,
+                            });
                             const link_node = this.editor.state.schema
                                 .text(link_text_value)
                                 .mark([mark]);
@@ -616,7 +598,8 @@ export default Base.extend({
                     ? tb.link.classList.remove("disabled")
                     : tb.link.classList.add("disabled");
 
-                this.options.context["menu-link"] &&
+                !this.dont_open_context_menu &&
+                    this.options.context["menu-link"] &&
                     this.debounced_context_menu(
                         this.options.context["menu-link"],
                         this.editor,
