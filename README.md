@@ -404,6 +404,43 @@ Option 2: Add the ``autofocus`` attribute:
     </textarea>
 
 
+#### Placeholder support
+
+To show a placeholder in the document add a placeholder attribute with the placeholder text to the pat-tiptap element:
+
+    <textarea
+        name="text"
+        class="pat-tiptap"
+        placeholder="Your poem goes here...">
+    </textarea>
+
+Then on empty paragraphs are annotated with some placeholder data like: ``<p data-placeholder="Your poem goes here..." class="is-empty is-editor-empty"><br></p>``.
+
+To display the placeholder you need to add some CSS.
+
+This is an CSS example to show the placeholder on top of page, if it is empty:
+
+    /* Placeholder (at the top) */
+    .ProseMirror p.is-editor-empty:first-child::before {
+      content: attr(data-placeholder);
+      float: left;
+      color: #ced4da;
+      pointer-events: none;
+      height: 0;
+    }
+
+This is an CSS example to show the placeholder on any empty paragraph:
+
+    /* Placeholder (on every new line) */
+    .ProseMirror p.is-empty::before {
+      content: attr(data-placeholder);
+      float: left;
+      color: #ced4da;
+      pointer-events: none;
+      height: 0;
+    }
+
+
 ### Options reference
 
 | Property               | Type   | Description                                                          |
