@@ -54,7 +54,7 @@ Configure the options ``toolbar-external`` with a CSS selector pointing to the t
     <textarea
         name="text"
         class="pat-tiptap"
-        data-pat-toolbar="
+        data-pat-tiptap="
             toolbar-external: #tiptap-external-toolbar
         ">
     </textarea>
@@ -152,7 +152,7 @@ This way, you can use ``pat-inject``, ``pat-tabs``, ``pat-stacks`` or the like w
 
 This is the related ``pat-tiptap`` config:
 
-    data-pat-toolbar="
+    data-pat-tiptap="
         link-panel: #pat-modal .link-panel;
     "
 
@@ -194,7 +194,7 @@ None of these elements are mandatory but if you want to provide the associated f
 
 This is the pattern configuration:
 
-    data-pat-toolbar="
+    data-pat-tiptap="
         context-menu-link: #context-menu-link;
     "
 
@@ -246,7 +246,7 @@ For an upload widget you can use a combination of ``pat-upload`` and ``pat-injec
 
 This is the related ``pat-tiptap`` config:
 
-    data-pat-toolbar="
+    data-pat-tiptap="
         image-panel: #pat-modal .image-panel;
     "
 
@@ -286,7 +286,7 @@ This way, you can use ``pat-inject``, ``pat-tabs``, ``pat-stacks`` or the like w
 
 This is the related ``pat-tiptap`` config:
 
-    data-pat-toolbar="
+    data-pat-tiptap="
         source-panel: #pat-modal .source-panel;
     "
 
@@ -334,7 +334,7 @@ The individual input elements which indicate a user need to have the name ``ment
 
 This is the pattern configuration:
 
-    data-pat-toolbar="
+    data-pat-tiptap="
         context-menu-mentions: #context-menu-mentions;
         url-scheme-mentions: https://quaive.cornelis.amsterdam/users/{USER};
     "
@@ -375,7 +375,7 @@ The individual input elements which indicate a tag need to have the name ``tag``
 
 This is the pattern configuration:
 
-    data-pat-toolbar="
+    data-pat-tiptap="
         context-menu-tags: #context-menu-tags;
         url-scheme-tags: https://quaive.cornelis.amsterdam/tags/{TAG}";
     "
