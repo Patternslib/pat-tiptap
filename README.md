@@ -278,7 +278,7 @@ The ``input[name=tiptap-source]`` is the only input element necessary.
 You can use these elements with these names:
 
 - ``tiptap-source``: Textarea for the HTML source code.
--- ``tiptap-confirm``: To save the changes back to the editor.
+- ``tiptap-confirm``: To save the changes back to the editor.
 
 You also need to configure ``pat-tiptap`` with the ``source-panel`` option which points to the form element in the overlay.
 pat-tiptap uses a ``MutationObserver`` to check for changes in the overlay's dom structure and re-initializes the functionality once the DOM structure changes.
@@ -382,6 +382,26 @@ This is the pattern configuration:
 
 ``context-menu-tags``: CSS selector which points to a element in the current document or a URL from which the popup contents are loaded.
 ``url-scheme-tags``: The base url for the tagging search page which is opened when clicking the tagged item. ``{TAG}`` is replaced by the selected value.
+
+
+#### Autofocus support
+
+If you want the text editor to automatically get the focus after loading you can either add the ``pat-autofocus`` class to pat-tiptap element or add the ``autofocus`` attribute.
+
+Option 1: Add the ``pat-autofocus`` class:
+
+    <textarea
+        name="text"
+        class="pat-tiptap pat-autofocus">
+    </textarea>
+
+Option 2: Add the ``autofocus`` attribute:
+
+    <textarea
+        name="text"
+        class="pat-tiptap"
+        autofocus>
+    </textarea>
 
 
 ### Options reference
