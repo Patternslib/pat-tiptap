@@ -12,5 +12,11 @@ module.exports = async (env, argv) => {
 
     config.output.path = path.resolve(__dirname, "dist/");
 
+    if (process.env.NODE_ENV === "development") {
+        config.devServer.static = {
+            directory: __dirname,
+        };
+    }
+
     return config;
 };
