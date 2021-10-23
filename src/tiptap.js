@@ -614,6 +614,8 @@ export default Base.extend({
             tb.image.addEventListener("click", async () => {
                 await utils.timeout(200); // wait for modal to be shown
 
+                // TODO: wait longer ^^, remove check below (e.g. first page on modal could be something else but a image panel), await, ...
+
                 const image_panel = document.querySelector(this.options.imagePanel);
                 if (!image_panel) {
                     log.warn("No image panel found.");
