@@ -1,7 +1,6 @@
 process.traceDeprecation = true;
 const path = require("path");
 const patternslib_config = require("@patternslib/patternslib/webpack/webpack.config.js");
-const { ModuleFederationPlugin } = require("webpack").container;
 
 module.exports = async (env, argv) => {
     let config = {
@@ -18,16 +17,6 @@ module.exports = async (env, argv) => {
             directory: __dirname,
         };
     }
-
-    config.plugins.push(
-        new ModuleFederationPlugin({
-            shared: {
-                "@patternslib/patternslib": {
-                    singleton: true,
-                },
-            },
-        })
-    );
 
     return config;
 };
