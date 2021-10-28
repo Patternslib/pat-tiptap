@@ -451,144 +451,11 @@ export default Base.extend({
 
         // non-standard functionality
         if (tb.link && this.options.linkPanel) {
-            tb.link.addEventListener("click", async () => {
-                // Close eventual opened link context menus.
-                (await import("./context_menu")).context_menu_close(
-                    "tiptap-link-context-menu"
-                );
-
-                await utils.timeout(200); // wait for modal to be shown
-
-                const link_panel = document.querySelector(this.options.linkPanel);
-                if (!link_panel) {
-                    log.warn("No link panel found.");
-                    return;
-                }
-
-                const reinit = () => {
-                    const link_href = link_panel.querySelector("[name=tiptap-href]");
-                    const link_text = link_panel.querySelector("[name=tiptap-text]");
-                    const link_target = link_panel.querySelector("[name=tiptap-target]");
-                    const link_confirm = link_panel.querySelector(".tiptap-confirm, [name=tiptap-confirm]"); // prettier-ignore
-                    const link_remove = link_panel.querySelector("[name=tiptap-remove]");
-
-                    const selection_from = this.editor.state.selection.from;
-                    const selection_to = this.editor.state.selection.to;
-
-                    const node = this.editor.state.doc.nodeAt(selection_from);
-                    const attrs = this.editor.getAttributes("link");
-                    const is_link = attrs.href !== undefined;
-
-                    if (is_link) {
-                        // Extend the selection to whole link.
-                        // Necessary for link updates below in the update_callback
-                        // to get the selection right which is replaced.
-                        this.dont_open_context_menu = true; // setting a selection on a link would open the context menu.
-                        this.editor.commands.extendMarkRange("link");
-                        this.dont_open_context_menu = false;
-                    }
-
-                    // FORM INITIALIZATION
-                    if (attrs?.href) {
-                        link_href.value = attrs.href;
-                        link_href.dispatchEvent(new Event("input"));
-                    }
-                    if (attrs?.target && link_target) {
-                        link_target.checked = true;
-                        link_target.dispatchEvent(new Event("input"));
-                    }
-
-                    let text_content = null;
-                    if (selection_from !== selection_to) {
-                        text_content = this.editor.state.doc.textBetween(
-                            selection_from,
-                            selection_to
-                        );
-                    } else if (is_link) {
-                        text_content = node.text;
-                    }
-                    if (link_text && text_content) {
-                        link_text.value = text_content;
-                        link_text.dispatchEvent(new Event("input"));
-                    }
-
-                    const update_callback = (set_focus) => {
-                        const cmd = this.editor.chain();
-                        if (set_focus === true) {
-                            cmd.focus();
-                        }
-                        const link_text_value =
-                            (link_text ? link_text.value : text_content) || "";
-                        cmd.command(async ({ tr }) => {
-                            // create = update
-                            // create prosemirror tree mark and node
-                            const mark = this.editor.state.schema.marks.link.create({
-                                href: link_href.value,
-                                target:
-                                    link_target && link_target.checked
-                                        ? link_target?.value
-                                        : null,
-                            });
-                            const link_node = this.editor.state.schema
-                                .text(link_text_value)
-                                .mark([mark]);
-                            tr.replaceSelectionWith(link_node, false);
-                            return true;
-                        });
-                        cmd.run();
-                    };
-
-                    // FORM UPDATE
-                    if (link_confirm) {
-                        // update on click on confirm
-                        dom.add_event_listener(
-                            link_confirm,
-                            "click",
-                            "tiptap_link_confirm",
-                            () => update_callback.bind(this)(true)
-                        );
-                    } else {
-                        // update on input/change
-                        dom.add_event_listener(
-                            link_href,
-                            "input",
-                            "tiptap_link_href",
-                            update_callback.bind(this)
-                        );
-                        dom.add_event_listener(
-                            link_text,
-                            "input",
-                            "tiptap_link_text",
-                            update_callback.bind(this)
-                        );
-                        dom.add_event_listener(
-                            link_target,
-                            "change",
-                            "tiptap_link_target",
-                            update_callback.bind(this)
-                        );
-                    }
-
-                    dom.add_event_listener(
-                        link_remove,
-                        "click",
-                        "tiptap_link_remove",
-                        () => this.editor.chain().focus().unsetLink().run()
-                    );
-                };
-
-                reinit();
-                if (this.observer_link_panel) {
-                    this.observer_link_panel.disconnect();
-                }
-                this.observer_link_panel = new MutationObserver(reinit.bind(this));
-                this.observer_link_panel.observe(link_panel, {
-                    childList: true,
-                    subtree: true,
-                    attributes: false,
-                    characterData: false,
-                });
-            });
+            // Initialize modal after it has injected.
+            tb.link.addEventListener(
+                "pat-inject-success",
+                this.initialize_link_panel.bind(this)
+            );
 
             this.editor.on("selectionUpdate", async () => {
                 this.editor.isActive("link")
@@ -611,152 +478,290 @@ export default Base.extend({
         }
 
         if (tb.image && this.options.imagePanel) {
-            tb.image.addEventListener("click", async () => {
-                await utils.timeout(200); // wait for modal to be shown
-
-                // TODO: wait longer ^^, remove check below (e.g. first page on modal could be something else but a image panel), await, ...
-
-                const image_panel = document.querySelector(this.options.imagePanel);
-                if (!image_panel) {
-                    log.warn("No image panel found.");
-                    return;
-                }
-
-                const reinit = () => {
-                    const image_src = image_panel.querySelector("[name=tiptap-src]");
-                    const image_alt = image_panel.querySelector("[name=tiptap-alt]");
-                    const image_title = image_panel.querySelector("[name=tiptap-title]");
-                    const image_confirm = image_panel.querySelector(".tiptap-confirm, [name=tiptap-confirm]"); // prettier-ignore
-
-                    const update_callback = (set_focus) => {
-                        // Get the selected image on time of submitting
-                        const selected_image_src = image_panel.querySelector(
-                            `[name=tiptap-src][type=radio]:checked,
-                                 [name=tiptap-src][type=checkbox]:checked,
-                                 [name=tiptap-src][type=option]:checked,
-                                 [name=tiptap-src][type=hidden],
-                                 [name=tiptap-src][type=text]`
-                        );
-
-                        const cmd = this.editor.chain();
-                        cmd.setImage({
-                            src: selected_image_src.value,
-                            alt: image_alt?.value || null,
-                            title: image_title?.value || null,
-                        });
-                        if (set_focus === true) {
-                            // set focus after setting image, otherwise image is
-                            // selected and right away deleted when starting typing.
-                            cmd.focus();
-                        }
-                        cmd.run();
-                    };
-
-                    // FORM UPDATE
-                    if (image_confirm) {
-                        // update on click on confirm
-                        dom.add_event_listener(
-                            image_confirm,
-                            "click",
-                            "tiptap_image_confirm",
-                            () => update_callback.bind(this)(true)
-                        );
-                    } else {
-                        // update on input/change
-                        dom.add_event_listener(
-                            image_src,
-                            "change",
-                            "tiptap_image_src",
-                            update_callback.bind(this)
-                        );
-                        dom.add_event_listener(
-                            image_alt,
-                            "change",
-                            "tiptap_image_alt",
-                            update_callback.bind(this)
-                        );
-                        dom.add_event_listener(
-                            image_title,
-                            "change",
-                            "tiptap_image_title",
-                            update_callback.bind(this)
-                        );
-                    }
-                };
-
-                reinit();
-                if (this.observer_image_panel) {
-                    this.observer_image_panel.disconnect();
-                }
-                this.observer_image_panel = new MutationObserver(reinit.bind(this));
-                this.observer_image_panel.observe(image_panel, {
-                    childList: true,
-                    subtree: true,
-                    attributes: false,
-                    characterData: false,
-                });
-            });
+            // Initialize modal after it has injected.
+            tb.image.addEventListener(
+                "pat-inject-success",
+                this.initialize_image_panel.bind(this)
+            );
         }
 
         if (tb.source && this.options.sourcePanel) {
-            tb.source.addEventListener("click", async () => {
-                await utils.timeout(200); // wait for modal to be shown
-
-                const source_panel = document.querySelector(this.options.sourcePanel);
-                if (!source_panel) {
-                    log.warn("No source panel found.");
-                    return;
-                }
-
-                const reinit = () => {
-                    const source_text = source_panel.querySelector("[name=tiptap-source]"); // prettier-ignore
-                    const source_confirm = source_panel.querySelector(".tiptap-confirm, [name=tiptap-confirm]"); // prettier-ignore
-
-                    // set form to initial values
-                    source_text.value = this.editor.getHTML();
-                    source_text.dispatchEvent(new Event("input"));
-
-                    const update_callback = (set_focus) => {
-                        const cmd = this.editor.chain();
-                        if (set_focus === true) {
-                            cmd.focus();
-                        }
-                        cmd.setContent(source_text.value);
-                        cmd.run();
-                    };
-
-                    if (source_confirm) {
-                        // update on click on confirm
-                        dom.add_event_listener(
-                            source_confirm,
-                            "click",
-                            "tiptap_source_confirm",
-                            () => update_callback.bind(this)(true)
-                        );
-                    } else {
-                        // update on input/change
-                        dom.add_event_listener(
-                            source_text,
-                            "input",
-                            "tiptap_source_text",
-                            update_callback.bind(this)
-                        );
-                    }
-                };
-
-                reinit();
-                if (this.observer_source_panel) {
-                    this.observer_source_panel.disconnect();
-                }
-                this.observer_source_panel = new MutationObserver(reinit.bind(this));
-                this.observer_source_panel.observe(source_panel, {
-                    childList: true,
-                    subtree: true,
-                    attributes: false,
-                    characterData: false,
-                });
-            });
+            // Initialize modal after it has injected.
+            tb.source.addEventListener(
+                "pat-inject-success",
+                this.initialize_source_panel.bind(this)
+            );
         }
+    },
+
+    async initialize_link_panel() {
+        // Close eventual opened link context menus.
+        (await import("./context_menu")).context_menu_close("tiptap-link-context-menu");
+
+        const link_panel = document.querySelector(this.options.linkPanel);
+        if (!link_panel) {
+            log.warn("No link panel found.");
+            return;
+        }
+
+        const reinit = () => {
+            const link_href = link_panel.querySelector("[name=tiptap-href]");
+            const link_text = link_panel.querySelector("[name=tiptap-text]");
+            const link_target = link_panel.querySelector("[name=tiptap-target]");
+            const link_confirm = link_panel.querySelector(".tiptap-confirm, [name=tiptap-confirm]"); // prettier-ignore
+            const link_remove = link_panel.querySelector("[name=tiptap-remove]");
+
+            const selection_from = this.editor.state.selection.from;
+            const selection_to = this.editor.state.selection.to;
+
+            const node = this.editor.state.doc.nodeAt(selection_from);
+            const attrs = this.editor.getAttributes("link");
+            const is_link = attrs.href !== undefined;
+
+            if (is_link) {
+                // Extend the selection to whole link.
+                // Necessary for link updates below in the update_callback
+                // to get the selection right which is replaced.
+                this.dont_open_context_menu = true; // setting a selection on a link would open the context menu.
+                this.editor.commands.extendMarkRange("link");
+                this.dont_open_context_menu = false;
+            }
+
+            // FORM INITIALIZATION
+            if (attrs?.href) {
+                link_href.value = attrs.href;
+                link_href.dispatchEvent(new Event("input"));
+            }
+            if (attrs?.target && link_target) {
+                link_target.checked = true;
+                link_target.dispatchEvent(new Event("input"));
+            }
+
+            let text_content = null;
+            if (selection_from !== selection_to) {
+                text_content = this.editor.state.doc.textBetween(
+                    selection_from,
+                    selection_to
+                );
+            } else if (is_link) {
+                text_content = node.text;
+            }
+            if (link_text && text_content) {
+                link_text.value = text_content;
+                link_text.dispatchEvent(new Event("input"));
+            }
+
+            const update_callback = (set_focus) => {
+                const cmd = this.editor.chain();
+                if (set_focus === true) {
+                    cmd.focus();
+                }
+                const link_text_value =
+                    (link_text ? link_text.value : text_content) || "";
+                cmd.command(async ({ tr }) => {
+                    // create = update
+                    // create prosemirror tree mark and node
+                    const mark = this.editor.state.schema.marks.link.create({
+                        href: link_href.value,
+                        target:
+                            link_target && link_target.checked
+                                ? link_target?.value
+                                : null,
+                    });
+                    const link_node = this.editor.state.schema
+                        .text(link_text_value)
+                        .mark([mark]);
+                    tr.replaceSelectionWith(link_node, false);
+                    return true;
+                });
+                cmd.run();
+            };
+
+            // FORM UPDATE
+            if (link_confirm) {
+                // update on click on confirm
+                dom.add_event_listener(
+                    link_confirm,
+                    "click",
+                    "tiptap_link_confirm",
+                    () => update_callback.bind(this)(true)
+                );
+            } else {
+                // update on input/change
+                dom.add_event_listener(
+                    link_href,
+                    "input",
+                    "tiptap_link_href",
+                    update_callback.bind(this)
+                );
+                dom.add_event_listener(
+                    link_text,
+                    "input",
+                    "tiptap_link_text",
+                    update_callback.bind(this)
+                );
+                dom.add_event_listener(
+                    link_target,
+                    "change",
+                    "tiptap_link_target",
+                    update_callback.bind(this)
+                );
+            }
+
+            dom.add_event_listener(link_remove, "click", "tiptap_link_remove", () =>
+                this.editor.chain().focus().unsetLink().run()
+            );
+        };
+
+        reinit();
+        if (this.observer_link_panel) {
+            this.observer_link_panel.disconnect();
+        }
+        this.observer_link_panel = new MutationObserver(reinit.bind(this));
+        this.observer_link_panel.observe(link_panel, {
+            childList: true,
+            subtree: true,
+            attributes: false,
+            characterData: false,
+        });
+    },
+
+    initialize_image_panel() {
+        const image_panel = document.querySelector(this.options.imagePanel);
+        if (!image_panel) {
+            log.warn("No image panel found.");
+            return;
+        }
+
+        const reinit = () => {
+            const image_src = image_panel.querySelector("[name=tiptap-src]");
+            const image_alt = image_panel.querySelector("[name=tiptap-alt]");
+            const image_title = image_panel.querySelector("[name=tiptap-title]");
+            const image_confirm = image_panel.querySelector(".tiptap-confirm, [name=tiptap-confirm]"); // prettier-ignore
+
+            const update_callback = (set_focus) => {
+                // Get the selected image on time of submitting
+                const selected_image_src = image_panel.querySelector(
+                    `[name=tiptap-src][type=radio]:checked,
+                         [name=tiptap-src][type=checkbox]:checked,
+                         [name=tiptap-src][type=option]:checked,
+                         [name=tiptap-src][type=hidden],
+                         [name=tiptap-src][type=text]`
+                );
+
+                const cmd = this.editor.chain();
+                cmd.setImage({
+                    src: selected_image_src.value,
+                    alt: image_alt?.value || null,
+                    title: image_title?.value || null,
+                });
+                if (set_focus === true) {
+                    // set focus after setting image, otherwise image is
+                    // selected and right away deleted when starting typing.
+                    cmd.focus();
+                }
+                cmd.run();
+            };
+
+            // FORM UPDATE
+            if (image_confirm) {
+                // update on click on confirm
+                dom.add_event_listener(
+                    image_confirm,
+                    "click",
+                    "tiptap_image_confirm",
+                    () => update_callback.bind(this)(true)
+                );
+            } else {
+                // update on input/change
+                dom.add_event_listener(
+                    image_src,
+                    "change",
+                    "tiptap_image_src",
+                    update_callback.bind(this)
+                );
+                dom.add_event_listener(
+                    image_alt,
+                    "change",
+                    "tiptap_image_alt",
+                    update_callback.bind(this)
+                );
+                dom.add_event_listener(
+                    image_title,
+                    "change",
+                    "tiptap_image_title",
+                    update_callback.bind(this)
+                );
+            }
+        };
+
+        reinit();
+        if (this.observer_image_panel) {
+            this.observer_image_panel.disconnect();
+        }
+        this.observer_image_panel = new MutationObserver(reinit.bind(this));
+        this.observer_image_panel.observe(image_panel, {
+            childList: true,
+            subtree: true,
+            attributes: false,
+            characterData: false,
+        });
+    },
+
+    initialize_source_panel() {
+        const source_panel = document.querySelector(this.options.sourcePanel);
+        if (!source_panel) {
+            log.warn("No source panel found.");
+            return;
+        }
+
+        const reinit = () => {
+            const source_text = source_panel.querySelector("[name=tiptap-source]"); // prettier-ignore
+            const source_confirm = source_panel.querySelector(".tiptap-confirm, [name=tiptap-confirm]"); // prettier-ignore
+
+            // set form to initial values
+            source_text.value = this.editor.getHTML();
+            source_text.dispatchEvent(new Event("input"));
+
+            const update_callback = (set_focus) => {
+                const cmd = this.editor.chain();
+                if (set_focus === true) {
+                    cmd.focus();
+                }
+                cmd.setContent(source_text.value);
+                cmd.run();
+            };
+
+            if (source_confirm) {
+                // update on click on confirm
+                dom.add_event_listener(
+                    source_confirm,
+                    "click",
+                    "tiptap_source_confirm",
+                    () => update_callback.bind(this)(true)
+                );
+            } else {
+                // update on input/change
+                dom.add_event_listener(
+                    source_text,
+                    "input",
+                    "tiptap_source_text",
+                    update_callback.bind(this)
+                );
+            }
+        };
+
+        reinit();
+        if (this.observer_source_panel) {
+            this.observer_source_panel.disconnect();
+        }
+        this.observer_source_panel = new MutationObserver(reinit.bind(this));
+        this.observer_source_panel.observe(source_panel, {
+            childList: true,
+            subtree: true,
+            attributes: false,
+            characterData: false,
+        });
     },
 
     pattern_link_context_menu() {
