@@ -453,7 +453,7 @@ export default Base.extend({
         if (tb.link && this.options.linkPanel) {
             // Initialize modal after it has injected.
             tb.link.addEventListener(
-                "pat-inject-success",
+                "pat-modal-ready",
                 this.initialize_link_panel.bind(this)
             );
 
@@ -480,7 +480,7 @@ export default Base.extend({
         if (tb.image && this.options.imagePanel) {
             // Initialize modal after it has injected.
             tb.image.addEventListener(
-                "pat-inject-success",
+                "pat-modal-ready",
                 this.initialize_image_panel.bind(this)
             );
         }
@@ -488,7 +488,7 @@ export default Base.extend({
         if (tb.source && this.options.sourcePanel) {
             // Initialize modal after it has injected.
             tb.source.addEventListener(
-                "pat-inject-success",
+                "pat-modal-ready",
                 this.initialize_source_panel.bind(this)
             );
         }
