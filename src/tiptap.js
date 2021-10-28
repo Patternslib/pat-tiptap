@@ -728,7 +728,7 @@ export default Base.extend({
                 if (set_focus === true) {
                     cmd.focus();
                 }
-                cmd.setContent(source_text.value);
+                cmd.setContent(source_text.value, true);
                 cmd.run();
             };
 
