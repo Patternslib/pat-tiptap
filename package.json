@@ -5,7 +5,7 @@
     "license": "MIT",
     "main": "./src/tiptap.js",
     "dependencies": {
-        "@patternslib/patternslib": "^5.1.2",
+        "@patternslib/patternslib": "^5.3.0",
         "@tiptap/core": "^2.0.0-beta.127",
         "@tiptap/extension-image": "^2.0.0-beta.19",
         "@tiptap/extension-link": "^2.0.0-beta.23",
