@@ -8,8 +8,8 @@ module.exports = async (env, argv) => {
             bundle: path.resolve(__dirname, "bundle-config.js"),
         },
     };
-    config = patternslib_config(env, argv, config);
 
+    config = patternslib_config(env, argv, config);
     config.output.path = path.resolve(__dirname, "dist/");
 
     return config;
