@@ -1,7 +1,8 @@
-dist/
 .DS_Store
-node_modules
+.env
+dist/
+node_modules/
 stamp-yarn
-yarn.lock
-pat-*
 stats.json
+yarn-error.log
+yarn.lock
