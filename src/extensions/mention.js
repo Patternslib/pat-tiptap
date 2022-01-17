@@ -2,9 +2,12 @@ import { mergeAttributes } from "@tiptap/core";
 import { Mention as TipTapMention } from "@tiptap/extension-mention";
 
 export const Mention = TipTapMention.extend({
-    defaultOptions: {
-        ...TipTapMention.options,
-        url_scheme: null,
+    addOptions() {
+        const config = {
+            ...this.parent?.(),
+            url_scheme: null,
+        };
+        return config;
     },
 
     addAttributes() {

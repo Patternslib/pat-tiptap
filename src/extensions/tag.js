@@ -6,42 +6,18 @@ export const TagPluginKey = new PluginKey("tag");
 
 export const Tag = TipTapMention.extend({
     name: "tag",
-    defaultOptions: {
-        ...TipTapMention.options,
-        suggestion: {
-            ...TipTapMention.options.suggestion,
-            pluginKey: TagPluginKey,
-            char: "#",
-            command: ({ editor, range, props }) => {
-                // increase range.to by one when the next node is of type "text"
-                // and starts with a space character
-                const nodeAfter = editor.view.state.selection.$to.nodeAfter;
-                const overrideSpace = nodeAfter?.text?.startsWith(" ");
 
-                if (overrideSpace) {
-                    range.to += 1;
-                }
-
-                editor
-                    .chain()
-                    .focus()
-                    .insertContentAt(range, [
-                        {
-                            type: "tag",
-                            attrs: props,
-                        },
-                        {
-                            type: "text",
-                            text: " ",
-                        },
-                    ])
-                    .run();
+    addOptions() {
+        const config = {
+            ...this.parent?.(),
+            suggestion: {
+                ...this.parent?.()?.suggestion,
+                pluginKey: TagPluginKey,
+                char: "#",
             },
-            allow: ({ editor, range }) => {
-                return editor.can().insertContentAt(range, { type: "tag" });
-            },
-        },
-        url_scheme: null,
+            url_scheme: null,
+        };
+        return config;
     },
 
     addAttributes() {
