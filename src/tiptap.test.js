@@ -81,4 +81,25 @@ describe("pat-tiptap", () => {
         const editor_el = document.querySelector(".tiptap-container *[contenteditable]");
         expect(document.querySelector("*:focus")).toBe(editor_el);
     });
+
+    it("6 - un/sets focus on the toolbar", async () => {
+        document.body.innerHTML = `
+          <div id="tiptap-external-toolbar"></div>
+          <textarea
+              class="pat-tiptap"
+              data-pat-tiptap="
+                toolbar-external: #tiptap-external-toolbar;
+              ">
+          </textarea>
+        `;
+
+        pattern.init(document.querySelector(".pat-tiptap"));
+        await utils.timeout(1);
+
+        document.querySelector(".tiptap-container [contenteditable]").focus();
+        expect(document.querySelector("#tiptap-external-toolbar").classList[0]).toBe("tiptap-focus"); // prettier-ignore
+
+        document.querySelector(".tiptap-container [contenteditable]").blur();
+        expect(document.querySelector("#tiptap-external-toolbar").classList.length).toBe(0); // prettier-ignore
+    });
 });

@@ -30,6 +30,7 @@ export default Base.extend({
     trigger: ".pat-tiptap",
 
     toolbar: {},
+    toolbar_el: null,
 
     tooltip: null, // reference to open tooltips.
     prev_node: null, // reference to previous selected node.
@@ -162,6 +163,10 @@ export default Base.extend({
             );
         }
 
+        this.toolbar_el = this.options.toolbarExternal
+            ? document.querySelector(this.options.toolbarExternal)
+            : null;
+
         this.toolbar_pre_init();
         this.editor = new TipTap({
             element: container,
@@ -174,7 +179,16 @@ export default Base.extend({
             ],
             content: getText(),
             onUpdate() {
+                // Note: ``this`` is the editor instance.
                 setText(this.getHTML());
+            },
+            onFocus: () => {
+                // Note: ``this`` is the pattern instance.
+                this.toolbar_el?.classList.add("tiptap-focus");
+            },
+            onBlur: () => {
+                // Note: ``this`` is the pattern instance.
+                this.toolbar_el?.classList.remove("tiptap-focus");
             },
             autofocus: set_focus,
         });
@@ -185,9 +199,7 @@ export default Base.extend({
         // pre-initialization step:
         // Search for available toolbar buttons.
 
-        const tb = this.options.toolbarExternal
-            ? document.querySelector(this.options.toolbarExternal)
-            : null;
+        const tb = this.toolbar_el;
         if (!tb) {
             return;
         }
@@ -249,7 +261,7 @@ export default Base.extend({
         const extensions = [];
 
         if (Object.values(this.toolbar).length === 0) {
-            return [];
+            return extensions;
         }
 
         let has_tables = false;
