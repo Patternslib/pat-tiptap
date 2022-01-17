@@ -15,20 +15,247 @@
       .ProseMirror:focus {
         outline: none;
       }
+      .active {
+        background-color: green;
+      }
+
+      table, td, th {
+        border: 1px solid black;
+      }
+
+      th {
+        background-color: grey;
+        font-weight: bold;
+      }
+
+      /*
+      .ProseMirror p.placeholder::before,
+      .ProseMirror p.placeholder-top::before,
+      .ProseMirror p.placeholder-bottom::before {
+        content: attr(data-placeholder);
+        float: left;
+        color: #ced4da;
+        pointer-events: none;
+        height: 0;
+      }*/
+
+      /* Placeholder (at the top) */
+      .ProseMirror p.is-editor-empty:first-child::before {
+        content: attr(data-placeholder);
+        float: left;
+        color: #ced4da;
+        pointer-events: none;
+        height: 0;
+      }
+
+      /* Placeholder (on every new line) */
+      /*.ProseMirror p.is-empty::before {
+        content: attr(data-placeholder);
+        float: left;
+        color: #ced4da;
+        pointer-events: none;
+        height: 0;
+      }*/
+
+      .tooltip-container a,
+      .tooltip-container a:visited {
+        color: white;
+      }
     </style>
   </head>
   <body>
 
-    <h1>TipTap example</h1>
+    <h1>TipTap examples</h1>
 
     <section>
+      <h2>TipTap basic example</h2>
+
+      <div id="tiptap-external-toolbar">
+
+        <!-- paragraph formating -->
+        <button type="button" class="button-heading-level-1">Header level 1</button>
+        <button type="button" class="button-heading-level-2">Header level 2</button>
+        <button type="button" class="button-heading-level-3">Header level 3</button>
+        <button type="button" class="button-heading-level-4">Header level 4</button>
+        <button type="button" class="button-heading-level-5">Header level 5</button>
+        <button type="button" class="button-heading-level-6">Header level 6</button>
+        <button type="button" class="button-paragraph">Normal</button>
+        <button type="button" class="button-blockquote">Quote</button>
+        <button type="button" class="button-code-block">Code Block</button>
+
+        <!-- character formating -->
+        <button type="button" class="button-bold">Bold</button>
+        <button type="button" class="button-italic">Italic</button>
+        <button type="button" class="button-strike">Strike</button>
+        <button type="button" class="button-code">Code Inline</button>
+
+        <!-- lists -->
+        <button type="button" class="button-unordered-list">Bullet list</button>
+        <button type="button" class="button-ordered-list">Ordered list</button>
+
+        <!-- tables -->
+        <button type="button" class="button-table-create">Create table</button>
+        <button type="button" class="button-table-add-row-above">Add row above</button>
+        <button type="button" class="button-table-add-row-below">Add row below</button>
+        <button type="button" class="button-table-add-column-left">Add column to the left</button>
+        <button type="button" class="button-table-add-column-right">Add column to the right</button>
+        <button type="button" class="button-table-header_cell">Header cell</button>
+        <button type="button" class="button-table-header_row">Header row</button>
+        <button type="button" class="button-table-header_column">Header column</button>
+        <button type="button" class="button-table-merge-cells">Merge cells</button>
+        <button type="button" class="button-table-remove">Remove table</button>
+        <button type="button" class="button-table-remove-column">Remove column</button>
+        <button type="button" class="button-table-remove-row">Remove row</button>
+
+        <!-- other -->
+        <button type="button" class="button-horizontal-rule">Horizontal rule</button>
+
+        <!-- functionality -->
+        <button type="button" class="button-undo">Undo</button>
+        <button type="button" class="button-redo">Redo</button>
+
+        <!-- media/links -->
+        <a
+            class="button-link pat-modal"
+            href="#modal-link">Link</a>
+        <a
+            class="button-image pat-modal"
+            href="#modal-image">Image</a>
+        <a
+            class="button-source pat-modal"
+            href="#modal-source">Source</a>
+
+      </div>
+
+      <textarea
+          class="pat-tiptap pat-autofocus"
+          data-pat-tiptap="
+            toolbar-external: #tiptap-external-toolbar;
+            image-panel: #pat-modal .image-panel;
+            link-panel: #pat-modal .link-panel;
+            source-panel: #pat-modal .source-panel;
+            context-menu-link: #context-menu-link;
+            context-menu-mentions: #context-menu-mentions;
+            url-scheme-mentions: https://quaive.cornelis.amsterdam/users/{USER};
+            context-menu-tags: #context-menu-tags;
+            url-scheme-tags: https://quaive.cornelis.amsterdam/tags/{TAG}"
+          placeholder="Your poem goes here...">
+      </textarea>
+
+    </section>
+
+    <!--section>
       <h2>Collaboration example</h2>
       <p>Open this window in another browser to see simultanous editing.</p>
       <p>connecting to wss://demos.yjs.dev, document name "patternslib-demo"</p>
       <div class="pat-tiptap"
           data-pat-tiptap="collaboration-server: wss://demos.yjs.dev; collaboration-document: patternslib-demo">
+          yo, hello!
       </div>
-    </section>
+    </section-->
+
+    <div id="modal-link" hidden>
+        <h1>Add / Edit Link</h1>
+        <form class="link-panel">
+          <label>
+            Link URL:
+            <input type="text" name="tiptap-href"/>
+          </label>
+          <label>
+            Link Text:
+            <input type="text" name="tiptap-text"/>
+          </label>
+          <label>
+            Open in new window:
+            <input type="checkbox" name="tiptap-target" value="_blank" />
+          </label>
+          <button class="close-panel" type="button" name="tiptap-confirm">submit</button>
+          <button class="close-panel" type="button" name="tiptap-remove">remove link</button>
+        </form>
+    </div>
+
+    <div id="modal-image" hidden>
+        <h1>Add Image</h1>
+        <form class="image-panel">
+          <label>
+            Image URL:
+            <input type="text" name="tiptap-src"/>
+          </label>
+          <label>
+            Title:
+            <input type="text" name="tiptap-title"/>
+          </label>
+          <label>
+            Alternative text:
+            <input type="text" name="tiptap-alt"/>
+          </label>
+          <button class="close-panel" type="button" name="tiptap-confirm">submit</button>
+        </form>
+    </div>
+
+    <div id="modal-source" hidden>
+        <h1>Edit Source</h1>
+        <form class="source-panel">
+          <label>
+            Source:
+            <textarea name="tiptap-source"></textarea>
+          </label>
+          <button class="close-panel" type="button" name="tiptap-confirm">submit</button>
+        </form>
+    </div>
+
+    <div id="context-menu-link" hidden>
+      <ul class="tiptap-link-context-menu">
+        <li>
+          <a
+            class="close-panel tiptap-open-new-link"
+            target="_blank"
+            href="">Visit linked web page</a>
+        </li>
+        <li>
+          <button
+            type="button"
+            class="close-panel tiptap-edit-link">Edit link</button>
+        </li>
+        <li>
+          <button
+            type="button"
+            class="close-panel tiptap-unlink">Unlink</button>
+        </li>
+      </ul>
+    </div>
+
+    <div id="context-menu-mentions" hidden>
+      <form class="pat-checklist pat-autosubmit tiptap-mentions-context-menu">
+        <ul>
+          <li>
+            <label><input name="mention" type="checkbox" value="hans" />hans</label>
+          </li>
+          <li>
+            <label><input name="mention" type="checkbox" value="franz" />franz</label>
+          </li>
+          <li>
+            <label><input name="mention" type="checkbox" value="sepp" />sepp</label>
+          </li>
+        </ul>
+      </form>
+    </div>
+
+    <div id="context-menu-tags" hidden>
+      <form class="pat-checklist pat-autosubmit tiptap-tags-context-menu">
+        <ul>
+          <li>
+            <label><input name="tag" type="checkbox" value="I ♥ UTF-8" />I ♥ UTF-8</label>
+          </li>
+          <li>
+            <label><input name="tag" type="checkbox" value="music" />music</label>
+          </li>
+          <li>
+            <label><input name="tag" type="checkbox" value="books" />books</label>
+          </li>
+        </ul>
+      </form>
+    </div>
 
   </body>
 </html>
