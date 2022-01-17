@@ -12,5 +12,9 @@ module.exports = async (env, argv) => {
     config = patternslib_config(env, argv, config);
     config.output.path = path.resolve(__dirname, "dist/");
 
+    if (process.env.NODE_ENV === "development") {
+        config.devServer.static.directory = path.resolve(__dirname);
+    }
+
     return config;
 };
