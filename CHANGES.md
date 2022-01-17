@@ -1,3 +1,27 @@
+## [2.0.0](https://github.com/patternslib/pat-tiptap/compare/1.1.0...2.0.0) (2022-01-17)
+
+
+### Breaking Changes
+
+* Upgrade to tiptap version 2 (Beta).
+* Use plain JavaScript instead of Vue.
+* Remove collaboration support. This is up to come in a later version.
+
+### Features
+
+* Allow to create a toolbar based on conventions. See the [Readme](README.md) to see how this is used.
+* Allow to create a external link, image and source code overlay. See the [Readme](README.md) to see how this is used.
+* Implement a first implementation of a @-mentions and #-tagging functionality. A better implementation will follow.
+* Add pat-autofocus and autofocus attribute support.
+* Add support for the placeholder atttribute.
+* Add a ``tiptap-focus`` class on the toolbar when the editor has focus.
+
+### Maintenance
+
+* Depend on Patternslib version 6.3.2.
+* Upgrade tiptap and prosemirror dependencies.
+* Switch to Webpack 5.
+
 ## [1.1.0](https://github.com/patternslib/pat-tiptap/compare/1.0.0...1.1.0) (2021-06-15)
 
 
