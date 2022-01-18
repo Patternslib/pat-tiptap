@@ -102,4 +102,44 @@ describe("pat-tiptap", () => {
         document.querySelector(".tiptap-container [contenteditable]").blur();
         expect(document.querySelector("#tiptap-external-toolbar").classList.length).toBe(0); // prettier-ignore
     });
+
+    it("7 - un/sets focus on the toolbar with autofocus", async () => {
+        document.body.innerHTML = `
+          <div id="tiptap-external-toolbar"></div>
+          <textarea
+              autofocus
+              class="pat-tiptap"
+              data-pat-tiptap="
+                toolbar-external: #tiptap-external-toolbar;
+              ">
+          </textarea>
+        `;
+
+        pattern.init(document.querySelector(".pat-tiptap"));
+        await utils.timeout(1);
+        await utils.timeout(30);
+
+        expect(document.querySelector("#tiptap-external-toolbar").classList[0]).toBe("tiptap-focus"); // prettier-ignore
+    });
+
+    it("8 - un/sets focus on the toolbar when clicking into the toolbar", async () => {
+        document.body.innerHTML = `
+          <div id="tiptap-external-toolbar"><button>click</button></div>
+          <textarea
+              class="pat-tiptap"
+              data-pat-tiptap="
+                toolbar-external: #tiptap-external-toolbar;
+              ">
+          </textarea>
+        `;
+
+        pattern.init(document.querySelector(".pat-tiptap"));
+        await utils.timeout(1);
+
+        document.querySelector("#tiptap-external-toolbar button").focus();
+        expect(document.querySelector("#tiptap-external-toolbar").classList[0]).toBe("tiptap-focus"); // prettier-ignore
+
+        document.querySelector("#tiptap-external-toolbar button").blur();
+        expect(document.querySelector("#tiptap-external-toolbar").classList.length).toBe(0); // prettier-ignore
+    });
 });
