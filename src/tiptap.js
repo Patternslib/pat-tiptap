@@ -166,6 +166,9 @@ export default Base.extend({
         this.toolbar_el = this.options.toolbarExternal
             ? document.querySelector(this.options.toolbarExternal)
             : null;
+        if (this.toolbar_el) {
+            this.register_focus_class_handler(this.toolbar_el);
+        }
 
         this.toolbar_pre_init();
         this.editor = new TipTap({
@@ -182,8 +185,9 @@ export default Base.extend({
                 // Note: ``this`` is the editor instance.
                 setText(this.getHTML());
             },
-            onFocus: () => {
+            onFocus: async () => {
                 // Note: ``this`` is the pattern instance.
+                utils.timeout(1); // short timeout to ensure focus class is set even if tiptap_blur_handler is called concurrently.
                 this.toolbar_el?.classList.add("tiptap-focus");
             },
             onBlur: () => {
@@ -193,6 +197,31 @@ export default Base.extend({
             autofocus: set_focus,
         });
         this.toolbar_post_init();
+    },
+
+    register_focus_class_handler(el) {
+        // make element focusable
+        // See: https://javascript.info/focus-blur
+        el.setAttribute("tabindex", "-1"); // not user-selectable but programmatically focusable.
+        dom.add_event_listener(
+            el,
+            "focus",
+            "tiptap-focusin",
+            async () => {
+                utils.timeout(1); // short timeout to ensure focus class is set even if tiptap_blur_handler is called concurrently.
+                this.toolbar_el?.classList.add("tiptap-focus");
+            },
+            true
+        );
+        dom.add_event_listener(
+            el,
+            "blur",
+            "tiptap-focusout",
+            () => {
+                this.toolbar_el?.classList.remove("tiptap-focus");
+            },
+            true
+        );
     },
 
     toolbar_pre_init() {
@@ -515,6 +544,7 @@ export default Base.extend({
             log.warn("No link panel found.");
             return;
         }
+        this.register_focus_class_handler(link_panel);
 
         const reinit = () => {
             const link_href = link_panel.querySelector("[name=tiptap-href]");
@@ -644,6 +674,7 @@ export default Base.extend({
             log.warn("No image panel found.");
             return;
         }
+        this.register_focus_class_handler(image_panel);
 
         const reinit = () => {
             const image_src = image_panel.querySelector("[name=tiptap-src]");
@@ -726,6 +757,7 @@ export default Base.extend({
             log.warn("No source panel found.");
             return;
         }
+        this.register_focus_class_handler(source_panel);
 
         const reinit = () => {
             const source_text = source_panel.querySelector("[name=tiptap-source]"); // prettier-ignore
@@ -784,6 +816,7 @@ export default Base.extend({
             trigger: ".tiptap-link-context-menu",
             async init($el) {
                 const el = $el[0];
+                that.register_focus_class_handler(el);
 
                 const btn_open = el.querySelector(".tiptap-open-new-link");
                 const btn_edit = el.querySelector(".tiptap-edit-link");
@@ -818,10 +851,13 @@ export default Base.extend({
 
     pattern_mentions_context_menu(props) {
         // Dynamic pattern for the mentions context menu
+        const that = this;
         return {
             name: "tiptap-mentions-context-menu",
             trigger: ".tiptap-mentions-context-menu",
             async init($el) {
+                that.register_focus_class_handler($el[0]);
+
                 const context_menu_close = (await import("./context_menu"))
                     .context_menu_close;
 
@@ -847,10 +883,13 @@ export default Base.extend({
 
     pattern_tags_context_menu(props) {
         // Dynamic pattern for the tags context menu
+        const that = this;
         return {
             name: "tiptap-tags-context-menu",
             trigger: ".tiptap-tags-context-menu",
             async init($el) {
+                that.register_focus_class_handler($el[0]);
+
                 const context_menu_close = (await import("./context_menu"))
                     .context_menu_close;
 
