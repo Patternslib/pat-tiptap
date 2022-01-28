@@ -1,9 +1,9 @@
 import "regenerator-runtime/runtime"; // needed for ``await`` support
 import Base from "@patternslib/patternslib/src/core/base";
-import logging from "@patternslib/patternslib/src/core/logging";
 import Parser from "@patternslib/patternslib/src/core/parser";
+import events from "@patternslib/patternslib/src/core/events";
+import logging from "@patternslib/patternslib/src/core/logging";
 import utils from "@patternslib/patternslib/src/core/utils";
-import dom from "@patternslib/patternslib/src/core/dom";
 
 const log = logging.getLogger("tiptap");
 
@@ -203,7 +203,7 @@ export default Base.extend({
         // make element focusable
         // See: https://javascript.info/focus-blur
         el.setAttribute("tabindex", "-1"); // not user-selectable but programmatically focusable.
-        dom.add_event_listener(
+        events.add_event_listener(
             el,
             "focus",
             "tiptap-focusin",
@@ -213,7 +213,7 @@ export default Base.extend({
             },
             true
         );
-        dom.add_event_listener(
+        events.add_event_listener(
             el,
             "blur",
             "tiptap-focusout",
@@ -622,7 +622,7 @@ export default Base.extend({
             // FORM UPDATE
             if (link_confirm) {
                 // update on click on confirm
-                dom.add_event_listener(
+                events.add_event_listener(
                     link_confirm,
                     "click",
                     "tiptap_link_confirm",
@@ -630,19 +630,19 @@ export default Base.extend({
                 );
             } else {
                 // update on input/change
-                dom.add_event_listener(
+                events.add_event_listener(
                     link_href,
                     "input",
                     "tiptap_link_href",
                     update_callback.bind(this)
                 );
-                dom.add_event_listener(
+                events.add_event_listener(
                     link_text,
                     "input",
                     "tiptap_link_text",
                     update_callback.bind(this)
                 );
-                dom.add_event_listener(
+                events.add_event_listener(
                     link_target,
                     "change",
                     "tiptap_link_target",
@@ -650,7 +650,7 @@ export default Base.extend({
                 );
             }
 
-            dom.add_event_listener(link_remove, "click", "tiptap_link_remove", () =>
+            events.add_event_listener(link_remove, "click", "tiptap_link_remove", () =>
                 this.editor.chain().focus().unsetLink().run()
             );
         };
@@ -709,7 +709,7 @@ export default Base.extend({
             // FORM UPDATE
             if (image_confirm) {
                 // update on click on confirm
-                dom.add_event_listener(
+                events.add_event_listener(
                     image_confirm,
                     "click",
                     "tiptap_image_confirm",
@@ -717,19 +717,19 @@ export default Base.extend({
                 );
             } else {
                 // update on input/change
-                dom.add_event_listener(
+                events.add_event_listener(
                     image_src,
                     "change",
                     "tiptap_image_src",
                     update_callback.bind(this)
                 );
-                dom.add_event_listener(
+                events.add_event_listener(
                     image_alt,
                     "change",
                     "tiptap_image_alt",
                     update_callback.bind(this)
                 );
-                dom.add_event_listener(
+                events.add_event_listener(
                     image_title,
                     "change",
                     "tiptap_image_title",
@@ -778,7 +778,7 @@ export default Base.extend({
 
             if (source_confirm) {
                 // update on click on confirm
-                dom.add_event_listener(
+                events.add_event_listener(
                     source_confirm,
                     "click",
                     "tiptap_source_confirm",
@@ -786,7 +786,7 @@ export default Base.extend({
                 );
             } else {
                 // update on input/change
-                dom.add_event_listener(
+                events.add_event_listener(
                     source_text,
                     "input",
                     "tiptap_source_text",
