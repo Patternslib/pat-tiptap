@@ -203,6 +203,8 @@ This is the pattern configuration:
 
 #### Adding a image selection overlay
 
+Images are placed in a ``figure`` tag and have an optional ``figcaption`` tag.
+
 The following button uses ``pat-modal`` to open a overlay, referenced by the CSS selector ``#modal-image`` in the same document.
 Note: You can also load the modal contents from any URL.
 
@@ -226,6 +228,10 @@ This is the DOM structure with the overlay:
           Alternative text:
           <input type="text" name="tiptap-alt"/>
         </label>
+        <label>
+          Caption:
+          <textarea name="tiptap-caption"></textarea>
+        </label>
         <button class="close-panel" type="button" name="tiptap-confirm">submit</button>
       </form>
     </div>
@@ -236,6 +242,7 @@ You can use these elements with these names:
 - ``tiptap-src``: Image URL for the ``src`` attribute.
 - ``tiptap-title``: Image ``title`` attribute.
 - ``tiptap-alt``: Image ``alt`` attribute.
+- ``tiptap-caption``: Caption text placed in a ``figcaption`` tag.
 - ``tiptap-confirm``: To save the changes back to the editor.
 
 You also need to configure ``pat-tiptap`` with the ``image-panel`` option which points to the form element in the overlay.

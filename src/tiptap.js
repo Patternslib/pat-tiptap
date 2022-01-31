@@ -391,15 +391,13 @@ export default Base.extend({
         }
 
         if (tb.image) {
-            extensions.push(
-                (await import("@tiptap/extension-image")).default.configure({
-                    inline: true,
-                })
-            );
+            extensions.push((await import("@tiptap/extension-image")).default);
         }
 
         if (tb.image || has_tables) {
             extensions.push((await import("@tiptap/extension-dropcursor")).default);
+            extensions.push((await import("./extensions/figure")).default);
+            extensions.push((await import("./extensions/figcaption")).default);
         }
 
         return extensions;
@@ -680,6 +678,7 @@ export default Base.extend({
             const image_src = image_panel.querySelector("[name=tiptap-src]");
             const image_alt = image_panel.querySelector("[name=tiptap-alt]");
             const image_title = image_panel.querySelector("[name=tiptap-title]");
+            const image_caption = image_panel.querySelector("[name=tiptap-caption]");
             const image_confirm = image_panel.querySelector(".tiptap-confirm, [name=tiptap-confirm]"); // prettier-ignore
 
             const update_callback = (set_focus) => {
@@ -693,10 +692,32 @@ export default Base.extend({
                 );
 
                 const cmd = this.editor.chain();
-                cmd.setImage({
-                    src: selected_image_src.value,
-                    alt: image_alt?.value || null,
-                    title: image_title?.value || null,
+                cmd.insertContent({
+                    type: "figure",
+                    content: [
+                        {
+                            type: "image",
+                            attrs: {
+                                src: selected_image_src.value,
+                                ...(image_alt?.value && { alt: image_alt?.value }),
+                                ...(image_title?.value && { title: image_title?.value }),
+                            },
+                        },
+                        // Conditionally add a figcaption
+                        ...(image_caption?.value
+                            ? [
+                                  {
+                                      type: "figcaption",
+                                      content: [
+                                          {
+                                              type: "text",
+                                              text: image_caption.value,
+                                          },
+                                      ],
+                                  },
+                              ]
+                            : []),
+                    ],
                 });
                 if (set_focus === true) {
                     // set focus after setting image, otherwise image is
@@ -733,6 +754,12 @@ export default Base.extend({
                     image_title,
                     "change",
                     "tiptap_image_title",
+                    update_callback.bind(this)
+                );
+                events.add_event_listener(
+                    image_caption,
+                    "change",
+                    "tiptap_image_caption",
                     update_callback.bind(this)
                 );
             }

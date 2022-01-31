@@ -142,4 +142,92 @@ describe("pat-tiptap", () => {
         document.querySelector("#tiptap-external-toolbar button").blur();
         expect(document.querySelector("#tiptap-external-toolbar").classList.length).toBe(0); // prettier-ignore
     });
+
+    it("9.1 - Adds an image within <figure> tags including a <figcaption>", async () => {
+        document.body.innerHTML = `
+          <div id="tiptap-external-toolbar">
+            <button class="button-image">Image</button>
+          </div>
+          <textarea
+              class="pat-tiptap"
+              data-pat-tiptap="
+                toolbar-external: #tiptap-external-toolbar;
+                image-panel: #image-panel
+              ">
+          </textarea>
+          <form id="image-panel">
+            <input name="tiptap-src" type="text"/>
+            <input name="tiptap-alt"/>
+            <input name="tiptap-title"/>
+            <input name="tiptap-caption"/>
+            <button type="submit" name="tiptap-confirm">submit</button>
+          </form>
+        `;
+
+        new Pattern(document.querySelector(".pat-tiptap"));
+        await utils.timeout(1);
+
+        document
+            .querySelector("#tiptap-external-toolbar .button-image")
+            .dispatchEvent(new Event("pat-modal-ready"));
+        await utils.timeout(1);
+
+        document.querySelector("#image-panel [name=tiptap-src]").value = "https://path/to/image.png"; // prettier-ignore
+        document.querySelector("#image-panel [name=tiptap-alt]").value = "Alt text for image"; // prettier-ignore
+        document.querySelector("#image-panel [name=tiptap-title]").value = "Title text for image"; // prettier-ignore
+        document.querySelector("#image-panel [name=tiptap-caption]").value = "Caption text for image"; // prettier-ignore
+        document.querySelector("#image-panel [name=tiptap-confirm]").dispatchEvent(new Event("click")); // prettier-ignore
+        await utils.timeout(1);
+
+        const img = document.querySelector(".tiptap-container figure img");
+        expect(img).toBeTruthy();
+        expect(img.src).toBe("https://path/to/image.png");
+        expect(img.alt).toBe("Alt text for image");
+        expect(img.title).toBe("Title text for image");
+        const figcaption = document.querySelector(".tiptap-container figure figcaption");
+        expect(figcaption).toBeTruthy();
+        expect(figcaption.textContent).toBe("Caption text for image");
+    });
+
+    it("9.2 - Adds an image within <figure> tags but without a <figcaption>", async () => {
+        document.body.innerHTML = `
+          <div id="tiptap-external-toolbar">
+            <button class="button-image">Image</button>
+          </div>
+          <textarea
+              class="pat-tiptap"
+              data-pat-tiptap="
+                toolbar-external: #tiptap-external-toolbar;
+                image-panel: #image-panel
+              ">
+          </textarea>
+          <form id="image-panel">
+            <input name="tiptap-src" type="text"/>
+            <input name="tiptap-alt"/>
+            <input name="tiptap-title"/>
+            <input name="tiptap-caption"/>
+            <button type="submit" name="tiptap-confirm">submit</button>
+          </form>
+        `;
+
+        new Pattern(document.querySelector(".pat-tiptap"));
+        await utils.timeout(1);
+
+        document
+            .querySelector("#tiptap-external-toolbar .button-image")
+            .dispatchEvent(new Event("pat-modal-ready"));
+        await utils.timeout(1);
+
+        document.querySelector("#image-panel [name=tiptap-src]").value = "https://path/to/image.png"; // prettier-ignore
+        document.querySelector("#image-panel [name=tiptap-confirm]").dispatchEvent(new Event("click")); // prettier-ignore
+        await utils.timeout(1);
+
+        const img = document.querySelector(".tiptap-container figure img");
+        expect(img).toBeTruthy();
+        expect(img.src).toBe("https://path/to/image.png");
+        expect(img.alt).toBe("");
+        expect(img.title).toBe("");
+        const figcaption = document.querySelector(".tiptap-container figure figcaption");
+        expect(figcaption).toBeFalsy();
+    });
 });
