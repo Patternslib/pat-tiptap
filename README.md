@@ -100,6 +100,7 @@ The following buttons need additional configuration to open an overlay with more
 - ``.button-link``
 - ``.button-image``
 - ``.button-source``
+- ``.button-embed``
 
 
 If these buttons are not available the associated functionality is not loaded, not initialized and not available.
@@ -256,6 +257,58 @@ This is the related ``pat-tiptap`` config:
     data-pat-tiptap="
         image-panel: #pat-modal .image-panel;
     "
+
+
+#### Adding an embed overlay for videos
+
+With the embed functionality you can add YouTube and Vimeo videos to your document.
+Embed videos are placed within a ``figure`` tag and can have an optional ``figcaption``.
+
+The following button uses ``pat-modal`` to open a overlay, referenced by the CSS selector ``#modal-embed`` in the same document.
+Note: You can also load the modal contents from any URL.
+
+    <a
+        class="button-embed pat-modal"
+        href="#modal-embed">Video</a>
+
+This is the DOM structure with the overlay:
+
+    <div id="modal-embed" hidden>
+      <form class="embed-panel">
+        <label>
+          Video URL:
+          <input type="text" name="tiptap-src"/>
+        </label>
+        <label>
+          Title:
+          <input type="text" name="tiptap-title"/>
+        </label>
+        <label>
+          Caption:
+          <textarea name="tiptap-caption"></textarea>
+        </label>
+        <button class="close-panel" type="button" name="tiptap-confirm">submit</button>
+      </form>
+    </div>
+
+The ``input[name=tiptap-src]`` is the only input element necessary.
+You can use these elements with these names:
+
+- ``tiptap-src``: Video URL for the ``src`` attribute, added to an ``iframe`` tag.
+- ``tiptap-title``: ``title`` attribute for the ``iframe`` tag.
+- ``tiptap-caption``: Caption text placed in a ``figcaption`` tag.
+- ``tiptap-confirm``: To save the changes back to the editor.
+
+You also need to configure ``pat-tiptap`` with the ``embed-panel`` option which points to the form element in the overlay.
+pat-tiptap uses a ``MutationObserver`` to check for changes in the overlay's DOM structure and re-initializes the functionality once the DOM structure changes.
+This way, you can use ``pat-inject``, ``pat-tabs`` or ``pat-stacks`` which changes the overlay content and automatically get the form reinitialized.
+
+This is the related ``pat-tiptap`` config:
+
+    data-pat-tiptap="
+        embed-panel: #pat-modal .embed-panel;
+    "
+
 
 #### Adding a source view overlay
 

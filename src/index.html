@@ -125,6 +125,9 @@
             class="button-image pat-modal"
             href="#modal-image">Image</a>
         <a
+            class="button-embed pat-modal"
+            href="#modal-embed">Video</a>
+        <a
             class="button-source pat-modal"
             href="#modal-source">Source</a>
 
@@ -137,6 +140,7 @@
             image-panel: #pat-modal .image-panel;
             link-panel: #pat-modal .link-panel;
             source-panel: #pat-modal .source-panel;
+            embed-panel: #pat-modal .embed-panel;
             context-menu-link: #context-menu-link;
             context-menu-mentions: #context-menu-mentions;
             url-scheme-mentions: https://quaive.cornelis.amsterdam/users/{USER};
@@ -200,6 +204,27 @@
           <button class="close-panel" type="button" name="tiptap-confirm">submit</button>
         </form>
     </template>
+
+    <template id="modal-embed">
+        <h1>Add Video Embed</h1>
+        <form class="embed-panel">
+          <label>
+            Video URL:
+            <input type="text" name="tiptap-src"/>
+          </label>
+          <label>
+            Title:
+            <input type="text" name="tiptap-title"/>
+          </label>
+          <label>
+            Caption:
+            <textarea name="tiptap-caption"></textarea>
+          </label>
+
+          <button class="close-panel" type="button" name="tiptap-confirm">submit</button>
+        </form>
+    </template>
+
 
     <template id="modal-source">
         <h1>Edit Source</h1>

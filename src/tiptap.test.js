@@ -268,4 +268,48 @@ describe("pat-tiptap", () => {
             "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAADElEQVQI12P4z8AAAAMBAQAY3Y2wAAAAAElFTkSuQmCC"
         );
     });
+
+    it("10.1 - Add a YouTube embed", async () => {
+        document.body.innerHTML = `
+          <div id="tiptap-external-toolbar">
+            <button class="button-embed">Embed</button>
+          </div>
+          <textarea
+              class="pat-tiptap"
+              data-pat-tiptap="
+                toolbar-external: #tiptap-external-toolbar;
+                embed-panel: #embed-panel
+              ">
+          </textarea>
+          <form id="embed-panel">
+            <input name="tiptap-src" type="text"/>
+            <input name="tiptap-title"/>
+            <input name="tiptap-caption"/>
+            <button type="submit" name="tiptap-confirm">submit</button>
+          </form>
+        `;
+
+        new Pattern(document.querySelector(".pat-tiptap"));
+        await utils.timeout(1);
+
+        document
+            .querySelector("#tiptap-external-toolbar .button-embed")
+            .dispatchEvent(new Event("pat-modal-ready"));
+        await utils.timeout(1);
+
+        document.querySelector("#embed-panel [name=tiptap-src]").value = "https://www.youtube.com/embed/j8It1z7r1g4"; // prettier-ignore
+        document.querySelector("#embed-panel [name=tiptap-title]").value = "Title text for video"; // prettier-ignore
+        document.querySelector("#embed-panel [name=tiptap-caption]").value = "Caption text for video"; // prettier-ignore
+        document.querySelector("#embed-panel [name=tiptap-confirm]").dispatchEvent(new Event("click")); // prettier-ignore
+        await utils.timeout(1);
+
+        const iframe = document.querySelector(".tiptap-container figure iframe");
+        expect(iframe).toBeTruthy();
+
+        expect(iframe.src).toBe("https://www.youtube.com/embed/j8It1z7r1g4");
+        expect(iframe.title).toBe("Title text for video");
+        const figcaption = document.querySelector(".tiptap-container figure figcaption");
+        expect(figcaption).toBeTruthy();
+        expect(figcaption.textContent).toBe("Caption text for video");
+    });
 });

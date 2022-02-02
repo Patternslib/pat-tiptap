@@ -14,6 +14,7 @@ parser.addArgument("collaboration-document", null);
 parser.addArgument("toolbar-external", null);
 
 parser.addArgument("image-panel", null);
+parser.addArgument("embed-panel", null);
 parser.addArgument("link-panel", null);
 parser.addArgument("source-panel", null);
 
@@ -37,6 +38,7 @@ export default Base.extend({
 
     observer_link_panel: null,
     observer_image_panel: null,
+    observer_embed_panel: null,
     observer_source_panel: null,
 
     dont_open_context_menu: false,
@@ -278,6 +280,7 @@ export default Base.extend({
         // media/links
         this.toolbar.link = tb.querySelector(".button-link");
         this.toolbar.image = tb.querySelector(".button-image");
+        this.toolbar.embed = tb.querySelector(".button-embed");
         this.toolbar.source = tb.querySelector(".button-source");
     },
 
@@ -394,7 +397,11 @@ export default Base.extend({
             extensions.push((await import("./extensions/image")).default);
         }
 
-        if (tb.image || has_tables) {
+        if (tb.embed) {
+            extensions.push((await import("./extensions/embed")).default);
+        }
+
+        if (tb.image || tb.embed || has_tables) {
             extensions.push((await import("@tiptap/extension-dropcursor")).default);
             extensions.push((await import("./extensions/figure")).default);
             extensions.push((await import("./extensions/figcaption")).default);
@@ -521,6 +528,14 @@ export default Base.extend({
             tb.image.addEventListener(
                 "pat-modal-ready",
                 this.initialize_image_panel.bind(this)
+            );
+        }
+
+        if (tb.embed && this.options.embedPanel) {
+            // Initialize modal after it has injected.
+            tb.embed.addEventListener(
+                "pat-modal-ready",
+                this.initialize_embed_panel.bind(this)
             );
         }
 
@@ -771,6 +786,101 @@ export default Base.extend({
         }
         this.observer_image_panel = new MutationObserver(reinit.bind(this));
         this.observer_image_panel.observe(image_panel, {
+            childList: true,
+            subtree: true,
+            attributes: false,
+            characterData: false,
+        });
+    },
+
+    initialize_embed_panel() {
+        const embed_panel = document.querySelector(this.options.embedPanel);
+        if (!embed_panel) {
+            log.warn("No embed panel found.");
+            return;
+        }
+        this.register_focus_class_handler(embed_panel);
+
+        const reinit = () => {
+            const embed_src = embed_panel.querySelector("[name=tiptap-src]");
+            const embed_title = embed_panel.querySelector("[name=tiptap-title]");
+            const embed_caption = embed_panel.querySelector("[name=tiptap-caption]");
+            const embed_confirm = embed_panel.querySelector(".tiptap-confirm, [name=tiptap-confirm]"); // prettier-ignore
+
+            const update_callback = (set_focus) => {
+                const cmd = this.editor.chain();
+                cmd.insertContent({
+                    type: "figure",
+                    content: [
+                        {
+                            type: "embed",
+                            attrs: {
+                                src: embed_src.value,
+                                ...(embed_title?.value && { title: embed_title?.value }),
+                            },
+                        },
+                        // Conditionally add a figcaption
+                        ...(embed_caption?.value
+                            ? [
+                                  {
+                                      type: "figcaption",
+                                      content: [
+                                          {
+                                              type: "text",
+                                              text: embed_caption.value,
+                                          },
+                                      ],
+                                  },
+                              ]
+                            : []),
+                    ],
+                });
+                if (set_focus === true) {
+                    // set focus after setting embed, otherwise embed is
+                    // selected and right away deleted when starting typing.
+                    cmd.focus();
+                }
+                cmd.run();
+            };
+
+            // FORM UPDATE
+            if (embed_confirm) {
+                // update on click on confirm
+                events.add_event_listener(
+                    embed_confirm,
+                    "click",
+                    "tiptap_embed_confirm",
+                    () => update_callback.bind(this)(true)
+                );
+            } else {
+                // update on input/change
+                events.add_event_listener(
+                    embed_src,
+                    "change",
+                    "tiptap_embed_src",
+                    update_callback.bind(this)
+                );
+                events.add_event_listener(
+                    embed_title,
+                    "change",
+                    "tiptap_embed_title",
+                    update_callback.bind(this)
+                );
+                events.add_event_listener(
+                    embed_caption,
+                    "change",
+                    "tiptap_embed_caption",
+                    update_callback.bind(this)
+                );
+            }
+        };
+
+        reinit();
+        if (this.observer_embed_panel) {
+            this.observer_embed_panel.disconnect();
+        }
+        this.observer_embed_panel = new MutationObserver(reinit.bind(this));
+        this.observer_embed_panel.observe(embed_panel, {
             childList: true,
             subtree: true,
             attributes: false,
