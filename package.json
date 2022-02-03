@@ -13,6 +13,7 @@
         "@tiptap/extension-code": "^2.1.11",
         "@tiptap/extension-code-block": "^2.1.11",
         "@tiptap/extension-collaboration": "^2.1.11",
+        "@tiptap/extension-collaboration-cursor": "^2.1.11",
         "@tiptap/extension-document": "^2.1.11",
         "@tiptap/extension-dropcursor": "^2.1.11",
         "@tiptap/extension-gapcursor": "^2.1.11",

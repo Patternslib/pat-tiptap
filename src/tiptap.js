@@ -25,6 +25,8 @@ parser.addArgument("tags-menu", null);
 
 parser.addArgument("collaboration-server", null);
 parser.addArgument("collaboration-document", null);
+parser.addArgument("collaboration-user", null);
+parser.addArgument("collaboration-color", null);
 
 // TODO: Remove with next major version.
 // BBB - Compatibility aliases
@@ -145,6 +147,22 @@ class Pattern extends BasePattern {
                 document: provider.document,
             });
             extra_extensions.push(Collaboration);
+
+            // Collaboration cursor
+            if (window.__patternslib_import_styles) {
+                import("./styles/collaboration-cursor.css");
+            }
+            const random_color = "#" + ((Math.random() * 0xffffff) << 0).toString(16); // See: https://css-tricks.com/snippets/javascript/random-hex-color/
+            const CollaborationCursor = (
+                await import("@tiptap/extension-collaboration-cursor")
+            ).default.configure({
+                provider: provider,
+                user: {
+                    name: this.options.collaboration.user || random_color,
+                    color: this.options.collaboration.color || random_color,
+                },
+            });
+            extra_extensions.push(CollaborationCursor);
         }
 
         this.toolbar_el = this.options.toolbarExternal
