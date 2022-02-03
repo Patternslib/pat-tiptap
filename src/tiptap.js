@@ -27,6 +27,7 @@ parser.addArgument("collaboration-server", null);
 parser.addArgument("collaboration-document", null);
 parser.addArgument("collaboration-user", null);
 parser.addArgument("collaboration-color", null);
+parser.addArgument("collaboration-authentication-token", null);
 
 // TODO: Remove with next major version.
 // BBB - Compatibility aliases
@@ -145,6 +146,7 @@ class Pattern extends BasePattern {
             const provider = new HocuspocusProvider({
                 url: this.options.collaboration.server,
                 name: this.options.collaboration.document,
+                token: this.options.collaboration["authentication-token"],
             });
             provider.setAwarenessField("user", {
                 name: user_name,
