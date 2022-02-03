@@ -132,13 +132,43 @@ class Pattern extends BasePattern {
             );
         }
 
+        const config = {};
         if (this.options.collaboration.server && this.options.collaboration.document) {
+            // Random color, see: https://css-tricks.com/snippets/javascript/random-hex-color/
+            const random_color = "#" + ((Math.random() * 0xffffff) << 0).toString(16);
+            // Information about the current user
+            const user_name = this.options.collaboration.user || random_color;
+            const user_color = this.options.collaboration.color || random_color;
+
             // Set up the Hocuspocus WebSocket provider
             const HocuspocusProvider = (await import("@hocuspocus/provider")).HocuspocusProvider; // prettier-ignore
             const provider = new HocuspocusProvider({
                 url: this.options.collaboration.server,
                 name: this.options.collaboration.document,
             });
+            provider.setAwarenessField("user", {
+                name: user_name,
+                color: user_color,
+            });
+
+            // Wait for user being authenticated
+            const authenticated = () =>
+                new Promise((resolve) =>
+                    provider.on("authenticated", resolve, { once: true })
+                );
+            await authenticated();
+
+            const connected_users = [...provider.awareness.states.values()].map(
+                (it) => it.user
+            );
+            if (connected_users.length === 1) {
+                // it's only me.
+                config["content"] = getText();
+                log.info(`
+                    This is the main instance and gets text from textfield.
+                    Other connected user will get their text from the collaboration server.
+                `);
+            }
 
             // Collaboration extension
             const Collaboration = (
@@ -152,17 +182,19 @@ class Pattern extends BasePattern {
             if (window.__patternslib_import_styles) {
                 import("./styles/collaboration-cursor.css");
             }
-            const random_color = "#" + ((Math.random() * 0xffffff) << 0).toString(16); // See: https://css-tricks.com/snippets/javascript/random-hex-color/
             const CollaborationCursor = (
                 await import("@tiptap/extension-collaboration-cursor")
             ).default.configure({
                 provider: provider,
                 user: {
-                    name: this.options.collaboration.user || random_color,
-                    color: this.options.collaboration.color || random_color,
+                    name: user_name,
+                    color: user_color,
                 },
             });
             extra_extensions.push(CollaborationCursor);
+        } else {
+            // Non-collaborative editing is always getting the initial text from the textarea.
+            config["content"] = getText();
         }
 
         this.toolbar_el = this.options.toolbarExternal
@@ -189,7 +221,6 @@ class Pattern extends BasePattern {
                 ...(await toolbar_ext.init_extensions({ app: this })),
                 ...extra_extensions,
             ],
-            content: getText(),
             onUpdate() {
                 // Note: ``this`` is the editor instance.
                 setText(this.getHTML());
@@ -213,6 +244,7 @@ class Pattern extends BasePattern {
                 this.toolbar_el?.classList.remove("tiptap-focus");
             },
             autofocus: set_focus,
+            ...config,
         });
         toolbar_ext.init_post({ app: this });
 
