@@ -9,8 +9,6 @@ import utils from "@patternslib/patternslib/src/core/utils";
 export const log = logging.getLogger("tiptap");
 
 export const parser = new Parser("tiptap");
-parser.addArgument("collaboration-server", null);
-parser.addArgument("collaboration-document", null);
 
 parser.addArgument("toolbar-external", null);
 
@@ -24,6 +22,9 @@ parser.addArgument("embed-menu", null);
 parser.addArgument("link-menu", null);
 parser.addArgument("mentions-menu", null);
 parser.addArgument("tags-menu", null);
+
+parser.addArgument("collaboration-server", null);
+parser.addArgument("collaboration-document", null);
 
 // TODO: Remove with next major version.
 // BBB - Compatibility aliases
@@ -127,6 +128,23 @@ class Pattern extends BasePattern {
                         url: this.options.tagsMenu,
                     })
             );
+        }
+
+        if (this.options.collaboration.server && this.options.collaboration.document) {
+            // Set up the Hocuspocus WebSocket provider
+            const HocuspocusProvider = (await import("@hocuspocus/provider")).HocuspocusProvider; // prettier-ignore
+            const provider = new HocuspocusProvider({
+                url: this.options.collaboration.server,
+                name: this.options.collaboration.document,
+            });
+
+            // Collaboration extension
+            const Collaboration = (
+                await import("@tiptap/extension-collaboration")
+            ).default.configure({
+                document: provider.document,
+            });
+            extra_extensions.push(Collaboration);
         }
 
         this.toolbar_el = this.options.toolbarExternal

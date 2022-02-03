@@ -155,6 +155,15 @@ export async function init_extensions({ app }) {
         );
     }
 
+    if (
+        !(app.options.collaboration.server && app.options.collaboration.document) &&
+        (tb.undo || tb.redo)
+    ) {
+        // Do not initialize this with the collaboration feature turned on.
+        // The collaboration extension comeswith it's own history handling.
+        extensions.push((await import("@tiptap/extension-history")).History);
+    }
+
     if (tb.link) {
         extensions.push(
             (await import("./extensions/link")).factory().configure({

@@ -5,12 +5,14 @@
     "license": "MIT",
     "main": "./src/tiptap.js",
     "dependencies": {
+        "@hocuspocus/provider": "^2.5.0",
         "@tiptap/core": "2.1.11",
         "@tiptap/extension-blockquote": "^2.1.11",
         "@tiptap/extension-bold": "^2.1.11",
         "@tiptap/extension-bullet-list": "^2.1.11",
         "@tiptap/extension-code": "^2.1.11",
         "@tiptap/extension-code-block": "^2.1.11",
+        "@tiptap/extension-collaboration": "^2.1.11",
         "@tiptap/extension-document": "^2.1.11",
         "@tiptap/extension-dropcursor": "^2.1.11",
         "@tiptap/extension-gapcursor": "^2.1.11",
@@ -33,7 +35,10 @@
         "@tiptap/extension-table-row": "^2.1.11",
         "@tiptap/extension-text": "^2.1.11",
         "@tiptap/pm": "^2.1.11",
-        "@tiptap/suggestion": "^2.1.11"
+        "@tiptap/suggestion": "^2.1.11",
+        "y-prosemirror": "^1.2.1",
+        "y-protocols": "^1.0.6",
+        "yjs": "^13.6.8"
     },
     "devDependencies": {
         "@patternslib/dev": "^3.5.1",
