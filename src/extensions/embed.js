@@ -30,20 +30,60 @@ const Embed = Node.create({
     },
 
     parseHTML() {
+        // NOTE: no ``this`` in this method. Therefore some code duplication.
+        const is_youtube = (src) => src.indexOf("youtube.com") > -1;
+        const is_vimeo = (src) => src.indexOf("vimeo.com") > -1;
         return [
             {
-                tag: `iframe[src*="youtube.com"]`, //, iframe[src*="vimeo.com"]`,
+                tag: `iframe[src*="youtube.com"]`,
+                getAttrs: (node) =>
+                    (is_youtube(node.getAttribute("src")) ||
+                        is_vimeo(node.getAttribute("src")) > -1) &&
+                    null,
             },
         ];
     },
 
     renderHTML({ HTMLAttributes }) {
-        return [
-            "iframe",
-            mergeAttributes(this.options.HTMLAttributes, HTMLAttributes, {
-                "data-type": this.name,
-            }),
-        ];
+        // NOTE: no ``this`` in this method. Therefore some code duplication.
+        const is_youtube = (src) => src.indexOf("youtube.com") > -1;
+        const is_vimeo = (src) => src.indexOf("vimeo.com") > -1;
+        const attributes_youtube = {
+            width: "560",
+            height: "315",
+            allowfullscreen: "",
+            frameborder: "0",
+        };
+        const attributes_vimeo = {
+            width: "640",
+            height: "360",
+            allowfullscreen: "",
+            frameborder: "0",
+        };
+
+        let attrs;
+        if (is_youtube(HTMLAttributes.src)) {
+            attrs = {
+                ...HTMLAttributes,
+                ...attributes_youtube,
+            };
+            const vid = attrs.src.match(/watch.*v\=(?<vid>[^&]*)/)?.groups?.vid;
+            if (vid) {
+                attrs.src = `https://www.youtube.com/embed/${vid}`;
+            }
+        }
+        if (is_vimeo(HTMLAttributes.src)) {
+            attrs = {
+                ...HTMLAttributes,
+                ...attributes_vimeo,
+            };
+            const vid = attrs.src.match(/vimeo.com\/(?<vid>[0-9]*)/)?.groups?.vid;
+            if (vid) {
+                attrs.src = `https://player.vimeo.com/video/${vid}`;
+            }
+        }
+
+        return ["iframe", mergeAttributes(this.options.HTMLAttributes, attrs)];
     },
 
     addCommands() {

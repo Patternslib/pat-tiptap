@@ -262,6 +262,7 @@ This is the related ``pat-tiptap`` config:
 #### Adding an embed overlay for videos
 
 With the embed functionality you can add YouTube and Vimeo videos to your document.
+You can use the embed URL or directly the link to the YouTube or Vimeo video page in which case the URLs are automatically changed to embed URLs.
 Embed videos are placed within a ``figure`` tag and can have an optional ``figcaption``.
 
 The following button uses ``pat-modal`` to open a overlay, referenced by the CSS selector ``#modal-embed`` in the same document.
