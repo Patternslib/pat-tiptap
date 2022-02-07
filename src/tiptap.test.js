@@ -230,4 +230,42 @@ describe("pat-tiptap", () => {
         const figcaption = document.querySelector(".tiptap-container figure figcaption");
         expect(figcaption).toBeFalsy();
     });
+
+    it("9.3 - Adds an image with base64 encoded image data", async () => {
+        document.body.innerHTML = `
+          <div id="tiptap-external-toolbar">
+            <button class="button-image">Image</button>
+          </div>
+          <textarea
+              class="pat-tiptap"
+              data-pat-tiptap="
+                toolbar-external: #tiptap-external-toolbar;
+                image-panel: #image-panel
+              ">
+          </textarea>
+          <form id="image-panel">
+            <input name="tiptap-src" type="text"/>
+            <button type="submit" name="tiptap-confirm">submit</button>
+          </form>
+        `;
+
+        new Pattern(document.querySelector(".pat-tiptap"));
+        await utils.timeout(1);
+
+        document
+            .querySelector("#tiptap-external-toolbar .button-image")
+            .dispatchEvent(new Event("pat-modal-ready"));
+        await utils.timeout(1);
+
+        document.querySelector("#image-panel [name=tiptap-src]").value =
+            "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAADElEQVQI12P4z8AAAAMBAQAY3Y2wAAAAAElFTkSuQmCC";
+        document.querySelector("#image-panel [name=tiptap-confirm]").dispatchEvent(new Event("click")); // prettier-ignore
+        await utils.timeout(1);
+
+        const img = document.querySelector(".tiptap-container figure img");
+        expect(img).toBeTruthy();
+        expect(img.src).toBe(
+            "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAADElEQVQI12P4z8AAAAMBAQAY3Y2wAAAAAElFTkSuQmCC"
+        );
+    });
 });

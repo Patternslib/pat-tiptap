@@ -391,7 +391,7 @@ export default Base.extend({
         }
 
         if (tb.image) {
-            extensions.push((await import("@tiptap/extension-image")).default);
+            extensions.push((await import("./extensions/image")).default);
         }
 
         if (tb.image || has_tables) {
