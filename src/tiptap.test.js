@@ -1,5 +1,5 @@
 import "regenerator-runtime/runtime"; // needed for ``await`` support
-import pattern from "./tiptap";
+import Pattern from "./tiptap";
 import utils from "@patternslib/patternslib/src/core/utils";
 
 describe("pat-tiptap", () => {
@@ -10,7 +10,7 @@ describe("pat-tiptap", () => {
     it("1 - is initialized correctly on textarea elements", async () => {
         document.body.innerHTML = `<textarea class="pat-tiptap">hello</textarea>`;
 
-        pattern.init(document.querySelector(".pat-tiptap"));
+        new Pattern(document.querySelector(".pat-tiptap"));
         await utils.timeout(1);
 
         expect(document.querySelector(".pat-tiptap").style.display).toBe("none"); // prettier-ignore
@@ -21,7 +21,7 @@ describe("pat-tiptap", () => {
     it("2 - is initialized correctly on div elements", async () => {
         document.body.innerHTML = `<div class="pat-tiptap" contenteditable>hello</div>`;
 
-        pattern.init(document.querySelector(".pat-tiptap"));
+        new Pattern(document.querySelector(".pat-tiptap"));
         await utils.timeout(1);
 
         expect(document.querySelector(".pat-tiptap").style.display).toBe("none"); // prettier-ignore
@@ -38,7 +38,7 @@ describe("pat-tiptap", () => {
           </textarea>
         `;
 
-        pattern.init(document.querySelector(".pat-tiptap"));
+        new Pattern(document.querySelector(".pat-tiptap"));
         await utils.timeout(1);
 
         expect(
@@ -57,7 +57,7 @@ describe("pat-tiptap", () => {
           </textarea>
         `;
 
-        pattern.init(document.querySelector(".pat-tiptap"));
+        new Pattern(document.querySelector(".pat-tiptap"));
         await utils.timeout(1);
         await utils.timeout(30); // wait some time before tiptap sets focus.
 
@@ -74,7 +74,7 @@ describe("pat-tiptap", () => {
           </textarea>
         `;
 
-        pattern.init(document.querySelector(".pat-tiptap"));
+        new Pattern(document.querySelector(".pat-tiptap"));
         await utils.timeout(1);
         await utils.timeout(30); // wait some time before tiptap sets focus.
 
@@ -93,7 +93,7 @@ describe("pat-tiptap", () => {
           </textarea>
         `;
 
-        pattern.init(document.querySelector(".pat-tiptap"));
+        new Pattern(document.querySelector(".pat-tiptap"));
         await utils.timeout(1);
 
         document.querySelector(".tiptap-container [contenteditable]").focus();
@@ -115,7 +115,7 @@ describe("pat-tiptap", () => {
           </textarea>
         `;
 
-        pattern.init(document.querySelector(".pat-tiptap"));
+        new Pattern(document.querySelector(".pat-tiptap"));
         await utils.timeout(1);
         await utils.timeout(30);
 
@@ -133,7 +133,7 @@ describe("pat-tiptap", () => {
           </textarea>
         `;
 
-        pattern.init(document.querySelector(".pat-tiptap"));
+        new Pattern(document.querySelector(".pat-tiptap"));
         await utils.timeout(1);
 
         document.querySelector("#tiptap-external-toolbar button").focus();
