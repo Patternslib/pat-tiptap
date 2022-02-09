@@ -75,3 +75,5 @@ export const Tag = TipTapMention.extend({
         ];
     },
 });
+
+export default Tag;

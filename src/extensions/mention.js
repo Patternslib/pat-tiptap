@@ -65,3 +65,5 @@ export const Mention = TipTapMention.extend({
         ];
     },
 });
+
+export default Mention;

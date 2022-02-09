@@ -1,5 +1,5 @@
 import "regenerator-runtime/runtime"; // needed for ``await`` support
-import pattern from "./tiptap";
+import Pattern from "./tiptap";
 import utils from "@patternslib/patternslib/src/core/utils";
 
 describe("pat-tiptap", () => {
@@ -10,7 +10,7 @@ describe("pat-tiptap", () => {
     it("1 - is initialized correctly on textarea elements", async () => {
         document.body.innerHTML = `<textarea class="pat-tiptap">hello</textarea>`;
 
-        pattern.init(document.querySelector(".pat-tiptap"));
+        new Pattern(document.querySelector(".pat-tiptap"));
         await utils.timeout(1);
 
         expect(document.querySelector(".pat-tiptap").style.display).toBe("none"); // prettier-ignore
@@ -21,7 +21,7 @@ describe("pat-tiptap", () => {
     it("2 - is initialized correctly on div elements", async () => {
         document.body.innerHTML = `<div class="pat-tiptap" contenteditable>hello</div>`;
 
-        pattern.init(document.querySelector(".pat-tiptap"));
+        new Pattern(document.querySelector(".pat-tiptap"));
         await utils.timeout(1);
 
         expect(document.querySelector(".pat-tiptap").style.display).toBe("none"); // prettier-ignore
@@ -38,7 +38,7 @@ describe("pat-tiptap", () => {
           </textarea>
         `;
 
-        pattern.init(document.querySelector(".pat-tiptap"));
+        new Pattern(document.querySelector(".pat-tiptap"));
         await utils.timeout(1);
 
         expect(
@@ -57,7 +57,7 @@ describe("pat-tiptap", () => {
           </textarea>
         `;
 
-        pattern.init(document.querySelector(".pat-tiptap"));
+        new Pattern(document.querySelector(".pat-tiptap"));
         await utils.timeout(1);
         await utils.timeout(30); // wait some time before tiptap sets focus.
 
@@ -74,7 +74,7 @@ describe("pat-tiptap", () => {
           </textarea>
         `;
 
-        pattern.init(document.querySelector(".pat-tiptap"));
+        new Pattern(document.querySelector(".pat-tiptap"));
         await utils.timeout(1);
         await utils.timeout(30); // wait some time before tiptap sets focus.
 
@@ -93,7 +93,7 @@ describe("pat-tiptap", () => {
           </textarea>
         `;
 
-        pattern.init(document.querySelector(".pat-tiptap"));
+        new Pattern(document.querySelector(".pat-tiptap"));
         await utils.timeout(1);
 
         document.querySelector(".tiptap-container [contenteditable]").focus();
@@ -115,7 +115,7 @@ describe("pat-tiptap", () => {
           </textarea>
         `;
 
-        pattern.init(document.querySelector(".pat-tiptap"));
+        new Pattern(document.querySelector(".pat-tiptap"));
         await utils.timeout(1);
         await utils.timeout(30);
 
@@ -133,7 +133,7 @@ describe("pat-tiptap", () => {
           </textarea>
         `;
 
-        pattern.init(document.querySelector(".pat-tiptap"));
+        new Pattern(document.querySelector(".pat-tiptap"));
         await utils.timeout(1);
 
         document.querySelector("#tiptap-external-toolbar button").focus();
@@ -141,5 +141,293 @@ describe("pat-tiptap", () => {
 
         document.querySelector("#tiptap-external-toolbar button").blur();
         expect(document.querySelector("#tiptap-external-toolbar").classList.length).toBe(0); // prettier-ignore
+    });
+
+    it("9.1 - Adds an image within <figure> tags including a <figcaption>", async () => {
+        document.body.innerHTML = `
+          <div id="tiptap-external-toolbar">
+            <button class="button-image">Image</button>
+          </div>
+          <textarea
+              class="pat-tiptap"
+              data-pat-tiptap="
+                toolbar-external: #tiptap-external-toolbar;
+                image-panel: #image-panel
+              ">
+          </textarea>
+          <form id="image-panel">
+            <input name="tiptap-src" type="text"/>
+            <input name="tiptap-alt"/>
+            <input name="tiptap-title"/>
+            <input name="tiptap-caption"/>
+            <button type="submit" name="tiptap-confirm">submit</button>
+          </form>
+        `;
+
+        new Pattern(document.querySelector(".pat-tiptap"));
+        await utils.timeout(1);
+
+        document
+            .querySelector("#tiptap-external-toolbar .button-image")
+            .dispatchEvent(new Event("pat-modal-ready"));
+        await utils.timeout(1);
+
+        document.querySelector("#image-panel [name=tiptap-src]").value = "https://path/to/image.png"; // prettier-ignore
+        document.querySelector("#image-panel [name=tiptap-alt]").value = "Alt text for image"; // prettier-ignore
+        document.querySelector("#image-panel [name=tiptap-title]").value = "Title text for image"; // prettier-ignore
+        document.querySelector("#image-panel [name=tiptap-caption]").value = "Caption text for image"; // prettier-ignore
+        document.querySelector("#image-panel [name=tiptap-confirm]").dispatchEvent(new Event("click")); // prettier-ignore
+        await utils.timeout(1);
+
+        const img = document.querySelector(".tiptap-container figure img");
+        expect(img).toBeTruthy();
+        expect(img.src).toBe("https://path/to/image.png");
+        expect(img.alt).toBe("Alt text for image");
+        expect(img.title).toBe("Title text for image");
+        const figcaption = document.querySelector(".tiptap-container figure figcaption");
+        expect(figcaption).toBeTruthy();
+        expect(figcaption.textContent).toBe("Caption text for image");
+    });
+
+    it("9.2 - Adds an image within <figure> tags but without a <figcaption>", async () => {
+        document.body.innerHTML = `
+          <div id="tiptap-external-toolbar">
+            <button class="button-image">Image</button>
+          </div>
+          <textarea
+              class="pat-tiptap"
+              data-pat-tiptap="
+                toolbar-external: #tiptap-external-toolbar;
+                image-panel: #image-panel
+              ">
+          </textarea>
+          <form id="image-panel">
+            <input name="tiptap-src" type="text"/>
+            <input name="tiptap-alt"/>
+            <input name="tiptap-title"/>
+            <input name="tiptap-caption"/>
+            <button type="submit" name="tiptap-confirm">submit</button>
+          </form>
+        `;
+
+        new Pattern(document.querySelector(".pat-tiptap"));
+        await utils.timeout(1);
+
+        document
+            .querySelector("#tiptap-external-toolbar .button-image")
+            .dispatchEvent(new Event("pat-modal-ready"));
+        await utils.timeout(1);
+
+        document.querySelector("#image-panel [name=tiptap-src]").value = "https://path/to/image.png"; // prettier-ignore
+        document.querySelector("#image-panel [name=tiptap-confirm]").dispatchEvent(new Event("click")); // prettier-ignore
+        await utils.timeout(1);
+
+        const img = document.querySelector(".tiptap-container figure img");
+        expect(img).toBeTruthy();
+        expect(img.src).toBe("https://path/to/image.png");
+        expect(img.alt).toBe("");
+        expect(img.title).toBe("");
+        const figcaption = document.querySelector(".tiptap-container figure figcaption");
+        expect(figcaption).toBeFalsy();
+    });
+
+    it("9.3 - Adds an image with base64 encoded image data", async () => {
+        document.body.innerHTML = `
+          <div id="tiptap-external-toolbar">
+            <button class="button-image">Image</button>
+          </div>
+          <textarea
+              class="pat-tiptap"
+              data-pat-tiptap="
+                toolbar-external: #tiptap-external-toolbar;
+                image-panel: #image-panel
+              ">
+          </textarea>
+          <form id="image-panel">
+            <input name="tiptap-src" type="text"/>
+            <button type="submit" name="tiptap-confirm">submit</button>
+          </form>
+        `;
+
+        new Pattern(document.querySelector(".pat-tiptap"));
+        await utils.timeout(1);
+
+        document
+            .querySelector("#tiptap-external-toolbar .button-image")
+            .dispatchEvent(new Event("pat-modal-ready"));
+        await utils.timeout(1);
+
+        document.querySelector("#image-panel [name=tiptap-src]").value =
+            "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAADElEQVQI12P4z8AAAAMBAQAY3Y2wAAAAAElFTkSuQmCC";
+        document.querySelector("#image-panel [name=tiptap-confirm]").dispatchEvent(new Event("click")); // prettier-ignore
+        await utils.timeout(1);
+
+        const img = document.querySelector(".tiptap-container figure img");
+        expect(img).toBeTruthy();
+        expect(img.src).toBe(
+            "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAADElEQVQI12P4z8AAAAMBAQAY3Y2wAAAAAElFTkSuQmCC"
+        );
+    });
+
+    it("10.1 - Add a YouTube embed", async () => {
+        document.body.innerHTML = `
+          <div id="tiptap-external-toolbar">
+            <button class="button-embed">Embed</button>
+          </div>
+          <textarea
+              class="pat-tiptap"
+              data-pat-tiptap="
+                toolbar-external: #tiptap-external-toolbar;
+                embed-panel: #embed-panel
+              ">
+          </textarea>
+          <form id="embed-panel">
+            <input name="tiptap-src" type="text"/>
+            <input name="tiptap-title"/>
+            <input name="tiptap-caption"/>
+            <button type="submit" name="tiptap-confirm">submit</button>
+          </form>
+        `;
+
+        new Pattern(document.querySelector(".pat-tiptap"));
+        await utils.timeout(1);
+
+        document
+            .querySelector("#tiptap-external-toolbar .button-embed")
+            .dispatchEvent(new Event("pat-modal-ready"));
+        await utils.timeout(1);
+
+        document.querySelector("#embed-panel [name=tiptap-src]").value = "https://www.youtube.com/embed/j8It1z7r1g4"; // prettier-ignore
+        document.querySelector("#embed-panel [name=tiptap-title]").value = "Title text for video"; // prettier-ignore
+        document.querySelector("#embed-panel [name=tiptap-caption]").value = "Caption text for video"; // prettier-ignore
+        document.querySelector("#embed-panel [name=tiptap-confirm]").dispatchEvent(new Event("click")); // prettier-ignore
+        await utils.timeout(1);
+
+        const iframe = document.querySelector(".tiptap-container figure iframe");
+        expect(iframe).toBeTruthy();
+
+        expect(iframe.src).toBe("https://www.youtube.com/embed/j8It1z7r1g4");
+        expect(iframe.title).toBe("Title text for video");
+        const figcaption = document.querySelector(".tiptap-container figure figcaption");
+        expect(figcaption).toBeTruthy();
+        expect(figcaption.textContent).toBe("Caption text for video");
+    });
+
+    it("10.2 - Add a YouTube embed and transform to embed URL", async () => {
+        document.body.innerHTML = `
+          <div id="tiptap-external-toolbar">
+            <button class="button-embed">Embed</button>
+          </div>
+          <textarea
+              class="pat-tiptap"
+              data-pat-tiptap="
+                toolbar-external: #tiptap-external-toolbar;
+                embed-panel: #embed-panel
+              ">
+          </textarea>
+          <form id="embed-panel">
+            <input name="tiptap-src" type="text"/>
+            <button type="submit" name="tiptap-confirm">submit</button>
+          </form>
+        `;
+
+        new Pattern(document.querySelector(".pat-tiptap"));
+        await utils.timeout(1);
+
+        document
+            .querySelector("#tiptap-external-toolbar .button-embed")
+            .dispatchEvent(new Event("pat-modal-ready"));
+        await utils.timeout(1);
+
+        document.querySelector("#embed-panel [name=tiptap-src]").value = "https://www.youtube.com/watch?v=j8It1z7r1g4"; // prettier-ignore
+        document.querySelector("#embed-panel [name=tiptap-confirm]").dispatchEvent(new Event("click")); // prettier-ignore
+        await utils.timeout(1);
+
+        const iframe = document.querySelector(".tiptap-container figure iframe");
+        expect(iframe).toBeTruthy();
+
+        // Normal YouTube URL is transformed to embed URL.
+        expect(iframe.src).toBe("https://www.youtube.com/embed/j8It1z7r1g4");
+    });
+
+    it("10.3 - Add a Vimeo embed", async () => {
+        document.body.innerHTML = `
+          <div id="tiptap-external-toolbar">
+            <button class="button-embed">Embed</button>
+          </div>
+          <textarea
+              class="pat-tiptap"
+              data-pat-tiptap="
+                toolbar-external: #tiptap-external-toolbar;
+                embed-panel: #embed-panel
+              ">
+          </textarea>
+          <form id="embed-panel">
+            <input name="tiptap-src" type="text"/>
+            <input name="tiptap-title"/>
+            <input name="tiptap-caption"/>
+            <button type="submit" name="tiptap-confirm">submit</button>
+          </form>
+        `;
+
+        new Pattern(document.querySelector(".pat-tiptap"));
+        await utils.timeout(1);
+
+        document
+            .querySelector("#tiptap-external-toolbar .button-embed")
+            .dispatchEvent(new Event("pat-modal-ready"));
+        await utils.timeout(1);
+
+        document.querySelector("#embed-panel [name=tiptap-src]").value = "https://player.vimeo.com/video/9206226"; // prettier-ignore
+        document.querySelector("#embed-panel [name=tiptap-title]").value = "Title text for video"; // prettier-ignore
+        document.querySelector("#embed-panel [name=tiptap-caption]").value = "Caption text for video"; // prettier-ignore
+        document.querySelector("#embed-panel [name=tiptap-confirm]").dispatchEvent(new Event("click")); // prettier-ignore
+        await utils.timeout(1);
+
+        const iframe = document.querySelector(".tiptap-container figure iframe");
+        expect(iframe).toBeTruthy();
+
+        expect(iframe.src).toBe("https://player.vimeo.com/video/9206226");
+        expect(iframe.title).toBe("Title text for video");
+        const figcaption = document.querySelector(".tiptap-container figure figcaption");
+        expect(figcaption).toBeTruthy();
+        expect(figcaption.textContent).toBe("Caption text for video");
+    });
+
+    it("10.4 - Add a Vimeo embed and transform to embed URL", async () => {
+        document.body.innerHTML = `
+          <div id="tiptap-external-toolbar">
+            <button class="button-embed">Embed</button>
+          </div>
+          <textarea
+              class="pat-tiptap"
+              data-pat-tiptap="
+                toolbar-external: #tiptap-external-toolbar;
+                embed-panel: #embed-panel
+              ">
+          </textarea>
+          <form id="embed-panel">
+            <input name="tiptap-src" type="text"/>
+            <button type="submit" name="tiptap-confirm">submit</button>
+          </form>
+        `;
+
+        new Pattern(document.querySelector(".pat-tiptap"));
+        await utils.timeout(1);
+
+        document
+            .querySelector("#tiptap-external-toolbar .button-embed")
+            .dispatchEvent(new Event("pat-modal-ready"));
+        await utils.timeout(1);
+
+        document.querySelector("#embed-panel [name=tiptap-src]").value = "https://vimeo.com/9206226"; // prettier-ignore
+        document.querySelector("#embed-panel [name=tiptap-confirm]").dispatchEvent(new Event("click")); // prettier-ignore
+        await utils.timeout(1);
+
+        const iframe = document.querySelector(".tiptap-container figure iframe");
+        expect(iframe).toBeTruthy();
+
+        // Normal YouTube URL is transformed to embed URL.
+        expect(iframe.src).toBe("https://player.vimeo.com/video/9206226");
     });
 });

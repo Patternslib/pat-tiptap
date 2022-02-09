@@ -9,7 +9,7 @@ See:
 - https://tiptap.dev/
 
 
-When invoking on an element, the element is hidden and it's value is synchronized with updates in the editor.
+When invoked on an element, the element is hidden and it's value is synchronized with updates in the editor.
 
 
 ### Usage
@@ -100,6 +100,7 @@ The following buttons need additional configuration to open an overlay with more
 - ``.button-link``
 - ``.button-image``
 - ``.button-source``
+- ``.button-embed``
 
 
 If these buttons are not available the associated functionality is not loaded, not initialized and not available.
@@ -140,14 +141,14 @@ This is the DOM structure with the overlay:
 The ``input[name=tiptap-href]`` is the only input element necessary.
 You can use these elements with these names:
 
-- ``tiptap-href``: Link url
-- ``tiptap-text``: Link text
+- ``tiptap-href``: Link URL.
+- ``tiptap-text``: Link text.
 - ``tiptap-target``: Indicates if the link should be opened in a new tab. The ``value`` needs to be set to the target name in which the link should be opened.
 - ``tiptap-confirm``: To save the changes back to the editor.
 - ``tiptap-remove``: To remove the link.
 
 You also need to configure ``pat-tiptap`` with the ``link-panel`` option which points to the form element in the overlay.
-pat-tiptap uses a ``MutationObserver`` to check for changes in the overlay's dom structure and re-initializes the functionality once the DOM structure changes.
+pat-tiptap uses a ``MutationObserver`` to check for changes in the overlay's DOM structure and re-initializes the functionality once the DOM structure changes.
 This way, you can use ``pat-inject``, ``pat-tabs``, ``pat-stacks`` or the like which changes the overlays content and always get the link panel form initlized.
 
 This is the related ``pat-tiptap`` config:
@@ -203,6 +204,8 @@ This is the pattern configuration:
 
 #### Adding a image selection overlay
 
+Images are placed in a ``figure`` tag and have an optional ``figcaption`` tag.
+
 The following button uses ``pat-modal`` to open a overlay, referenced by the CSS selector ``#modal-image`` in the same document.
 Note: You can also load the modal contents from any URL.
 
@@ -226,6 +229,10 @@ This is the DOM structure with the overlay:
           Alternative text:
           <input type="text" name="tiptap-alt"/>
         </label>
+        <label>
+          Caption:
+          <textarea name="tiptap-caption"></textarea>
+        </label>
         <button class="close-panel" type="button" name="tiptap-confirm">submit</button>
       </form>
     </div>
@@ -233,14 +240,15 @@ This is the DOM structure with the overlay:
 The ``input[name=tiptap-src]`` is the only input element necessary.
 You can use these elements with these names:
 
-- ``tiptap-src``: Image url for the src attribute
-- ``tiptap-title``: Image title attribute
-- ``tiptap-alt``: Image alt attribute
+- ``tiptap-src``: Image URL for the ``src`` attribute.
+- ``tiptap-title``: Image ``title`` attribute.
+- ``tiptap-alt``: Image ``alt`` attribute.
+- ``tiptap-caption``: Caption text placed in a ``figcaption`` tag.
 - ``tiptap-confirm``: To save the changes back to the editor.
 
 You also need to configure ``pat-tiptap`` with the ``image-panel`` option which points to the form element in the overlay.
-Also here, pat-tiptap uses a ``MutationObserver`` to check for changes in the overlay's dom structure and re-initializes the functionality once the DOM structure changes.
-This way, you can use ``pat-inject``, ``pat-tabs``, ``pat-stacks`` or the like which changes the overlays content and always get the link panel form initlized.
+pat-tiptap uses a ``MutationObserver`` to check for changes in the overlay's DOM structure and re-initializes the functionality once the DOM structure changes.
+This way, you can use ``pat-inject``, ``pat-tabs`` or ``pat-stacks`` which changes the overlay content and automatically get the form reinitialized.
 One idea would be to use a list of styled radio buttons with name ``tiptap-src`` and as value the URL of the image. This would then serve as a image selection widget.
 For an upload widget you can use a combination of ``pat-upload`` and ``pat-inject`` to upload a image and then return a form with a hidden ``tiptap-src`` input field with the value of the new image URL. If the form is then finally submitted via ``tiptap-confirm`` the image is set into the editor.
 
@@ -249,6 +257,59 @@ This is the related ``pat-tiptap`` config:
     data-pat-tiptap="
         image-panel: #pat-modal .image-panel;
     "
+
+
+#### Adding an embed overlay for videos
+
+With the embed functionality you can add YouTube and Vimeo videos to your document.
+You can use the embed URL or directly the link to the YouTube or Vimeo video page in which case the URLs are automatically changed to embed URLs.
+Embed videos are placed within a ``figure`` tag and can have an optional ``figcaption``.
+
+The following button uses ``pat-modal`` to open a overlay, referenced by the CSS selector ``#modal-embed`` in the same document.
+Note: You can also load the modal contents from any URL.
+
+    <a
+        class="button-embed pat-modal"
+        href="#modal-embed">Video</a>
+
+This is the DOM structure with the overlay:
+
+    <div id="modal-embed" hidden>
+      <form class="embed-panel">
+        <label>
+          Video URL:
+          <input type="text" name="tiptap-src"/>
+        </label>
+        <label>
+          Title:
+          <input type="text" name="tiptap-title"/>
+        </label>
+        <label>
+          Caption:
+          <textarea name="tiptap-caption"></textarea>
+        </label>
+        <button class="close-panel" type="button" name="tiptap-confirm">submit</button>
+      </form>
+    </div>
+
+The ``input[name=tiptap-src]`` is the only input element necessary.
+You can use these elements with these names:
+
+- ``tiptap-src``: Video URL for the ``src`` attribute, added to an ``iframe`` tag.
+- ``tiptap-title``: ``title`` attribute for the ``iframe`` tag.
+- ``tiptap-caption``: Caption text placed in a ``figcaption`` tag.
+- ``tiptap-confirm``: To save the changes back to the editor.
+
+You also need to configure ``pat-tiptap`` with the ``embed-panel`` option which points to the form element in the overlay.
+pat-tiptap uses a ``MutationObserver`` to check for changes in the overlay's DOM structure and re-initializes the functionality once the DOM structure changes.
+This way, you can use ``pat-inject``, ``pat-tabs`` or ``pat-stacks`` which changes the overlay content and automatically get the form reinitialized.
+
+This is the related ``pat-tiptap`` config:
+
+    data-pat-tiptap="
+        embed-panel: #pat-modal .embed-panel;
+    "
+
 
 #### Adding a source view overlay
 
@@ -281,7 +342,7 @@ You can use these elements with these names:
 - ``tiptap-confirm``: To save the changes back to the editor.
 
 You also need to configure ``pat-tiptap`` with the ``source-panel`` option which points to the form element in the overlay.
-pat-tiptap uses a ``MutationObserver`` to check for changes in the overlay's dom structure and re-initializes the functionality once the DOM structure changes.
+pat-tiptap uses a ``MutationObserver`` to check for changes in the overlay's DOM structure and re-initializes the functionality once the DOM structure changes.
 This way, you can use ``pat-inject``, ``pat-tabs``, ``pat-stacks`` or the like which changes the overlays content and always get the link panel form initlized.
 
 This is the related ``pat-tiptap`` config:
@@ -340,7 +401,7 @@ This is the pattern configuration:
     "
 
 ``context-menu-mentions``: CSS selector which points to a element in the current document or a URL from which the popup contents are loaded.
-``url-scheme-mentions``: The base url for the user profile which is opened when clicking the mentioned user. ``{USER}`` is replaced by the selected value.
+``url-scheme-mentions``: The base URL for the user profile which is opened when clicking the mentioned user. ``{USER}`` is replaced by the selected value.
 
 
 #### Adding #-tagging functionality
@@ -381,7 +442,7 @@ This is the pattern configuration:
     "
 
 ``context-menu-tags``: CSS selector which points to a element in the current document or a URL from which the popup contents are loaded.
-``url-scheme-tags``: The base url for the tagging search page which is opened when clicking the tagged item. ``{TAG}`` is replaced by the selected value.
+``url-scheme-tags``: The base URL for the tagging search page which is opened when clicking the tagged item. ``{TAG}`` is replaced by the selected value.
 
 
 #### Autofocus support
@@ -451,12 +512,7 @@ This is an CSS example to show the placeholder on any empty paragraph:
 | source-panel           | String | CSS selector pointing to the source form element in the overlay.     |
 | context-menu-link      | String | URL or CSS selector pointing to the link context menu contents.      |
 | context-menu-mentions  | String | URL or CSS selector pointing to the mentions context menu contents.  |
-| url-scheme-mentions    | String | The base url for the user profile which is opened when clicking the mentioned user. ``{USER}`` is replaced by the selected value. |
+| url-scheme-mentions    | String | The base URL for the user profile which is opened when clicking the mentioned user. ``{USER}`` is replaced by the selected value. |
 | context-menu-tags      | String | URL or CSS selector pointing to the tags context menu contents.      |
-| url-scheme-tags        | String | The base url for the tagging search page which is opened when clicking the tagged item. ``{TAG}`` is replaced by the selected value. |
-
-
-## TODO
-
-- Collaboration features
+| url-scheme-tags        | String | The base URL for the tagging search page which is opened when clicking the tagged item. ``{TAG}`` is replaced by the selected value. |
 
