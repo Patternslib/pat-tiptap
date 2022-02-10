@@ -375,6 +375,38 @@ describe("pat-tiptap", () => {
         );
     });
 
+    it("6.4 - Allow to parse inline images", async () => {
+        document.body.innerHTML = `
+          <div id="tiptap-external-toolbar">
+            <button class="button-image">Image</button>
+          </div>
+          <textarea
+              class="pat-tiptap"
+              data-pat-tiptap="
+                toolbar-external: #tiptap-external-toolbar;
+              ">
+            <img src="https://url.to/image-1" />
+            <p>
+                some text
+                <img src="https://url.to/image-2" />
+                more text
+                <img src="https://url.to/image-3" />
+            </p>
+          </textarea>
+        `;
+
+        new Pattern(document.querySelector(".pat-tiptap"));
+        await utils.timeout(1);
+
+        // Images are parsed and shown in the editor
+        expect(document.querySelectorAll(".tiptap-container img").length).toBe(3);
+
+        // Also those .ProseMirror-trailingBreak <br>s are added.
+        // Only two of them - there is inline content after the second image and ProseMirror doesn't add the extra <br> in that case.
+        // Also see: https://github.com/ProseMirror/prosemirror/issues/1241
+        expect(document.querySelectorAll(".ProseMirror-trailingBreak").length).toBe(2);
+    });
+
     it("7.1 - Add a YouTube embed", async () => {
         document.body.innerHTML = `
           <div id="tiptap-external-toolbar">

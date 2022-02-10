@@ -395,7 +395,8 @@ export default Base.extend({
         }
 
         if (tb.image) {
-            extensions.push((await import("./extensions/image")).default);
+            extensions.push((await import("./extensions/image-inline")).default);
+            extensions.push((await import("./extensions/image-figure")).default);
         }
 
         if (tb.embed) {
@@ -712,7 +713,7 @@ export default Base.extend({
                     type: "figure",
                     content: [
                         {
-                            type: "image",
+                            type: "image-figure",
                             attrs: {
                                 src: selected_image_src.value,
                                 ...(image_alt?.value && { alt: image_alt?.value }),
