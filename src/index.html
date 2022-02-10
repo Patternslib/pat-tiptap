@@ -146,7 +146,32 @@
             url-scheme-mentions: https://quaive.cornelis.amsterdam/users/{USER};
             context-menu-tags: #context-menu-tags;
             url-scheme-tags: https://quaive.cornelis.amsterdam/tags/{TAG}"
-          placeholder="Your poem goes here...">
+          placeholder="Your poem goes here..."
+          autocomplete="off"
+          >
+
+          <p>The following should show an image directly on the top-level</p>
+          <img
+            src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAIAAAD/gAIDAAAAkElEQVR42u3QMQ0AAAjAsPk3DRb4 eJpUQavhTIEsWbJkyUKBLFmyZMlCgSxZsmTJQoEsWbJkyUKBLFmyZMlCgSxZsmTJQoEsWbJkyUKB LFmyZMlCgSxZsmTJQoEsWbJkyUKBLFmyZMlCgSxZsmTJQoEsWbJkyUKBLFmyZMlCgSxZsmTJQoEs WbJkyUKBLFnPFse76yukbN6SAAAAAElFTkSuQmCC"
+            alt="blue image"
+            title="this is a blue image"
+            />
+          <figure>
+            <img
+              src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAIAAAD/gAIDAAAAkElEQVR42u3QMQ0AAAjAsPk3DRb4 eJpUQWviSoEsWbJkyUKBLFmyZMlCgSxZsmTJQoEsWbJkyUKBLFmyZMlCgSxZsmTJQoEsWbJkyUKB LFmyZMlCgSxZsmTJQoEsWbJkyUKBLFmyZMlCgSxZsmTJQoEsWbJkyUKBLFmyZMlCgSxZsmTJQoEs WbJkyUKBLFnfFrL06ytLHYipAAAAAElFTkSuQmCC"
+              alt="green image"
+              title="this is a green image"
+            />
+            <figcaption>Above is a image within a figure/img/figcaption structure.</figcaption>
+          </figure>
+          <p>Here is an inline-image. This image is allowed by our schema, parsed and displayed, but adding a new image will add it as and image within a figure tag.
+            <img
+              src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAIAAAD/gAIDAAAAkElEQVR42u3QMQ0AAAjAsPk3DRb4 eJpUQZviSIEsWbJkyUKBLFmyZMlCgSxZsmTJQoEsWbJkyUKBLFmyZMlCgSxZsmTJQoEsWbJkyUKB LFmyZMlCgSxZsmTJQoEsWbJkyUKBLFmyZMlCgSxZsmTJQoEsWbJkyUKBLFmyZMlCgSxZsmTJQoEs WbJkyUKBLFnvFp4t6yugc3LNAAAAAElFTkSuQmCC"
+              alt="red image"
+              title="this is a red image"
+              />
+          </p>
+
       </textarea>
 
     </section>
