@@ -29,6 +29,74 @@ describe("pat-tiptap", () => {
         expect(document.querySelector(".tiptap-container [contenteditable]").innerHTML).toBe("<p>hello</p>"); // prettier-ignore
     });
 
+    it("1.3 - Allow multiple instances of pat-tiptap", async () => {
+        document.body.innerHTML = `
+          <div id="tiptap-external-toolbar-1">
+            <button class="button-link">Link</button>
+          </div>
+          <textarea
+              class="pat-tiptap"
+              data-pat-tiptap="
+                toolbar-external: #tiptap-external-toolbar-1;
+                link-panel: #link-panel
+              ">
+          </textarea>
+
+          <div id="tiptap-external-toolbar-2">
+            <button class="button-link">Link</button>
+          </div>
+          <textarea
+              class="pat-tiptap"
+              data-pat-tiptap="
+                toolbar-external: #tiptap-external-toolbar-2;
+                link-panel: #link-panel
+              ">
+          </textarea>
+
+          <form id="link-panel">
+            <input name="tiptap-href"/>
+            <input name="tiptap-text"/>
+            <button type="submit" name="tiptap-confirm">submit</button>
+          </form>
+        `;
+
+        new Pattern(document.querySelectorAll(".pat-tiptap")[0]);
+        new Pattern(document.querySelectorAll(".pat-tiptap")[1]);
+        await utils.timeout(1);
+
+        document
+            .querySelector("#tiptap-external-toolbar-1 .button-link")
+            .dispatchEvent(new Event("pat-modal-ready"));
+        await utils.timeout(1);
+
+        document.querySelector("#link-panel [name=tiptap-href]").value = "https://url1.com/"; // prettier-ignore
+        document.querySelector("#link-panel [name=tiptap-text]").value = "Link text 1"; // prettier-ignore
+        document.querySelector("#link-panel [name=tiptap-confirm]").dispatchEvent(new Event("click")); // prettier-ignore
+        await utils.timeout(1);
+
+        document
+            .querySelector("#tiptap-external-toolbar-2 .button-link")
+            .dispatchEvent(new Event("pat-modal-ready"));
+        await utils.timeout(1);
+
+        document.querySelector("#link-panel [name=tiptap-href]").value = "https://url2.com/"; // prettier-ignore
+        document.querySelector("#link-panel [name=tiptap-text]").value = "Link text 2"; // prettier-ignore
+        document.querySelector("#link-panel [name=tiptap-confirm]").dispatchEvent(new Event("click")); // prettier-ignore
+        await utils.timeout(1);
+
+        const containers = document.querySelectorAll(".tiptap-container");
+
+        const anchor1 = containers[0].querySelector("a");
+        expect(anchor1).toBeTruthy();
+        expect(anchor1.href).toBe("https://url1.com/");
+        expect(anchor1.textContent).toBe("Link text 1");
+
+        const anchor2 = containers[1].querySelector("a");
+        expect(anchor2).toBeTruthy();
+        expect(anchor2.href).toBe("https://url2.com/");
+        expect(anchor2.textContent).toBe("Link text 2");
+    });
+
     it("2.1 - adds a placeholder element.", async () => {
         document.body.innerHTML = `
           <textarea

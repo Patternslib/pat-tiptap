@@ -30,20 +30,21 @@ export default Base.extend({
     name: "tiptap",
     trigger: ".pat-tiptap",
 
-    toolbar: {},
-    toolbar_el: null,
-
-    tooltip: null, // reference to open tooltips.
-    prev_node: null, // reference to previous selected node.
-
-    observer_link_panel: null,
-    observer_image_panel: null,
-    observer_embed_panel: null,
-    observer_source_panel: null,
-
-    dont_open_context_menu: false,
-
     async init() {
+        // Constructor
+        this.toolbar = {};
+        this.toolbar_el = null;
+        //
+        this.tooltip = null; // reference to open tooltips.
+        this.prev_node = null; // reference to previous selected node.
+        //
+        this.observer_link_panel = null;
+        this.observer_image_panel = null;
+        this.observer_embed_panel = null;
+        this.observer_source_panel = null;
+        //
+        this.dont_open_context_menu = false;
+
         const TipTap = (await import("@tiptap/core")).Editor;
         const ExtDocument = (await import("@tiptap/extension-document")).default;
         const ExtParagraph = (await import("@tiptap/extension-paragraph")).default;
