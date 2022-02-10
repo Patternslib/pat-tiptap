@@ -7,7 +7,7 @@ describe("pat-tiptap", () => {
         document.body.innerHTML = "";
     });
 
-    it("1 - is initialized correctly on textarea elements", async () => {
+    it("1.1 - is initialized correctly on textarea elements", async () => {
         document.body.innerHTML = `<textarea class="pat-tiptap">hello</textarea>`;
 
         new Pattern(document.querySelector(".pat-tiptap"));
@@ -18,7 +18,7 @@ describe("pat-tiptap", () => {
         expect(document.querySelector(".tiptap-container [contenteditable]").innerHTML).toBe("<p>hello</p>"); // prettier-ignore
     });
 
-    it("2 - is initialized correctly on div elements", async () => {
+    it("1.2 - is initialized correctly on div elements", async () => {
         document.body.innerHTML = `<div class="pat-tiptap" contenteditable>hello</div>`;
 
         new Pattern(document.querySelector(".pat-tiptap"));
@@ -29,7 +29,75 @@ describe("pat-tiptap", () => {
         expect(document.querySelector(".tiptap-container [contenteditable]").innerHTML).toBe("<p>hello</p>"); // prettier-ignore
     });
 
-    it("3 - adds a placeholder element.", async () => {
+    it("1.3 - Allow multiple instances of pat-tiptap", async () => {
+        document.body.innerHTML = `
+          <div id="tiptap-external-toolbar-1">
+            <button class="button-link">Link</button>
+          </div>
+          <textarea
+              class="pat-tiptap"
+              data-pat-tiptap="
+                toolbar-external: #tiptap-external-toolbar-1;
+                link-panel: #link-panel
+              ">
+          </textarea>
+
+          <div id="tiptap-external-toolbar-2">
+            <button class="button-link">Link</button>
+          </div>
+          <textarea
+              class="pat-tiptap"
+              data-pat-tiptap="
+                toolbar-external: #tiptap-external-toolbar-2;
+                link-panel: #link-panel
+              ">
+          </textarea>
+
+          <form id="link-panel">
+            <input name="tiptap-href"/>
+            <input name="tiptap-text"/>
+            <button type="submit" name="tiptap-confirm">submit</button>
+          </form>
+        `;
+
+        new Pattern(document.querySelectorAll(".pat-tiptap")[0]);
+        new Pattern(document.querySelectorAll(".pat-tiptap")[1]);
+        await utils.timeout(1);
+
+        document
+            .querySelector("#tiptap-external-toolbar-1 .button-link")
+            .dispatchEvent(new Event("pat-modal-ready"));
+        await utils.timeout(1);
+
+        document.querySelector("#link-panel [name=tiptap-href]").value = "https://url1.com/"; // prettier-ignore
+        document.querySelector("#link-panel [name=tiptap-text]").value = "Link text 1"; // prettier-ignore
+        document.querySelector("#link-panel [name=tiptap-confirm]").dispatchEvent(new Event("click")); // prettier-ignore
+        await utils.timeout(1);
+
+        document
+            .querySelector("#tiptap-external-toolbar-2 .button-link")
+            .dispatchEvent(new Event("pat-modal-ready"));
+        await utils.timeout(1);
+
+        document.querySelector("#link-panel [name=tiptap-href]").value = "https://url2.com/"; // prettier-ignore
+        document.querySelector("#link-panel [name=tiptap-text]").value = "Link text 2"; // prettier-ignore
+        document.querySelector("#link-panel [name=tiptap-confirm]").dispatchEvent(new Event("click")); // prettier-ignore
+        await utils.timeout(1);
+
+        const containers = document.querySelectorAll(".tiptap-container");
+
+        const anchor1 = containers[0].querySelector("a");
+        expect(anchor1).toBeTruthy();
+        expect(anchor1.href).toBe("https://url1.com/");
+        expect(anchor1.textContent).toBe("Link text 1");
+
+        const anchor2 = containers[1].querySelector("a");
+        expect(anchor2).toBeTruthy();
+        expect(anchor2.href).toBe("https://url2.com/");
+        expect(anchor2.textContent).toBe("Link text 2");
+    });
+
+    it("2.1 - adds a placeholder element.", async () => {
         document.body.innerHTML = `
           <textarea
                 class="pat-tiptap"
@@ -48,7 +116,7 @@ describe("pat-tiptap", () => {
         ).toBeTruthy();
     });
 
-    it("4 - sets focus with the autofocus attribute", async () => {
+    it("3.1 - sets focus with the autofocus attribute", async () => {
         document.body.innerHTML = `
           <textarea
                 class="pat-tiptap"
@@ -65,7 +133,7 @@ describe("pat-tiptap", () => {
         expect(document.querySelector("*:focus")).toBe(editor_el);
     });
 
-    it("5 - sets focus with the pat-autofocus class", async () => {
+    it("3.2 - sets focus with the pat-autofocus class", async () => {
         document.body.innerHTML = `
           <textarea
                 class="pat-tiptap pat-autofocus"
@@ -82,7 +150,7 @@ describe("pat-tiptap", () => {
         expect(document.querySelector("*:focus")).toBe(editor_el);
     });
 
-    it("6 - un/sets focus on the toolbar", async () => {
+    it("4.1 - un/sets focus on the toolbar", async () => {
         document.body.innerHTML = `
           <div id="tiptap-external-toolbar"></div>
           <textarea
@@ -103,7 +171,7 @@ describe("pat-tiptap", () => {
         expect(document.querySelector("#tiptap-external-toolbar").classList.length).toBe(0); // prettier-ignore
     });
 
-    it("7 - un/sets focus on the toolbar with autofocus", async () => {
+    it("4.2 - un/sets focus on the toolbar with autofocus", async () => {
         document.body.innerHTML = `
           <div id="tiptap-external-toolbar"></div>
           <textarea
@@ -122,7 +190,7 @@ describe("pat-tiptap", () => {
         expect(document.querySelector("#tiptap-external-toolbar").classList[0]).toBe("tiptap-focus"); // prettier-ignore
     });
 
-    it("8 - un/sets focus on the toolbar when clicking into the toolbar", async () => {
+    it("4.3 - un/sets focus on the toolbar when clicking into the toolbar", async () => {
         document.body.innerHTML = `
           <div id="tiptap-external-toolbar"><button>click</button></div>
           <textarea
@@ -143,7 +211,45 @@ describe("pat-tiptap", () => {
         expect(document.querySelector("#tiptap-external-toolbar").classList.length).toBe(0); // prettier-ignore
     });
 
-    it("9.1 - Adds an image within <figure> tags including a <figcaption>", async () => {
+    it("5.1 - Adds a link", async () => {
+        document.body.innerHTML = `
+          <div id="tiptap-external-toolbar">
+            <button class="button-link">Link</button>
+          </div>
+          <textarea
+              class="pat-tiptap"
+              data-pat-tiptap="
+                toolbar-external: #tiptap-external-toolbar;
+                link-panel: #link-panel
+              ">
+          </textarea>
+          <form id="link-panel">
+            <input name="tiptap-href"/>
+            <input name="tiptap-text"/>
+            <button type="submit" name="tiptap-confirm">submit</button>
+          </form>
+        `;
+
+        new Pattern(document.querySelector(".pat-tiptap"));
+        await utils.timeout(1);
+
+        document
+            .querySelector("#tiptap-external-toolbar .button-link")
+            .dispatchEvent(new Event("pat-modal-ready"));
+        await utils.timeout(1);
+
+        document.querySelector("#link-panel [name=tiptap-href]").value = "https://patternslib.com/"; // prettier-ignore
+        document.querySelector("#link-panel [name=tiptap-text]").value = "Link text"; // prettier-ignore
+        document.querySelector("#link-panel [name=tiptap-confirm]").dispatchEvent(new Event("click")); // prettier-ignore
+        await utils.timeout(1);
+
+        const anchor = document.querySelector(".tiptap-container a");
+        expect(anchor).toBeTruthy();
+        expect(anchor.href).toBe("https://patternslib.com/");
+        expect(anchor.textContent).toBe("Link text");
+    });
+
+    it("6.1 - Adds an image within <figure> tags including a <figcaption>", async () => {
         document.body.innerHTML = `
           <div id="tiptap-external-toolbar">
             <button class="button-image">Image</button>
@@ -189,7 +295,7 @@ describe("pat-tiptap", () => {
         expect(figcaption.textContent).toBe("Caption text for image");
     });
 
-    it("9.2 - Adds an image within <figure> tags but without a <figcaption>", async () => {
+    it("6.2 - Adds an image within <figure> tags but without a <figcaption>", async () => {
         document.body.innerHTML = `
           <div id="tiptap-external-toolbar">
             <button class="button-image">Image</button>
@@ -231,7 +337,7 @@ describe("pat-tiptap", () => {
         expect(figcaption).toBeFalsy();
     });
 
-    it("9.3 - Adds an image with base64 encoded image data", async () => {
+    it("6.3 - Adds an image with base64 encoded image data", async () => {
         document.body.innerHTML = `
           <div id="tiptap-external-toolbar">
             <button class="button-image">Image</button>
@@ -269,7 +375,7 @@ describe("pat-tiptap", () => {
         );
     });
 
-    it("10.1 - Add a YouTube embed", async () => {
+    it("7.1 - Add a YouTube embed", async () => {
         document.body.innerHTML = `
           <div id="tiptap-external-toolbar">
             <button class="button-embed">Embed</button>
@@ -313,7 +419,7 @@ describe("pat-tiptap", () => {
         expect(figcaption.textContent).toBe("Caption text for video");
     });
 
-    it("10.2 - Add a YouTube embed and transform to embed URL", async () => {
+    it("7.2 - Add a YouTube embed and transform to embed URL", async () => {
         document.body.innerHTML = `
           <div id="tiptap-external-toolbar">
             <button class="button-embed">Embed</button>
@@ -350,7 +456,7 @@ describe("pat-tiptap", () => {
         expect(iframe.src).toBe("https://www.youtube.com/embed/j8It1z7r1g4");
     });
 
-    it("10.3 - Add a Vimeo embed", async () => {
+    it("7.3 - Add a Vimeo embed", async () => {
         document.body.innerHTML = `
           <div id="tiptap-external-toolbar">
             <button class="button-embed">Embed</button>
@@ -394,7 +500,7 @@ describe("pat-tiptap", () => {
         expect(figcaption.textContent).toBe("Caption text for video");
     });
 
-    it("10.4 - Add a Vimeo embed and transform to embed URL", async () => {
+    it("7.4 - Add a Vimeo embed and transform to embed URL", async () => {
         document.body.innerHTML = `
           <div id="tiptap-external-toolbar">
             <button class="button-embed">Embed</button>
