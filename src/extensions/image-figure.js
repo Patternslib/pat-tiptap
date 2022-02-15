@@ -1,4 +1,5 @@
 import { Node, mergeAttributes } from "@tiptap/core";
+import { Plugin } from "prosemirror-state";
 
 const ImageFigure = Node.create({
     name: "image-figure",
@@ -43,6 +44,22 @@ const ImageFigure = Node.create({
 
     renderHTML({ HTMLAttributes }) {
         return ["img", mergeAttributes(this.options.HTMLAttributes, HTMLAttributes)];
+    },
+
+    addProseMirrorPlugins() {
+        return [
+            new Plugin({
+                props: {
+                    handleDOMEvents: {
+                        dragstart: (view, event) => {
+                            // prevent drag/drop at all.
+                            event.preventDefault();
+                            return false;
+                        },
+                    },
+                },
+            }),
+        ];
     },
 });
 
