@@ -1,3 +1,46 @@
+## [2.1.0](https://github.com/patternslib/pat-tiptap/compare/2.0.2...2.1.0) (2022-02-15)
+
+
+### Features
+
+* **Embed:** Add extension to embed vimeo/youtube/etc media files as iframe. ([6d75426](https://github.com/patternslib/pat-tiptap/commit/6d75426b8bdf3cffc792c2eb1ed4f11fd8287641))
+
+* **Embed:** Support Vimeo and Youtube URLs and fix URLs if necessary. ([47f9ff0](https://github.com/patternslib/pat-tiptap/commit/47f9ff00c916568ababc49bec75ee6f8f29c9474))
+
+* **Images:** Add images within a figure tag with optional figcaption. ([72ac9ac](https://github.com/patternslib/pat-tiptap/commit/72ac9ac5a78d11e34b37833055269a995ae9c69b))
+
+* **Images:** Allow inline images and non-inline (within figure tags) images at the same time. ([8052b23](https://github.com/patternslib/pat-tiptap/commit/8052b239e458a3471b1a0360dc2e9b5dd15bddb5))
+
+
+
+### Bug Fixes
+
+* Allow tiptap to be instantiated multiple times. ([f5289ff](https://github.com/patternslib/pat-tiptap/commit/f5289ff097b75f7c762994a2d484deb534e69aab))
+
+* **Images:** Add custom image extension to also allow images with data src. ([29b5043](https://github.com/patternslib/pat-tiptap/commit/29b5043c9492aff57524a0508abe55b3eee1ab02))
+
+* **Images:** Do not allow any drag/drop of images within figure tags as long this doesn't work properly. ([c49f66a](https://github.com/patternslib/pat-tiptap/commit/c49f66a5f264ecd7b8b215341463f094775e3413))
+
+
+
+### Maintenance
+
+* **demo:** Adapt to new publicPath setting of Patternslib. ([8042ac0](https://github.com/patternslib/pat-tiptap/commit/8042ac057baef8e21460297f9d4cea8df3c755ad))
+
+* **Demo:** Add example to demo with an top-level, a figure and an inline image. ([ffc3dd2](https://github.com/patternslib/pat-tiptap/commit/ffc3dd26ddbe417525e4664d0897d3aa199c350b))
+
+* **demo:** Use template-tags for UI elements instead of the hidden attribute. ([446ecf1](https://github.com/patternslib/pat-tiptap/commit/446ecf126585f08a7eacec7fb642f99dbf784a30))
+
+* **Dependencies:** Upgrade dependencies. ([29a94ab](https://github.com/patternslib/pat-tiptap/commit/29a94abe2eb46a06552e909efb9b95925ba6a502))
+
+* **Docs:** Rework for some minor typos. ([33ce18c](https://github.com/patternslib/pat-tiptap/commit/33ce18ca0e917cb61ed76fac50e6fbab63e0db03))
+
+* **Extensions:** Provide default exports for Mentions and Tags, so that they can conveniently be imported. ([4a07fb9](https://github.com/patternslib/pat-tiptap/commit/4a07fb98da70e73deeb033d9d1357157dc640086))
+
+* **Tests:** Add link panel test and restructure test names. ([6234dff](https://github.com/patternslib/pat-tiptap/commit/6234dffce628b37f287169012bd7a2fc2f55910d))
+
+* **Tests:** Instantiate Pattern via new to set up everything as expected. ([0a61ecb](https://github.com/patternslib/pat-tiptap/commit/0a61ecb25ac2e15701c081dd4a5c77fdb842631b))
+
 ### [2.0.2](https://github.com/patternslib/pat-tiptap/compare/2.0.1...2.0.2) (2022-01-28)
 
 
