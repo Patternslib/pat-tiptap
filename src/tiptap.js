@@ -35,6 +35,8 @@ parser.addAlias("context-menu-link", "link-menu");
 parser.addAlias("context-menu-mentions", "mentions-menu");
 parser.addAlias("context-menu-tags", "tags-menu");
 
+let collaboration_states = [];
+
 class Pattern extends BasePattern {
     static name = "tiptap";
     static trigger = ".pat-tiptap";
@@ -143,14 +145,22 @@ class Pattern extends BasePattern {
 
             // Set up the Hocuspocus WebSocket provider
             const HocuspocusProvider = (await import("@hocuspocus/provider")).HocuspocusProvider; // prettier-ignore
+            const YDoc = (await import("yjs")).Doc;
+            const y_doc = new YDoc();
             const provider = new HocuspocusProvider({
                 url: this.options.collaboration.server,
                 name: this.options.collaboration.document,
+                document: y_doc,
                 token: this.options.collaboration["authentication-token"],
+                onAwarenessUpdate: ({ states }) => {
+                    collaboration_states = states;
+                },
             });
+
             provider.setAwarenessField("user", {
                 name: user_name,
                 color: user_color,
+                document_name: this.options.collaboration.document,
             });
 
             // Wait for user being authenticated
@@ -160,9 +170,15 @@ class Pattern extends BasePattern {
                 );
             await authenticated();
 
+            // Wait for user being authenticated
+            const synced = () =>
+                new Promise((resolve) => provider.on("synced", resolve, { once: true }));
+            await synced();
+
             const connected_users = [...provider.awareness.states.values()].map(
                 (it) => it.user
             );
+
             if (connected_users.length === 1) {
                 // it's only me.
                 config["content"] = getText();
@@ -171,6 +187,20 @@ class Pattern extends BasePattern {
                     Other connected user will get their text from the collaboration server.
                 `);
             }
+
+            debugger;
+
+            console.log("provider");
+            console.log(provider);
+
+            console.log("collaboration states");
+            console.log(collaboration_states);
+
+            console.log("awareness states");
+            console.log(provider.awareness.states);
+
+            console.log("connected users");
+            console.log(connected_users);
 
             // Collaboration extension
             const Collaboration = (
