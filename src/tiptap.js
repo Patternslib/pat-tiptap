@@ -175,20 +175,29 @@ class Pattern extends BasePattern {
                 new Promise((resolve) => provider.on("synced", resolve, { once: true }));
             await synced();
 
+            // Attempt 1: Only if the y_doc is the same as the document on the provider object,
+            //            which I believe should be returned from the hocuspocus server.
+            //            The problem here is, that also for the second connection with another browser
+            //            returns true for the following if clause.
+            if (y_doc === provider.document) {
+                // Initialize the tiptap editor later with some initial content.
+                config["content"] = getText();
+            }
+
+            // Attempt 2: Only for the first connecting user.
+            //            The problem here is that I apparently do not reliably get the number of connected users.
+            //            With two browsers connecting, one time I get 0 users, one time 1 user, another time 2.
             const connected_users = [...provider.awareness.states.values()].map(
                 (it) => it.user
             );
-
             if (connected_users.length === 1) {
-                // it's only me.
+                // Initialize the tiptap editor later with some initial content.
                 config["content"] = getText();
                 log.info(`
                     This is the main instance and gets text from textfield.
                     Other connected user will get their text from the collaboration server.
                 `);
             }
-
-            debugger;
 
             console.log("provider");
             console.log(provider);
