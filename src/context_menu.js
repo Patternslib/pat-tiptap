@@ -1,18 +1,19 @@
 import Registry from "@patternslib/patternslib/src/core/registry";
-import utils from "@patternslib/patternslib/src/core/utils";
+import events from "@patternslib/patternslib/src/core/events";
 import patTooltip from "@patternslib/patternslib/src/pat/tooltip/tooltip";
 import { posToDOMRect } from "@tiptap/core";
 
-let TOOLTIP = null;
+export let CONTEXT_MENU_TOOLTIP = null;
 let PREV_NODE = null;
 
-export async function context_menu(
+export async function context_menu({
     url,
     editor,
     should_show_cb = null,
     register_pattern = null,
-    extra_class = null
-) {
+    extra_class = null,
+    force_reload = false,
+}) {
     const prev_node = PREV_NODE;
     const cur_node = (PREV_NODE = editor.state.doc.nodeAt(editor.state.selection.from));
 
@@ -28,7 +29,12 @@ export async function context_menu(
         return;
     }
 
-    if (!TOOLTIP) {
+    if (force_reload && CONTEXT_MENU_TOOLTIP !== null) {
+        CONTEXT_MENU_TOOLTIP.destroy();
+        CONTEXT_MENU_TOOLTIP = null;
+    }
+
+    if (!CONTEXT_MENU_TOOLTIP) {
         // Only re-initialize when not already opened.
 
         // 1) Dynamically register a pattern to be used in the context menu
@@ -41,16 +47,18 @@ export async function context_menu(
 
         // 2) Initialize the tooltip
         const editor_element = editor.options.element;
-        TOOLTIP = await new patTooltip(editor_element, {
+        CONTEXT_MENU_TOOLTIP = await new patTooltip(editor_element, {
             "source": "ajax",
             "url": url,
             "trigger": "none",
             "class": extra_class,
             "position-list": ["tm"],
         });
-        await utils.timeout(50); // wait some time until tippy is here.
+
+        await events.await_pattern_init(CONTEXT_MENU_TOOLTIP);
     }
-    TOOLTIP.tippy?.setProps({
+
+    CONTEXT_MENU_TOOLTIP.tippy?.setProps({
         getReferenceClientRect: () => {
             return posToDOMRect(
                 editor.view,
@@ -59,15 +67,17 @@ export async function context_menu(
             );
         },
     });
-    TOOLTIP.show();
-    return TOOLTIP;
+
+    CONTEXT_MENU_TOOLTIP.show();
+
+    return CONTEXT_MENU_TOOLTIP;
 }
 
 export function context_menu_close(unregister_pattern_name) {
-    if (TOOLTIP) {
-        TOOLTIP.hide();
-        TOOLTIP.destroy();
-        TOOLTIP = null;
+    if (CONTEXT_MENU_TOOLTIP) {
+        CONTEXT_MENU_TOOLTIP.hide();
+        CONTEXT_MENU_TOOLTIP.destroy();
+        CONTEXT_MENU_TOOLTIP = null;
     }
     if (unregister_pattern_name) {
         delete Registry.patterns[unregister_pattern_name];

@@ -8,9 +8,6 @@
       .tiptap-focus {
         border: 2px solid red;
       }
-      section {
-        margin-bottom: 6em;
-      }
       .tiptap-editor__content {
         border: 1px solid black;
         padding: 1em;
@@ -142,10 +139,10 @@
             source-panel: #pat-modal .source-panel;
             embed-panel: #pat-modal .embed-panel;
             context-menu-link: #context-menu-link;
-            context-menu-mentions: #context-menu-mentions;
-            url-scheme-mentions: https://quaive.cornelis.amsterdam/users/{USER};
-            context-menu-tags: #context-menu-tags;
-            url-scheme-tags: https://quaive.cornelis.amsterdam/tags/{TAG}"
+            context-menu-mentions: ./index-mentions-results.html;
+            context-menu-tags: ./index-tags-results.html?okay=1234;
+            mentions-search-key: u;
+            tags-search-key: q"
           placeholder="Your poem goes here..."
           autocomplete="off"
           >
@@ -281,38 +278,6 @@
             class="close-panel tiptap-unlink">Unlink</button>
         </li>
       </ul>
-    </template>
-
-    <template id="context-menu-mentions">
-      <form class="pat-checklist pat-autosubmit tiptap-mentions-context-menu">
-        <ul>
-          <li>
-            <label><input name="mention" type="checkbox" value="hans" />hans</label>
-          </li>
-          <li>
-            <label><input name="mention" type="checkbox" value="franz" />franz</label>
-          </li>
-          <li>
-            <label><input name="mention" type="checkbox" value="sepp" />sepp</label>
-          </li>
-        </ul>
-      </form>
-    </template>
-
-    <template id="context-menu-tags">
-      <form class="pat-checklist pat-autosubmit tiptap-tags-context-menu">
-        <ul>
-          <li>
-            <label><input name="tag" type="checkbox" value="I ♥ UTF-8" />I ♥ UTF-8</label>
-          </li>
-          <li>
-            <label><input name="tag" type="checkbox" value="music" />music</label>
-          </li>
-          <li>
-            <label><input name="tag" type="checkbox" value="books" />books</label>
-          </li>
-        </ul>
-      </form>
     </template>
 
   </body>

@@ -352,97 +352,57 @@ This is the related ``pat-tiptap`` config:
     "
 
 
-#### Adding @-mentions functionality
+#### Adding suggestion functionality
 
-You can provide a mentioning functionality which is invoked by the ``@`` key and references a person - or actually anything you provide in the list.
-Similar to the overlays described above, the selectable items are provided via form elements, e.g. checkboxes or radiobuttons.
-This form element is opened in a ``pat-tooltip`` popup.
-When the form is submitted - e.g. after selecting one element and submitting via ``pat-autosubmit`` - the value of the selected element is inserted as text and the URL to a profile page is constructed using the ``url-scheme-mentions`` parameter.
+You can use the suggestion functionality to reference other content.
+It is invoked by a suggestion-character - like ``@`` for mentions or ``#`` for tags.
+When the suggestion overlay is opened, the list reloads from the server with the entered text as filter submitted as query string.
+You can use the mouse to select an item or the arrow keys to move up/down, enter for select and escape to close the tooltip.
 
-This is the container with the form element which is used as content for the ``pat-tooltip`` popup:
+When you select an item the text is replaced with a link which contains the attributes from the original link from the overlay:
 
-    <div id="context-menu-mentions" hidden>
-      <form class="pat-checklist pat-autosubmit tiptap-mentions-context-menu">
-        <ul>
-          <li>
-            <label>
-            <input
-                name="mention"
-                type="checkbox"
-                value="hans" />hans</label>
-          </li>
-          <li>
-            <label>
-            <input
-                name="mention"
-                type="checkbox"
-                value="franz" />franz</label>
-          </li>
-          <li>
-            <label>
-            <input
-                name="mention"
-                type="checkbox"
-                value="sepp" />sepp</label>
-          </li>
-        </ul>
-      </form>
-    </div>
-
-The form needs include the ``tiptap-mentions-context-menu`` class.
-The individual input elements which indicate a user need to have the name ``mention`` and a value which can be used to construct a URL via the ``url-scheme-mentions`` parameter explained below.
+    - class
+    - href
+    - target
+    - title
+    - data-pat-inject
+    - data-pat-forward
+    - data-pat-modal
+    - data-pat-switch
+    - data-pat-toggle
+    - data-pat-tooltip
 
 
-This is the pattern configuration:
+The suggestion list which is fetched from the server needs to wrap the individual suggestion items which need to be an ``<a>`` tag with an element which:
 
-    data-pat-tiptap="
-        context-menu-mentions: #context-menu-mentions;
-        url-scheme-mentions: https://quaive.cornelis.amsterdam/users/{USER};
-    "
+- has a ``tiptap-item`` class,
+- and a ``data-tiptap-value`` attribute, which contains the text which as content for the resulting ``<a>`` tag.
 
-``context-menu-mentions``: CSS selector which points to a element in the current document or a URL from which the popup contents are loaded.
-``url-scheme-mentions``: The base URL for the user profile which is opened when clicking the mentioned user. ``{USER}`` is replaced by the selected value.
+The whole content needs to be wrapped by an element which contains the ``tiptap-suggestion`` class.
+This class is used to initlize the keyboard and mouse navigation for the overlay.
 
+This is an example:
 
-#### Adding #-tagging functionality
-
-Similar to the mentioning functionality you can provide a tagging functionality which is invoked by the ``#`` key and references a category or tag - or actually anything you provide in the list.
-The selectable items are provided via form elements, e.g. checkboxes or radiobuttons.
-This form element is opened in a ``pat-tooltip`` popup.
-When the form is submitted - e.g. after selecting one element and submitting via ``pat-autosubmit`` - the value of the selected element is inserted as text and the URL to a tag-search page is constructed using the ``url-scheme-tags`` parameter.
-
-This is the container with the form element which is used as content for the ``pat-tooltip`` popup:
-
-    <div id="context-menu-tags" hidden>
-      <form class="pat-checklist pat-autosubmit tiptap-tags-context-menu">
-        <ul>
-          <li>
-            <label><input name="tag" type="checkbox" value="I ♥ UTF-8" />I ♥ UTF-8</label>
-          </li>
-          <li>
-            <label><input name="tag" type="checkbox" value="music" />music</label>
-          </li>
-          <li>
-            <label><input name="tag" type="checkbox" value="books" />books</label>
-          </li>
-        </ul>
-      </form>
-    </div>
+        <section class="tiptap-suggestion">
+          <ul>
+            <li class="tiptap-item" data-tiptap-value="hans"><a href="https://example.com/~hans" target="_blank">Hans</a></li>
+            <li class="tiptap-item" data-tiptap-value="franz"><a href="https://example.com/~franz" target="_blank">Franz</a></li>
+            <li class="tiptap-item" data-tiptap-value="sepp"><a href="https://example.com/~sepp" target="_blank">Sepp</a></li>
+          </ul>
+        </section>
 
 
-The form needs include the ``tiptap-tags-context-menu`` class.
-The individual input elements which indicate a tag need to have the name ``tag`` and a value which can be used to construct a URL via the ``url-scheme-tags`` parameter explained below.
+You configure the suggestion functionality like follows.
 
-
-This is the pattern configuration:
-
-    data-pat-tiptap="
-        context-menu-tags: #context-menu-tags;
-        url-scheme-tags: https://quaive.cornelis.amsterdam/tags/{TAG}";
-    "
-
-``context-menu-tags``: CSS selector which points to a element in the current document or a URL from which the popup contents are loaded.
-``url-scheme-tags``: The base URL for the tagging search page which is opened when clicking the tagged item. ``{TAG}`` is replaced by the selected value.
+    <textarea
+        class="pat-tiptap pat-autofocus"
+        data-pat-tiptap="
+          context-menu-mentions: ./mentions-results.html;
+          context-menu-tags: ./tags-results.html;
+          mentions-search-key: user;
+          tags-search-key: tags"
+        >
+    </textarea>
 
 
 #### Autofocus support
@@ -504,15 +464,15 @@ This is an CSS example to show the placeholder on any empty paragraph:
 
 ### Options reference
 
-| Property               | Type   | Description                                                          |
-| ---------------------- | ------ | -------------------------------------------------------------------- |
-| toolbar-external       | String | CSS selector pointing to a toolbar container.                        |
-| link-panel             | String | CSS selector pointing to the link form element in the overlay.       |
-| image-panel            | String | CSS selector pointing to the image form element in the overlay.      |
-| source-panel           | String | CSS selector pointing to the source form element in the overlay.     |
-| context-menu-link      | String | URL or CSS selector pointing to the link context menu contents.      |
-| context-menu-mentions  | String | URL or CSS selector pointing to the mentions context menu contents.  |
-| url-scheme-mentions    | String | The base URL for the user profile which is opened when clicking the mentioned user. ``{USER}`` is replaced by the selected value. |
-| context-menu-tags      | String | URL or CSS selector pointing to the tags context menu contents.      |
-| url-scheme-tags        | String | The base URL for the tagging search page which is opened when clicking the tagged item. ``{TAG}`` is replaced by the selected value. |
+| Property               | Type   | Description                                                                        |
+| ---------------------- | ------ | ---------------------------------------------------------------------------------- |
+| toolbar-external       | String | CSS selector pointing to a toolbar container.                                      |
+| link-panel             | String | CSS selector pointing to the link form element in the overlay.                     |
+| image-panel            | String | CSS selector pointing to the image form element in the overlay.                    |
+| source-panel           | String | CSS selector pointing to the source form element in the overlay.                   |
+| context-menu-link      | String | URL or CSS selector pointing to the link context menu contents.                    |
+| context-menu-mentions  | String | URL or CSS selector pointing to the mentions context menu contents.                |
+| context-menu-tags      | String | URL or CSS selector pointing to the tags context menu contents.                    |
+| mentions-search-key    | String | Query string key for the mentions filter value which is transferred to the server. |
+| tags-search-key        | String | Query string key for the tags filter value which is transferred to the server.     |
 

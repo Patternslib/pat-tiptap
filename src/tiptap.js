@@ -4,6 +4,7 @@ import Parser from "@patternslib/patternslib/src/core/parser";
 import events from "@patternslib/patternslib/src/core/events";
 import logging from "@patternslib/patternslib/src/core/logging";
 import utils from "@patternslib/patternslib/src/core/utils";
+import { context_menu, context_menu_close } from "./context_menu";
 
 const log = logging.getLogger("tiptap");
 
@@ -19,12 +20,11 @@ parser.addArgument("link-panel", null);
 parser.addArgument("source-panel", null);
 
 parser.addArgument("context-menu-link", null);
-
 parser.addArgument("context-menu-mentions", null);
-parser.addArgument("url-scheme-mentions", null);
-
 parser.addArgument("context-menu-tags", null);
-parser.addArgument("url-scheme-tags", null);
+
+parser.addArgument("mentions-search-key", null);
+parser.addArgument("tags-search-key", null);
 
 export default Base.extend({
     name: "tiptap",
@@ -49,10 +49,7 @@ export default Base.extend({
         const ExtDocument = (await import("@tiptap/extension-document")).default;
         const ExtParagraph = (await import("@tiptap/extension-paragraph")).default;
         const ExtText = (await import("@tiptap/extension-text")).default;
-        this.debounced_context_menu = utils.debounce(
-            (await import("./context_menu")).context_menu,
-            50
-        );
+        this.debounced_context_menu = utils.debounce(context_menu, 50);
 
         this.options = parser.parse(this.el, this.options);
 
@@ -102,68 +99,24 @@ export default Base.extend({
         // Mentions extension
         if (this.options.context["menu-mentions"]) {
             extra_extensions.push(
-                (await import("./extensions/mention")).Mention.configure({
-                    url_scheme: this.options.url["scheme-mentions"],
-                    suggestion: {
-                        render: () => {
-                            let tooltip;
-
-                            return {
-                                onStart: (props) => {
-                                    tooltip = this.debounced_context_menu(
-                                        this.options.context["menu-mentions"],
-                                        this.editor,
-                                        undefined,
-                                        this.pattern_mentions_context_menu(props)
-                                    );
-                                },
-                                onKeyDown(props) {
-                                    if (props.event.key === "Escape") {
-                                        tooltip?.hide();
-                                        return true;
-                                    }
-                                },
-                                onExit() {
-                                    tooltip?.destroy();
-                                },
-                            };
-                        },
-                    },
-                })
+                (await import("./extensions/suggestion"))
+                    .SuggestionFactory({ app: this, name: "mention", char: "@" })
+                    .configure({
+                        url: this.options.context["menu-mentions"],
+                        search_param_key: this.options.mentionsSearchKey,
+                    })
             );
         }
 
         // Tags extension
         if (this.options.context["menu-tags"]) {
             extra_extensions.push(
-                (await import("./extensions/tag")).Tag.configure({
-                    url_scheme: this.options.url["scheme-tags"],
-                    suggestion: {
-                        render: () => {
-                            let tooltip;
-
-                            return {
-                                onStart: (props) => {
-                                    tooltip = this.debounced_context_menu(
-                                        this.options.context["menu-tags"],
-                                        this.editor,
-                                        undefined,
-                                        this.pattern_tags_context_menu(props)
-                                    );
-                                },
-                                onKeyDown(props) {
-                                    if (props.event.key === "Escape") {
-                                        tooltip?.hide();
-                                        return true;
-                                    }
-                                },
-                                onExit() {
-                                    tooltip?.destroy();
-                                },
-                            };
-                        },
-                    },
-                })
+                (await import("./extensions/suggestion"))
+                    .SuggestionFactory({ app: this, name: "tag", char: "#" })
+                    .configure({
+                        url: this.options.context["menu-tags"],
+                        search_param_key: this.options.tagsSearchKey,
+                    })
             );
         }
 
@@ -309,7 +262,7 @@ export default Base.extend({
             tb.heading_level_5 ||
             tb.heading_level_6
         ) {
-            extensions.push((await import("@tiptap/extension-heading")).Heading);
+            extensions.push((await import("./extensions/heading")).Heading);
         }
 
         if (tb.blockquote) {
@@ -516,13 +469,13 @@ export default Base.extend({
 
                 !this.dont_open_context_menu &&
                     this.options.context["menu-link"] &&
-                    this.debounced_context_menu(
-                        this.options.context["menu-link"],
-                        this.editor,
-                        () => this.editor.isActive("link"),
-                        this.pattern_link_context_menu(),
-                        "link-panel"
-                    );
+                    this.debounced_context_menu({
+                        url: this.options.context["menu-link"],
+                        editor: this.editor,
+                        should_show_cb: () => this.editor.isActive("link"),
+                        register_pattern: this.pattern_link_context_menu(),
+                        extra_class: "link-panel",
+                    });
             });
         }
 
@@ -553,7 +506,7 @@ export default Base.extend({
 
     async initialize_link_panel() {
         // Close eventual opened link context menus.
-        (await import("./context_menu")).context_menu_close("tiptap-link-context-menu");
+        context_menu_close("tiptap-link-context-menu");
 
         const link_panel = document.querySelector(this.options.linkPanel);
         if (!link_panel) {
@@ -962,9 +915,6 @@ export default Base.extend({
                 const btn_edit = el.querySelector(".tiptap-edit-link");
                 const btn_unlink = el.querySelector(".tiptap-unlink");
 
-                const context_menu_close = (await import("./context_menu"))
-                    .context_menu_close;
-
                 if (btn_open) {
                     const attrs = that.editor.getAttributes("link");
                     if (attrs?.href) {
@@ -985,70 +935,6 @@ export default Base.extend({
                         context_menu_close(this.name);
                         that.editor.chain().focus().unsetLink().run();
                     });
-            },
-        };
-    },
-
-    pattern_mentions_context_menu(props) {
-        // Dynamic pattern for the mentions context menu
-        const that = this;
-        return {
-            name: "tiptap-mentions-context-menu",
-            trigger: ".tiptap-mentions-context-menu",
-            async init($el) {
-                that.register_focus_class_handler($el[0]);
-
-                const context_menu_close = (await import("./context_menu"))
-                    .context_menu_close;
-
-                $el.on("submit", (e) => {
-                    // We need jQuery here:
-                    // 1) pat-autosubmit submits via $(form).submit(); which cannot be catched by addEventListener
-                    // 2) Safari (and IE) do not support form.requestSubmit()
-                    //    (which would dispatch a "submit" - in contrast to form.submit())
-                    //    nor the Submit() event.
-                    e.preventDefault();
-                    context_menu_close(this.name);
-                    const form_data = new FormData(e.target);
-                    const mention = form_data.get("mention");
-                    if (!mention) {
-                        log.warn("No mention selected.");
-                        return;
-                    }
-                    props.command({ id: mention });
-                });
-            },
-        };
-    },
-
-    pattern_tags_context_menu(props) {
-        // Dynamic pattern for the tags context menu
-        const that = this;
-        return {
-            name: "tiptap-tags-context-menu",
-            trigger: ".tiptap-tags-context-menu",
-            async init($el) {
-                that.register_focus_class_handler($el[0]);
-
-                const context_menu_close = (await import("./context_menu"))
-                    .context_menu_close;
-
-                $el.on("submit", (e) => {
-                    // We need jQuery here:
-                    // 1) pat-autosubmit submits via $(form).submit(); which cannot be catched by addEventListener
-                    // 2) Safari (and IE) do not support form.requestSubmit()
-                    //    (which would dispatch a "submit" - in contrast to form.submit())
-                    //    nor the Submit() event.
-                    e.preventDefault();
-                    context_menu_close(this.name);
-                    const form_data = new FormData(e.target);
-                    const tag = form_data.get("tag");
-                    if (!tag) {
-                        log.warn("No tag selected.");
-                        return;
-                    }
-                    props.command({ id: tag });
-                });
             },
         };
     },
