@@ -470,9 +470,8 @@ This is an CSS example to show the placeholder on any empty paragraph:
 | link-panel             | String | CSS selector pointing to the link form element in the overlay.                     |
 | image-panel            | String | CSS selector pointing to the image form element in the overlay.                    |
 | source-panel           | String | CSS selector pointing to the source form element in the overlay.                   |
-| context-menu-link      | String | URL or CSS selector pointing to the link context menu contents.                    |
-| context-menu-mentions  | String | URL or CSS selector pointing to the mentions context menu contents.                |
-| context-menu-tags      | String | URL or CSS selector pointing to the tags context menu contents.                    |
-| mentions-search-key    | String | Query string key for the mentions filter value which is transferred to the server. |
-| tags-search-key        | String | Query string key for the tags filter value which is transferred to the server.     |
+| link-menu              | String | URL or CSS selector pointing to the link context menu contents.                    |
+| mentions-menu          | String | URL or CSS selector pointing to the mentions context menu contents.                |
+| tags-menu              | String | URL or CSS selector pointing to the tags context menu contents.                    |
+
 
