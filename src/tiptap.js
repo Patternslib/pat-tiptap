@@ -84,7 +84,12 @@ export default Base.extend({
             }
         };
 
-        const extra_extensions = [];
+        const extra_extensions = [
+            // Allow non-paragraph line-breaks by default.
+            (await import("@tiptap/extension-hard-break")).default.configure(),
+            // Gapcursor for images, tables etc to be able to add content below/above.
+            (await import("@tiptap/extension-gapcursor")).Gapcursor.configure(),
+        ];
         const placeholder = this.el.getAttribute("placeholder");
         if (placeholder) {
             extra_extensions.push(
@@ -93,10 +98,6 @@ export default Base.extend({
                 })
             );
         }
-        // Gapcursor for images, tables etc to be able to add content below/above
-        extra_extensions.push(
-            (await import("@tiptap/extension-gapcursor")).Gapcursor.configure()
-        );
 
         // Mentions extension
         if (this.options.context["menu-mentions"]) {
