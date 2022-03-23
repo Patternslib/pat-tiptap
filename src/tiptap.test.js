@@ -97,6 +97,23 @@ describe("pat-tiptap", () => {
         expect(anchor2.textContent).toBe("Link text 2");
     });
 
+    it("1.4 - allows non-paragraph line breaks", async () => {
+        document.body.innerHTML = `
+          <textarea class="pat-tiptap">
+            <p>hello<br><br>there</p>
+          </textarea>
+        `;
+
+        const instance = new Pattern(document.querySelector(".pat-tiptap"));
+        await utils.timeout(1);
+
+        expect(
+            document.querySelector(".tiptap-container [contenteditable]").innerHTML
+        ).toBe("<p>hello<br><br>there</p>");
+
+        expect(instance.editor.getHTML()).toBe("<p>hello<br><br>there</p>");
+    });
+
     it("2.1 - adds a placeholder element.", async () => {
         document.body.innerHTML = `
           <textarea
