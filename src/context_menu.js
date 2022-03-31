@@ -52,7 +52,7 @@ export async function context_menu({
             "url": url,
             "trigger": "none",
             "class": extra_class,
-            "position-list": ["tm"],
+            "position-list": ["tl"],
         });
 
         await events.await_pattern_init(CONTEXT_MENU_TOOLTIP);
