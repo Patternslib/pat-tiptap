@@ -17,7 +17,7 @@ export async function context_menu({
     const prev_node = PREV_NODE;
     const cur_node = (PREV_NODE = editor.state.doc.nodeAt(editor.state.selection.from));
 
-    if (cur_node !== prev_node) {
+    if (force_reload && CONTEXT_MENU_TOOLTIP !== null && cur_node !== prev_node) {
         // Close context menu, when new node is selected.
         context_menu_close(register_pattern.name);
     }
@@ -27,11 +27,6 @@ export async function context_menu({
         // If it should have been closed, it was done above.
         // If not (e.g. a different kind of context menu than this one) it stays opened.
         return;
-    }
-
-    if (force_reload && CONTEXT_MENU_TOOLTIP !== null) {
-        CONTEXT_MENU_TOOLTIP.destroy();
-        CONTEXT_MENU_TOOLTIP = null;
     }
 
     if (!CONTEXT_MENU_TOOLTIP) {
@@ -56,6 +51,8 @@ export async function context_menu({
         });
 
         await events.await_pattern_init(CONTEXT_MENU_TOOLTIP);
+    } else {
+        CONTEXT_MENU_TOOLTIP.get_content(url);
     }
 
     CONTEXT_MENU_TOOLTIP.tippy?.setProps({

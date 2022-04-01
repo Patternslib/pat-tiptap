@@ -38,9 +38,6 @@ export default Base.extend({
         this.toolbar = {};
         this.toolbar_el = null;
         //
-        this.tooltip = null; // reference to open tooltips.
-        this.prev_node = null; // reference to previous selected node.
-        //
         this.observer_link_panel = null;
         this.observer_image_panel = null;
         this.observer_embed_panel = null;

@@ -283,7 +283,7 @@ export const SuggestionFactory = ({ app, name, char, plural }) => {
                                 editor: this.editor,
                                 register_pattern: pattern_suggestion(app, props),
                                 extra_class: `tiptap-${plural || this.name}`, // plural form
-                                force_reload: true,
+                                force_reload: false,
                             });
                         };
                         _debounced_context_menu = utils.debounce(_context_menu, 200);
