@@ -23,9 +23,6 @@ parser.addArgument("link-menu", null);
 parser.addArgument("mentions-menu", null);
 parser.addArgument("tags-menu", null);
 
-parser.addArgument("mentions-search-key", null);
-parser.addArgument("tags-search-key", null);
-
 // TODO: Remove with next major version.
 // BBB - Compatibility aliases
 parser.addAlias("context-menu-link", "link-menu");
@@ -120,7 +117,6 @@ export default Base.extend({
                     .SuggestionFactory({ app: this, name: "tag", char: "#" })
                     .configure({
                         url: this.options.tagsMenu,
-                        search_param_key: this.options.tagsSearchKey,
                     })
             );
         }

@@ -2,7 +2,6 @@ import { Node, mergeAttributes } from "@tiptap/core";
 import { PluginKey } from "prosemirror-state";
 import { Suggestion as ProseMirrorSuggestion } from "@tiptap/suggestion";
 import { context_menu, context_menu_close, CONTEXT_MENU_TOOLTIP } from "../context_menu";
-import { add_search_params } from "../utils";
 import utils from "@patternslib/patternslib/src/core/utils";
 import events from "@patternslib/patternslib/src/core/events";
 
@@ -132,7 +131,6 @@ export const SuggestionFactory = ({ app, name, char }) => {
             return {
                 HTMLAttributes: {},
                 url: null,
-                search_param_key: null,
                 renderLabel({ options, node }) {
                     return `${options.suggestion.char}${
                         node.attrs.label ?? node.attrs.id
@@ -276,11 +274,9 @@ export const SuggestionFactory = ({ app, name, char }) => {
                                 let to = transaction.curSelection.$head.pos;
                                 const text = this.editor.state.doc.textBetween(from, to, ""); // prettier-ignore
 
-                                if (text && this.options.search_param_key) {
-                                    const params = {};
-                                    params[this.options.search_param_key] = text;
-                                    url = add_search_params(url, params);
-                                }
+                                // Add query string filter value.
+                                // The query string filter key must be already present on the URL.
+                                url = text ? url + text : url;
                             }
                             context_menu({
                                 url: url,

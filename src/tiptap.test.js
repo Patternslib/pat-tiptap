@@ -620,7 +620,6 @@ describe("pat-tiptap", () => {
               class="pat-tiptap"
               data-pat-tiptap="
                 mentions-menu: https://demo.at/mentions.html;
-                mentions-search-key: user;
               ">
           </textarea>
         `;
@@ -686,7 +685,6 @@ describe("pat-tiptap", () => {
               class="pat-tiptap"
               data-pat-tiptap="
                 tags-menu: https://demo.at/tags.html;
-                tags-search-key: tag;
               ">
           </textarea>
         `;

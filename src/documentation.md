@@ -388,10 +388,9 @@ You configure the suggestion functionality like follows.
     <textarea
         class="pat-tiptap pat-autofocus"
         data-pat-tiptap="
-          mentions-menu: ./mentions-results.html;
-          tags-menu: ./tags-results.html;
-          mentions-search-key: user;
-          tags-search-key: tags"
+          mentions-menu: ./mentions-results.html?user_filter=;
+          tags-menu: ./tags-results.html?tag_filter=;
+        "
         >
     </textarea>
 
