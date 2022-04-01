@@ -51,21 +51,21 @@ export async function context_menu({
         });
 
         await events.await_pattern_init(CONTEXT_MENU_TOOLTIP);
+
+        CONTEXT_MENU_TOOLTIP.tippy?.setProps({
+            getReferenceClientRect: () => {
+                return posToDOMRect(
+                    editor.view,
+                    editor.state.selection.from,
+                    editor.state.selection.to
+                );
+            },
+        });
+
+        CONTEXT_MENU_TOOLTIP.show();
     } else {
         CONTEXT_MENU_TOOLTIP.get_content(url);
     }
-
-    CONTEXT_MENU_TOOLTIP.tippy?.setProps({
-        getReferenceClientRect: () => {
-            return posToDOMRect(
-                editor.view,
-                editor.state.selection.from,
-                editor.state.selection.to
-            );
-        },
-    });
-
-    CONTEXT_MENU_TOOLTIP.show();
 
     return CONTEXT_MENU_TOOLTIP;
 }
