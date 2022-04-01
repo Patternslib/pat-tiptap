@@ -55,10 +55,6 @@
         "whybundled": "^2.0.0",
         "yarn": "^1.22.18"
     },
-    "resolutions": {
-        "prosemirror-model": "1.16.1",
-        "prosemirror-view": "1.23.9"
-    },
     "scripts": {
         "start": "NODE_ENV=development webpack serve --config webpack.config.js",
         "build": "NODE_ENV=production webpack --config webpack.config.js",
