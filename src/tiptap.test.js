@@ -643,9 +643,14 @@ describe("pat-tiptap", () => {
         await utils.timeout(1); // Wait a tick for the tooltip to open.
         await utils.timeout(1); // Wait a tick for the suggestion-pattern to be initialized.
 
-        const items = document.querySelectorAll(".tiptap-suggestion .tiptap-item");
+        // Check for class ``tiptap-mentions`` set on tooltip container.
+        expect(
+            document.querySelector(".tooltip-container.tiptap-mentions")
+        ).toBeTruthy();
 
         expect(document.querySelector(".tiptap-suggestion")).toBeTruthy();
+
+        const items = document.querySelectorAll(".tiptap-suggestion .tiptap-item");
         expect(items.length).toBeGreaterThan(0);
         expect(items[0].classList.contains("active")).toBe(true);
 
@@ -708,9 +713,12 @@ describe("pat-tiptap", () => {
         await utils.timeout(1); // Wait a tick for the tooltip to open.
         await utils.timeout(1); // Wait a tick for the suggestion-pattern to be initialized.
 
-        const items = document.querySelectorAll(".tiptap-suggestion .tiptap-item");
+        // Check for class ``tiptap-tags`` set on tooltip container.
+        expect(document.querySelector(".tooltip-container.tiptap-tags")).toBeTruthy();
 
         expect(document.querySelector(".tiptap-suggestion")).toBeTruthy();
+
+        const items = document.querySelectorAll(".tiptap-suggestion .tiptap-item");
         expect(items.length).toBeGreaterThan(0);
         expect(items[0].classList.contains("active")).toBe(true);
 

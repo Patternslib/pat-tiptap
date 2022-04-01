@@ -119,7 +119,7 @@ function pattern_suggestion(app, props) {
     };
 }
 
-export const SuggestionFactory = ({ app, name, char }) => {
+export const SuggestionFactory = ({ app, name, char, plural }) => {
     return Node.create({
         name: name,
         group: "inline",
@@ -282,6 +282,7 @@ export const SuggestionFactory = ({ app, name, char }) => {
                                 url: url,
                                 editor: this.editor,
                                 register_pattern: pattern_suggestion(app, props),
+                                extra_class: `tiptap-${plural || this.name}`, // plural form
                                 force_reload: true,
                             });
                         };
