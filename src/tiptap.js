@@ -19,12 +19,18 @@ parser.addArgument("embed-panel", null);
 parser.addArgument("link-panel", null);
 parser.addArgument("source-panel", null);
 
-parser.addArgument("context-menu-link", null);
-parser.addArgument("context-menu-mentions", null);
-parser.addArgument("context-menu-tags", null);
+parser.addArgument("link-menu", null);
+parser.addArgument("mentions-menu", null);
+parser.addArgument("tags-menu", null);
 
 parser.addArgument("mentions-search-key", null);
 parser.addArgument("tags-search-key", null);
+
+// TODO: Remove with next major version.
+// BBB - Compatibility aliases
+parser.addAlias("context-menu-link", "link-menu");
+parser.addAlias("context-menu-mentions", "mentions-menu");
+parser.addAlias("context-menu-tags", "tags-menu");
 
 export default Base.extend({
     name: "tiptap",
@@ -97,24 +103,23 @@ export default Base.extend({
         }
 
         // Mentions extension
-        if (this.options.context["menu-mentions"]) {
+        if (this.options.mentionsMenu) {
             extra_extensions.push(
                 (await import("./extensions/suggestion"))
                     .SuggestionFactory({ app: this, name: "mention", char: "@" })
                     .configure({
-                        url: this.options.context["menu-mentions"],
-                        search_param_key: this.options.mentionsSearchKey,
+                        url: this.options.mentionsMenu,
                     })
             );
         }
 
         // Tags extension
-        if (this.options.context["menu-tags"]) {
+        if (this.options.tagsMenu) {
             extra_extensions.push(
                 (await import("./extensions/suggestion"))
                     .SuggestionFactory({ app: this, name: "tag", char: "#" })
                     .configure({
-                        url: this.options.context["menu-tags"],
+                        url: this.options.tagsMenu,
                         search_param_key: this.options.tagsSearchKey,
                     })
             );
@@ -452,7 +457,7 @@ export default Base.extend({
         }
 
         // non-standard functionality
-        if (tb.link && this.options.linkPanel) {
+        if (tb.link && this.options.link?.panel) {
             // Initialize modal after it has injected.
             tb.link.addEventListener(
                 "pat-modal-ready",
@@ -468,9 +473,9 @@ export default Base.extend({
                     : tb.link.classList.add("disabled");
 
                 !this.dont_open_context_menu &&
-                    this.options.context["menu-link"] &&
+                    this.options.link?.menu &&
                     this.debounced_context_menu({
-                        url: this.options.context["menu-link"],
+                        url: this.options.link.menu,
                         editor: this.editor,
                         should_show_cb: () => this.editor.isActive("link"),
                         register_pattern: this.pattern_link_context_menu(),
@@ -508,7 +513,7 @@ export default Base.extend({
         // Close eventual opened link context menus.
         context_menu_close("tiptap-link-context-menu");
 
-        const link_panel = document.querySelector(this.options.linkPanel);
+        const link_panel = document.querySelector(this.options.link?.panel);
         if (!link_panel) {
             log.warn("No link panel found.");
             return;

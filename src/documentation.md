@@ -187,10 +187,10 @@ None of these elements are mandatory but if you want to provide the associated f
 This is the pattern configuration:
 
     data-pat-tiptap="
-        context-menu-link: #context-menu-link;
+        link-menu: #context-menu-link;
     "
 
-``context-menu-link``: URL or CSS selector pointing to the context menu contents.
+``link-menu``: URL or CSS selector pointing to the context menu contents.
 
 
 #### Adding a image selection overlay
@@ -388,8 +388,8 @@ You configure the suggestion functionality like follows.
     <textarea
         class="pat-tiptap pat-autofocus"
         data-pat-tiptap="
-          context-menu-mentions: ./mentions-results.html;
-          context-menu-tags: ./tags-results.html;
+          mentions-menu: ./mentions-results.html;
+          tags-menu: ./tags-results.html;
           mentions-search-key: user;
           tags-search-key: tags"
         >

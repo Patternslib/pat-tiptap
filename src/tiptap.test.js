@@ -619,7 +619,7 @@ describe("pat-tiptap", () => {
           <textarea
               class="pat-tiptap"
               data-pat-tiptap="
-                context-menu-mentions: https://demo.at/mentions.html;
+                mentions-menu: https://demo.at/mentions.html;
                 mentions-search-key: user;
               ">
           </textarea>
@@ -685,7 +685,7 @@ describe("pat-tiptap", () => {
           <textarea
               class="pat-tiptap"
               data-pat-tiptap="
-                context-menu-tags: https://demo.at/tags.html;
+                tags-menu: https://demo.at/tags.html;
                 tags-search-key: tag;
               ">
           </textarea>
