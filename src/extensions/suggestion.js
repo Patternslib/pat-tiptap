@@ -2,6 +2,7 @@ import { Node, mergeAttributes } from "@tiptap/core";
 import { PluginKey } from "prosemirror-state";
 import { Suggestion as ProseMirrorSuggestion } from "@tiptap/suggestion";
 import { context_menu, context_menu_close, CONTEXT_MENU_TOOLTIP } from "../context_menu";
+import { focus_handler } from "../focus-handler";
 import utils from "@patternslib/patternslib/src/core/utils";
 import events from "@patternslib/patternslib/src/core/events";
 
@@ -11,7 +12,7 @@ function pattern_suggestion(app, props) {
         name: "tiptap-suggestion",
         trigger: ".tiptap-suggestion",
         async init($el) {
-            app.register_focus_class_handler($el[0]);
+            focus_handler($el[0]);
 
             this.el = $el[0];
 

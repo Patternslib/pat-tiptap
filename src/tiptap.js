@@ -51,6 +51,8 @@ export default Base.extend({
         const ExtText = (await import("@tiptap/extension-text")).default;
         this.debounced_context_menu = utils.debounce(context_menu, 50);
 
+        this.focus_handler = (await import("./focus-handler")).focus_handler;
+
         this.options = parser.parse(this.el, this.options);
 
         // Hide element which will be replaced with tiptap instance
@@ -132,7 +134,9 @@ export default Base.extend({
             ? document.querySelector(this.options.toolbarExternal)
             : null;
         if (this.toolbar_el) {
-            this.register_focus_class_handler(this.toolbar_el);
+            const focus_handler_targets = (await import("./focus-handler")).TARGETS; // prettier-ignore
+            focus_handler_targets.push(this.toolbar_el); // We register the focus handler on itself.
+            this.focus_handler(this.toolbar_el);
         }
 
         this.toolbar_pre_init();
@@ -162,31 +166,6 @@ export default Base.extend({
             autofocus: set_focus,
         });
         this.toolbar_post_init();
-    },
-
-    register_focus_class_handler(el) {
-        // make element focusable
-        // See: https://javascript.info/focus-blur
-        el.setAttribute("tabindex", "-1"); // not user-selectable but programmatically focusable.
-        events.add_event_listener(
-            el,
-            "focus",
-            "tiptap-focusin",
-            async () => {
-                utils.timeout(1); // short timeout to ensure focus class is set even if tiptap_blur_handler is called concurrently.
-                this.toolbar_el?.classList.add("tiptap-focus");
-            },
-            true
-        );
-        events.add_event_listener(
-            el,
-            "blur",
-            "tiptap-focusout",
-            () => {
-                this.toolbar_el?.classList.remove("tiptap-focus");
-            },
-            true
-        );
     },
 
     toolbar_pre_init() {
@@ -521,7 +500,7 @@ export default Base.extend({
             log.warn("No link panel found.");
             return;
         }
-        this.register_focus_class_handler(link_panel);
+        this.focus_handler(link_panel);
 
         const reinit = () => {
             const link_href = link_panel.querySelector("[name=tiptap-href]");
@@ -651,7 +630,7 @@ export default Base.extend({
             log.warn("No image panel found.");
             return;
         }
-        this.register_focus_class_handler(image_panel);
+        this.focus_handler(image_panel);
 
         const reinit = () => {
             const image_src = image_panel.querySelector("[name=tiptap-src]");
@@ -763,7 +742,7 @@ export default Base.extend({
             log.warn("No embed panel found.");
             return;
         }
-        this.register_focus_class_handler(embed_panel);
+        this.focus_handler(embed_panel);
 
         const reinit = () => {
             const embed_src = embed_panel.querySelector("[name=tiptap-src]");
@@ -858,7 +837,7 @@ export default Base.extend({
             log.warn("No source panel found.");
             return;
         }
-        this.register_focus_class_handler(source_panel);
+        this.focus_handler(source_panel);
 
         const reinit = () => {
             const source_text = source_panel.querySelector("[name=tiptap-source]"); // prettier-ignore
@@ -917,7 +896,7 @@ export default Base.extend({
             trigger: ".tiptap-link-context-menu",
             async init($el) {
                 const el = $el[0];
-                that.register_focus_class_handler(el);
+                that.focus_handler(el);
 
                 const btn_open = el.querySelector(".tiptap-open-new-link");
                 const btn_edit = el.querySelector(".tiptap-edit-link");
