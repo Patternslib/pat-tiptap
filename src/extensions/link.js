@@ -6,6 +6,7 @@ import events from "@patternslib/patternslib/src/core/events";
 import utils from "@patternslib/patternslib/src/core/utils";
 
 let panel_observer;
+let context_menu_instance;
 let dont_open_context_menu = false;
 
 function pattern_link_context_menu({ app }) {
@@ -26,17 +27,30 @@ function pattern_link_context_menu({ app }) {
                 if (attrs?.href) {
                     btn_open.setAttribute("href", attrs.href);
                 }
-                btn_open.addEventListener("click", () => context_menu_close(this.name));
+                btn_open.addEventListener(
+                    "click",
+                    () =>
+                        (context_menu_instance = context_menu_close({
+                            instance: context_menu_instance,
+                            pattern_name: this.name,
+                        }))
+                );
             }
 
             btn_edit &&
                 btn_edit.addEventListener("click", () => {
-                    context_menu_close(this.name);
+                    context_menu_instance = context_menu_close({
+                        instance: context_menu_instance,
+                        pattern_name: this.name,
+                    });
                     app.toolbar.link.click();
                 });
             btn_unlink &&
                 btn_unlink.addEventListener("click", () => {
-                    context_menu_close(this.name);
+                    context_menu_instance = context_menu_close({
+                        instance: context_menu_instance,
+                        pattern_name: this.name,
+                    });
                     app.editor.chain().focus().unsetLink().run();
                 });
         },
@@ -45,7 +59,10 @@ function pattern_link_context_menu({ app }) {
 
 async function link_panel({ app }) {
     // Close eventual opened link context menus.
-    context_menu_close("tiptap-link-context-menu");
+    context_menu_instance = context_menu_close({
+        instance: context_menu_instance,
+        pattern_name: "tiptap-link-context-menu",
+    });
 
     const link_panel = document.querySelector(app.options.link?.panel);
     if (!link_panel) {
@@ -174,8 +191,6 @@ export function init({ app, button }) {
     // Initialize modal after it has injected.
     button.addEventListener("pat-modal-ready", () => link_panel({ app: app }));
 
-    const debounced_context_menu = utils.debounce(context_menu, 50);
-
     app.editor.on("selectionUpdate", async () => {
         app.editor.isActive("link")
             ? button.classList.add("active")
@@ -184,15 +199,34 @@ export function init({ app, button }) {
             ? button.classList.remove("disabled")
             : button.classList.add("disabled");
 
-        !dont_open_context_menu &&
-            app.options.link?.menu &&
-            debounced_context_menu({
+        // Temporarily don't open the context menu.
+        if (dont_open_context_menu && !app.options.link?.menu) {
+            return;
+        }
+
+        // Open the context menu with a small delay.
+        utils.debounce(async () => {
+            // Link not active anymore. Return.
+            if (!app.editor.isActive("link")) {
+                if (context_menu_instance) {
+                    // If open, close.
+                    context_menu_instance = context_menu_close({
+                        instance: context_menu_instance,
+                        pattern_name: "tiptap-link-context-menu",
+                    });
+                }
+                return;
+            }
+
+            // Initialize the context menu
+            context_menu_instance = await context_menu({
                 url: app.options.link.menu,
                 editor: app.editor,
-                should_show_cb: () => app.editor.isActive("link"),
-                register_pattern: pattern_link_context_menu({ app: app }),
+                instance: context_menu_instance,
+                pattern: pattern_link_context_menu({ app: app }),
                 extra_class: "link-panel",
             });
+        }, 50)();
     });
 }
 

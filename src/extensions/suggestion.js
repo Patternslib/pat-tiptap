@@ -1,7 +1,7 @@
 import { Node, mergeAttributes } from "@tiptap/core";
 import { PluginKey } from "prosemirror-state";
 import { Suggestion as ProseMirrorSuggestion } from "@tiptap/suggestion";
-import { context_menu, context_menu_close, CONTEXT_MENU_TOOLTIP } from "../context_menu";
+import { context_menu, context_menu_close } from "../context_menu";
 import { focus_handler } from "../focus-handler";
 import utils from "@patternslib/patternslib/src/core/utils";
 import events from "@patternslib/patternslib/src/core/events";
@@ -255,10 +255,11 @@ export const SuggestionFactory = ({ app, name, char, plural }) => {
 
             // Suggestion render
             this.options.suggestion.render = () => {
+                let context_menu_instance;
                 let _debounced_context_menu;
                 return {
-                    onStart: (props) => {
-                        const _context_menu = (
+                    onStart: async (props) => {
+                        const _context_menu = async (
                             { transaction } = { transaction: null } // optional destructuring
                         ) => {
                             // If the transaction parameter is given then this
@@ -279,30 +280,35 @@ export const SuggestionFactory = ({ app, name, char, plural }) => {
                                 // The query string filter key must be already present on the URL.
                                 url = text ? url + text : url;
                             }
-                            context_menu({
+                            return await context_menu({
                                 url: url,
                                 editor: this.editor,
-                                register_pattern: pattern_suggestion(app, props),
+                                instance: context_menu_instance,
+                                pattern: pattern_suggestion(app, props),
                                 extra_class: `tiptap-${plural || this.name}`, // plural form
-                                force_reload: false,
                             });
                         };
-                        _debounced_context_menu = utils.debounce(_context_menu, 200);
+                        _debounced_context_menu = utils.debounce(async (transaction) => {
+                            context_menu_instance = await _context_menu(transaction);
+                        }, 200);
 
                         // Immediately open the suggestion context menu.
-                        _context_menu();
+                        context_menu_instance = await _context_menu();
 
                         // ... and reload it after text input after a short timeout.
                         this.editor.on("selectionUpdate", _debounced_context_menu);
                     },
                     onKeyDown: (props) => {
-                        if (!CONTEXT_MENU_TOOLTIP) {
+                        if (!context_menu_instance) {
                             //No context menu open, return.
                             return;
                         }
 
                         if (props.event.key === "Escape") {
-                            context_menu_close("tiptap-suggestion");
+                            context_menu_instance = context_menu_close({
+                                instance: context_menu_instance,
+                                pattern_name: "tiptap-suggestion",
+                            });
                             this.editor.off("selectionUpdate", _debounced_context_menu);
                             return true;
                         }
@@ -325,7 +331,10 @@ export const SuggestionFactory = ({ app, name, char, plural }) => {
                         }
                     },
                     onExit: () => {
-                        context_menu_close("tiptap-suggestion");
+                        context_menu_instance = context_menu_close({
+                            instance: context_menu_instance,
+                            pattern_name: "tiptap-suggestion",
+                        });
                         this.editor.off("selectionUpdate", _debounced_context_menu);
                     },
                 };
