@@ -6,7 +6,7 @@ import logging from "@patternslib/patternslib/src/core/logging";
 import utils from "@patternslib/patternslib/src/core/utils";
 import { context_menu, context_menu_close } from "./context_menu";
 
-const log = logging.getLogger("tiptap");
+export const log = logging.getLogger("tiptap");
 
 export const parser = new Parser("tiptap");
 parser.addArgument("collaboration-server", null);
