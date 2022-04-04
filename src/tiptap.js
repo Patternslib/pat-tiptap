@@ -37,7 +37,6 @@ export default Base.extend({
         this.toolbar = {};
         this.toolbar_el = null;
         //
-        this.observer_embed_panel = null;
         this.observer_source_panel = null;
 
         const TipTap = (await import("@tiptap/core")).Editor;
@@ -335,7 +334,7 @@ export default Base.extend({
         }
 
         if (tb.embed) {
-            extensions.push((await import("./extensions/embed")).default);
+            extensions.push((await import("./extensions/embed")).factory());
         }
 
         if (tb.image || tb.embed || has_tables) {
@@ -441,11 +440,7 @@ export default Base.extend({
         }
 
         if (tb.embed && this.options.embedPanel) {
-            // Initialize modal after it has injected.
-            tb.embed.addEventListener(
-                "pat-modal-ready",
-                this.initialize_embed_panel.bind(this)
-            );
+            (await import("./extensions/embed")).init({ app: this, button: tb.embed });
         }
 
         if (tb.source && this.options.sourcePanel) {
@@ -455,101 +450,6 @@ export default Base.extend({
                 this.initialize_source_panel.bind(this)
             );
         }
-    },
-
-    initialize_embed_panel() {
-        const embed_panel = document.querySelector(this.options.embedPanel);
-        if (!embed_panel) {
-            log.warn("No embed panel found.");
-            return;
-        }
-        this.focus_handler(embed_panel);
-
-        const reinit = () => {
-            const embed_src = embed_panel.querySelector("[name=tiptap-src]");
-            const embed_title = embed_panel.querySelector("[name=tiptap-title]");
-            const embed_caption = embed_panel.querySelector("[name=tiptap-caption]");
-            const embed_confirm = embed_panel.querySelector(".tiptap-confirm, [name=tiptap-confirm]"); // prettier-ignore
-
-            const update_callback = (set_focus) => {
-                const cmd = this.editor.chain();
-                cmd.insertContent({
-                    type: "figure",
-                    content: [
-                        {
-                            type: "embed",
-                            attrs: {
-                                src: embed_src.value,
-                                ...(embed_title?.value && { title: embed_title?.value }),
-                            },
-                        },
-                        // Conditionally add a figcaption
-                        ...(embed_caption?.value
-                            ? [
-                                  {
-                                      type: "figcaption",
-                                      content: [
-                                          {
-                                              type: "text",
-                                              text: embed_caption.value,
-                                          },
-                                      ],
-                                  },
-                              ]
-                            : []),
-                    ],
-                });
-                if (set_focus === true) {
-                    // set focus after setting embed, otherwise embed is
-                    // selected and right away deleted when starting typing.
-                    cmd.focus();
-                }
-                cmd.run();
-            };
-
-            // FORM UPDATE
-            if (embed_confirm) {
-                // update on click on confirm
-                events.add_event_listener(
-                    embed_confirm,
-                    "click",
-                    "tiptap_embed_confirm",
-                    () => update_callback.bind(this)(true)
-                );
-            } else {
-                // update on input/change
-                events.add_event_listener(
-                    embed_src,
-                    "change",
-                    "tiptap_embed_src",
-                    update_callback.bind(this)
-                );
-                events.add_event_listener(
-                    embed_title,
-                    "change",
-                    "tiptap_embed_title",
-                    update_callback.bind(this)
-                );
-                events.add_event_listener(
-                    embed_caption,
-                    "change",
-                    "tiptap_embed_caption",
-                    update_callback.bind(this)
-                );
-            }
-        };
-
-        reinit();
-        if (this.observer_embed_panel) {
-            this.observer_embed_panel.disconnect();
-        }
-        this.observer_embed_panel = new MutationObserver(reinit.bind(this));
-        this.observer_embed_panel.observe(embed_panel, {
-            childList: true,
-            subtree: true,
-            attributes: false,
-            characterData: false,
-        });
     },
 
     initialize_source_panel() {
