@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>tiptap demo</title>
+    <script src="/bundle.js" type="text/javascript" charset="utf-8"></script>
+    <style type="text/css">
+      .tiptap-editor__content {
+        border: 1px solid black;
+        padding: 1em;
+      }
+      .ProseMirror:focus {
+        outline: none;
+      }
+      .active {
+        background-color: green;
+      }
+      table, td, th {
+        border: 1px solid black;
+      }
+      th {
+        background-color: grey;
+        font-weight: bold;
+      }
+
+      /* Placeholder (at the top) */
+      .ProseMirror p.is-editor-empty:first-child::before {
+        content: attr(data-placeholder);
+        float: left;
+        color: #ced4da;
+        pointer-events: none;
+        height: 0;
+      }
+
+      .tooltip-container a,
+      .tooltip-container a:visited {
+        color: white;
+      }
+    </style>
+  </head>
+  <body>
+
+    <h1>TipTap examples</h1>
+
+    <section>
+      <h2>TipTap -1</h2>
+      <div id="tiptap-external-toolbar-1">
+        <button type="button" class="button-heading-level-1">Header level 1</button>
+        <button type="button" class="button-heading-level-2">Header level 2</button>
+        <button type="button" class="button-heading-level-3">Header level 3</button>
+        <button type="button" class="button-paragraph">Normal</button>
+        <button type="button" class="button-bold">Bold</button>
+        <button type="button" class="button-italic">Italic</button>
+        <button type="button" class="button-strike">Strike</button>
+        <button type="button" class="button-unordered-list">Bullet list</button>
+        <button type="button" class="button-ordered-list">Ordered list</button>
+        <button type="button" class="button-undo">Undo</button>
+        <button type="button" class="button-redo">Redo</button>
+        <a class="button-link pat-modal" href="#modal-link">Link</a>
+      </div>
+      <textarea
+          class="pat-tiptap pat-autofocus"
+          data-pat-tiptap="
+            toolbar-external: #tiptap-external-toolbar-1;
+            link-panel: #pat-modal .link-panel;
+            link-menu: #context-menu-link"
+          placeholder="Your poem goes here...">
+      </textarea>
+    </section>
+
+    <section>
+      <h2>TipTap -2</h2>
+      <div id="tiptap-external-toolbar-2">
+        <button type="button" class="button-heading-level-1">Header level 1</button>
+        <button type="button" class="button-heading-level-2">Header level 2</button>
+        <button type="button" class="button-heading-level-3">Header level 3</button>
+        <button type="button" class="button-paragraph">Normal</button>
+        <button type="button" class="button-bold">Bold</button>
+        <button type="button" class="button-italic">Italic</button>
+        <button type="button" class="button-strike">Strike</button>
+        <button type="button" class="button-unordered-list">Bullet list</button>
+        <button type="button" class="button-ordered-list">Ordered list</button>
+        <button type="button" class="button-undo">Undo</button>
+        <button type="button" class="button-redo">Redo</button>
+        <a class="button-link pat-modal" href="#modal-link">Link</a>
+      </div>
+      <textarea
+          class="pat-tiptap pat-autofocus"
+          data-pat-tiptap="
+            toolbar-external: #tiptap-external-toolbar-2;
+            link-panel: #pat-modal .link-panel;
+            link-menu: #context-menu-link"
+          placeholder="Your poem goes here...">
+      </textarea>
+    </section>
+
+    <section>
+      <h2>TipTap -3</h2>
+      <div id="tiptap-external-toolbar-3">
+        <button type="button" class="button-heading-level-1">Header level 1</button>
+        <button type="button" class="button-heading-level-2">Header level 2</button>
+        <button type="button" class="button-heading-level-3">Header level 3</button>
+        <button type="button" class="button-paragraph">Normal</button>
+        <button type="button" class="button-bold">Bold</button>
+        <button type="button" class="button-italic">Italic</button>
+        <button type="button" class="button-strike">Strike</button>
+        <button type="button" class="button-unordered-list">Bullet list</button>
+        <button type="button" class="button-ordered-list">Ordered list</button>
+        <button type="button" class="button-undo">Undo</button>
+        <button type="button" class="button-redo">Redo</button>
+        <a class="button-link pat-modal" href="#modal-link">Link</a>
+      </div>
+      <textarea
+          class="pat-tiptap pat-autofocus"
+          data-pat-tiptap="
+            toolbar-external: #tiptap-external-toolbar-3;
+            link-panel: #pat-modal .link-panel;
+            link-menu: #context-menu-link"
+          placeholder="Your poem goes here...">
+      </textarea>
+    </section>
+
+    <section>
+      <h2>TipTap -4</h2>
+      <div id="tiptap-external-toolbar-4">
+        <button type="button" class="button-heading-level-1">Header level 1</button>
+        <button type="button" class="button-heading-level-2">Header level 2</button>
+        <button type="button" class="button-heading-level-3">Header level 3</button>
+        <button type="button" class="button-paragraph">Normal</button>
+        <button type="button" class="button-bold">Bold</button>
+        <button type="button" class="button-italic">Italic</button>
+        <button type="button" class="button-strike">Strike</button>
+        <button type="button" class="button-unordered-list">Bullet list</button>
+        <button type="button" class="button-ordered-list">Ordered list</button>
+        <button type="button" class="button-undo">Undo</button>
+        <button type="button" class="button-redo">Redo</button>
+        <a class="button-link pat-modal" href="#modal-link">Link</a>
+      </div>
+      <textarea
+          class="pat-tiptap pat-autofocus"
+          data-pat-tiptap="
+            toolbar-external: #tiptap-external-toolbar-4;
+            link-panel: #pat-modal .link-panel;
+            link-menu: #context-menu-link"
+          placeholder="Your poem goes here...">
+      </textarea>
+    </section>
+
+    <section>
+      <h2>TipTap -5</h2>
+      <div id="tiptap-external-toolbar-5">
+        <button type="button" class="button-heading-level-1">Header level 1</button>
+        <button type="button" class="button-heading-level-2">Header level 2</button>
+        <button type="button" class="button-heading-level-3">Header level 3</button>
+        <button type="button" class="button-paragraph">Normal</button>
+        <button type="button" class="button-bold">Bold</button>
+        <button type="button" class="button-italic">Italic</button>
+        <button type="button" class="button-strike">Strike</button>
+        <button type="button" class="button-unordered-list">Bullet list</button>
+        <button type="button" class="button-ordered-list">Ordered list</button>
+        <button type="button" class="button-undo">Undo</button>
+        <button type="button" class="button-redo">Redo</button>
+        <a class="button-link pat-modal" href="#modal-link">Link</a>
+      </div>
+      <textarea
+          class="pat-tiptap pat-autofocus"
+          data-pat-tiptap="
+            toolbar-external: #tiptap-external-toolbar-5;
+            link-panel: #pat-modal .link-panel;
+            link-menu: #context-menu-link"
+          placeholder="Your poem goes here...">
+      </textarea>
+    </section>
+
+    <section>
+      <h2>TipTap -6</h2>
+      <div id="tiptap-external-toolbar-6">
+        <button type="button" class="button-heading-level-1">Header level 1</button>
+        <button type="button" class="button-heading-level-2">Header level 2</button>
+        <button type="button" class="button-heading-level-3">Header level 3</button>
+        <button type="button" class="button-paragraph">Normal</button>
+        <button type="button" class="button-bold">Bold</button>
+        <button type="button" class="button-italic">Italic</button>
+        <button type="button" class="button-strike">Strike</button>
+        <button type="button" class="button-unordered-list">Bullet list</button>
+        <button type="button" class="button-ordered-list">Ordered list</button>
+        <button type="button" class="button-undo">Undo</button>
+        <button type="button" class="button-redo">Redo</button>
+        <a class="button-link pat-modal" href="#modal-link">Link</a>
+      </div>
+      <textarea
+          class="pat-tiptap pat-autofocus"
+          data-pat-tiptap="
+            toolbar-external: #tiptap-external-toolbar-6;
+            link-panel: #pat-modal .link-panel;
+            link-menu: #context-menu-link"
+          placeholder="Your poem goes here...">
+      </textarea>
+    </section>
+
+    <section>
+      <h2>TipTap -7</h2>
+      <div id="tiptap-external-toolbar-7">
+        <button type="button" class="button-heading-level-1">Header level 1</button>
+        <button type="button" class="button-heading-level-2">Header level 2</button>
+        <button type="button" class="button-heading-level-3">Header level 3</button>
+        <button type="button" class="button-paragraph">Normal</button>
+        <button type="button" class="button-bold">Bold</button>
+        <button type="button" class="button-italic">Italic</button>
+        <button type="button" class="button-strike">Strike</button>
+        <button type="button" class="button-unordered-list">Bullet list</button>
+        <button type="button" class="button-ordered-list">Ordered list</button>
+        <button type="button" class="button-undo">Undo</button>
+        <button type="button" class="button-redo">Redo</button>
+        <a class="button-link pat-modal" href="#modal-link">Link</a>
+      </div>
+      <textarea
+          class="pat-tiptap pat-autofocus"
+          data-pat-tiptap="
+            toolbar-external: #tiptap-external-toolbar-7;
+            link-panel: #pat-modal .link-panel;
+            link-menu: #context-menu-link"
+          placeholder="Your poem goes here...">
+      </textarea>
+    </section>
+
+    <section>
+      <h2>TipTap -8</h2>
+      <div id="tiptap-external-toolbar-8">
+        <button type="button" class="button-heading-level-1">Header level 1</button>
+        <button type="button" class="button-heading-level-2">Header level 2</button>
+        <button type="button" class="button-heading-level-3">Header level 3</button>
+        <button type="button" class="button-paragraph">Normal</button>
+        <button type="button" class="button-bold">Bold</button>
+        <button type="button" class="button-italic">Italic</button>
+        <button type="button" class="button-strike">Strike</button>
+        <button type="button" class="button-unordered-list">Bullet list</button>
+        <button type="button" class="button-ordered-list">Ordered list</button>
+        <button type="button" class="button-undo">Undo</button>
+        <button type="button" class="button-redo">Redo</button>
+        <a class="button-link pat-modal" href="#modal-link">Link</a>
+      </div>
+      <textarea
+          class="pat-tiptap pat-autofocus"
+          data-pat-tiptap="
+            toolbar-external: #tiptap-external-toolbar-8;
+            link-panel: #pat-modal .link-panel;
+            link-menu: #context-menu-link"
+          placeholder="Your poem goes here...">
+      </textarea>
+    </section>
+
+    <section>
+      <h2>TipTap -9</h2>
+      <div id="tiptap-external-toolbar-9">
+        <button type="button" class="button-heading-level-1">Header level 1</button>
+        <button type="button" class="button-heading-level-2">Header level 2</button>
+        <button type="button" class="button-heading-level-3">Header level 3</button>
+        <button type="button" class="button-paragraph">Normal</button>
+        <button type="button" class="button-bold">Bold</button>
+        <button type="button" class="button-italic">Italic</button>
+        <button type="button" class="button-strike">Strike</button>
+        <button type="button" class="button-unordered-list">Bullet list</button>
+        <button type="button" class="button-ordered-list">Ordered list</button>
+        <button type="button" class="button-undo">Undo</button>
+        <button type="button" class="button-redo">Redo</button>
+        <a class="button-link pat-modal" href="#modal-link">Link</a>
+      </div>
+      <textarea
+          class="pat-tiptap pat-autofocus"
+          data-pat-tiptap="
+            toolbar-external: #tiptap-external-toolbar-9;
+            link-panel: #pat-modal .link-panel;
+            link-menu: #context-menu-link"
+          placeholder="Your poem goes here...">
+      </textarea>
+    </section>
+
+    <section>
+      <h2>TipTap -10</h2>
+      <div id="tiptap-external-toolbar-10">
+        <button type="button" class="button-heading-level-1">Header level 1</button>
+        <button type="button" class="button-heading-level-2">Header level 2</button>
+        <button type="button" class="button-heading-level-3">Header level 3</button>
+        <button type="button" class="button-paragraph">Normal</button>
+        <button type="button" class="button-bold">Bold</button>
+        <button type="button" class="button-italic">Italic</button>
+        <button type="button" class="button-strike">Strike</button>
+        <button type="button" class="button-unordered-list">Bullet list</button>
+        <button type="button" class="button-ordered-list">Ordered list</button>
+        <button type="button" class="button-undo">Undo</button>
+        <button type="button" class="button-redo">Redo</button>
+        <a class="button-link pat-modal" href="#modal-link">Link</a>
+      </div>
+      <textarea
+          class="pat-tiptap pat-autofocus"
+          data-pat-tiptap="
+            toolbar-external: #tiptap-external-toolbar-10;
+            link-panel: #pat-modal .link-panel;
+            link-menu: #context-menu-link"
+          placeholder="Your poem goes here...">
+      </textarea>
+    </section>
+
+    <section>
+      <h2>TipTap -11</h2>
+      <div id="tiptap-external-toolbar-11">
+        <button type="button" class="button-heading-level-1">Header level 1</button>
+        <button type="button" class="button-heading-level-2">Header level 2</button>
+        <button type="button" class="button-heading-level-3">Header level 3</button>
+        <button type="button" class="button-paragraph">Normal</button>
+        <button type="button" class="button-bold">Bold</button>
+        <button type="button" class="button-italic">Italic</button>
+        <button type="button" class="button-strike">Strike</button>
+        <button type="button" class="button-unordered-list">Bullet list</button>
+        <button type="button" class="button-ordered-list">Ordered list</button>
+        <button type="button" class="button-undo">Undo</button>
+        <button type="button" class="button-redo">Redo</button>
+        <a class="button-link pat-modal" href="#modal-link">Link</a>
+      </div>
+      <textarea
+          class="pat-tiptap pat-autofocus"
+          data-pat-tiptap="
+            toolbar-external: #tiptap-external-toolbar-11;
+            link-panel: #pat-modal .link-panel;
+            link-menu: #context-menu-link"
+          placeholder="Your poem goes here...">
+      </textarea>
+    </section>
+
+    <section>
+      <h2>TipTap -12</h2>
+      <div id="tiptap-external-toolbar-12">
+        <button type="button" class="button-heading-level-1">Header level 1</button>
+        <button type="button" class="button-heading-level-2">Header level 2</button>
+        <button type="button" class="button-heading-level-3">Header level 3</button>
+        <button type="button" class="button-paragraph">Normal</button>
+        <button type="button" class="button-bold">Bold</button>
+        <button type="button" class="button-italic">Italic</button>
+        <button type="button" class="button-strike">Strike</button>
+        <button type="button" class="button-unordered-list">Bullet list</button>
+        <button type="button" class="button-ordered-list">Ordered list</button>
+        <button type="button" class="button-undo">Undo</button>
+        <button type="button" class="button-redo">Redo</button>
+        <a class="button-link pat-modal" href="#modal-link">Link</a>
+      </div>
+      <textarea
+          class="pat-tiptap pat-autofocus"
+          data-pat-tiptap="
+            toolbar-external: #tiptap-external-toolbar-12;
+            link-panel: #pat-modal .link-panel;
+            link-menu: #context-menu-link"
+          placeholder="Your poem goes here...">
+      </textarea>
+    </section>
+
+    <section>
+      <h2>TipTap -13</h2>
+      <div id="tiptap-external-toolbar-13">
+        <button type="button" class="button-heading-level-1">Header level 1</button>
+        <button type="button" class="button-heading-level-2">Header level 2</button>
+        <button type="button" class="button-heading-level-3">Header level 3</button>
+        <button type="button" class="button-paragraph">Normal</button>
+        <button type="button" class="button-bold">Bold</button>
+        <button type="button" class="button-italic">Italic</button>
+        <button type="button" class="button-strike">Strike</button>
+        <button type="button" class="button-unordered-list">Bullet list</button>
+        <button type="button" class="button-ordered-list">Ordered list</button>
+        <button type="button" class="button-undo">Undo</button>
+        <button type="button" class="button-redo">Redo</button>
+        <a class="button-link pat-modal" href="#modal-link">Link</a>
+      </div>
+      <textarea
+          class="pat-tiptap pat-autofocus"
+          data-pat-tiptap="
+            toolbar-external: #tiptap-external-toolbar-13;
+            link-panel: #pat-modal .link-panel;
+            link-menu: #context-menu-link"
+          placeholder="Your poem goes here...">
+      </textarea>
+    </section>
+
+    <section>
+      <h2>TipTap -14</h2>
+      <div id="tiptap-external-toolbar-14">
+        <button type="button" class="button-heading-level-1">Header level 1</button>
+        <button type="button" class="button-heading-level-2">Header level 2</button>
+        <button type="button" class="button-heading-level-3">Header level 3</button>
+        <button type="button" class="button-paragraph">Normal</button>
+        <button type="button" class="button-bold">Bold</button>
+        <button type="button" class="button-italic">Italic</button>
+        <button type="button" class="button-strike">Strike</button>
+        <button type="button" class="button-unordered-list">Bullet list</button>
+        <button type="button" class="button-ordered-list">Ordered list</button>
+        <button type="button" class="button-undo">Undo</button>
+        <button type="button" class="button-redo">Redo</button>
+        <a class="button-link pat-modal" href="#modal-link">Link</a>
+      </div>
+      <textarea
+          class="pat-tiptap pat-autofocus"
+          data-pat-tiptap="
+            toolbar-external: #tiptap-external-toolbar-14;
+            link-panel: #pat-modal .link-panel;
+            link-menu: #context-menu-link"
+          placeholder="Your poem goes here...">
+      </textarea>
+    </section>
+
+    <section>
+      <h2>TipTap -15</h2>
+      <div id="tiptap-external-toolbar-15">
+        <button type="button" class="button-heading-level-1">Header level 1</button>
+        <button type="button" class="button-heading-level-2">Header level 2</button>
+        <button type="button" class="button-heading-level-3">Header level 3</button>
+        <button type="button" class="button-paragraph">Normal</button>
+        <button type="button" class="button-bold">Bold</button>
+        <button type="button" class="button-italic">Italic</button>
+        <button type="button" class="button-strike">Strike</button>
+        <button type="button" class="button-unordered-list">Bullet list</button>
+        <button type="button" class="button-ordered-list">Ordered list</button>
+        <button type="button" class="button-undo">Undo</button>
+        <button type="button" class="button-redo">Redo</button>
+        <a class="button-link pat-modal" href="#modal-link">Link</a>
+      </div>
+      <textarea
+          class="pat-tiptap pat-autofocus"
+          data-pat-tiptap="
+            toolbar-external: #tiptap-external-toolbar-15;
+            link-panel: #pat-modal .link-panel;
+            link-menu: #context-menu-link"
+          placeholder="Your poem goes here...">
+      </textarea>
+    </section>
+
+    <section>
+      <h2>TipTap -16</h2>
+      <div id="tiptap-external-toolbar-16">
+        <button type="button" class="button-heading-level-1">Header level 1</button>
+        <button type="button" class="button-heading-level-2">Header level 2</button>
+        <button type="button" class="button-heading-level-3">Header level 3</button>
+        <button type="button" class="button-paragraph">Normal</button>
+        <button type="button" class="button-bold">Bold</button>
+        <button type="button" class="button-italic">Italic</button>
+        <button type="button" class="button-strike">Strike</button>
+        <button type="button" class="button-unordered-list">Bullet list</button>
+        <button type="button" class="button-ordered-list">Ordered list</button>
+        <button type="button" class="button-undo">Undo</button>
+        <button type="button" class="button-redo">Redo</button>
+        <a class="button-link pat-modal" href="#modal-link">Link</a>
+      </div>
+      <textarea
+          class="pat-tiptap pat-autofocus"
+          data-pat-tiptap="
+            toolbar-external: #tiptap-external-toolbar-16;
+            link-panel: #pat-modal .link-panel;
+            link-menu: #context-menu-link"
+          placeholder="Your poem goes here...">
+      </textarea>
+    </section>
+
+    <section>
+      <h2>TipTap -17</h2>
+      <div id="tiptap-external-toolbar-17">
+        <button type="button" class="button-heading-level-1">Header level 1</button>
+        <button type="button" class="button-heading-level-2">Header level 2</button>
+        <button type="button" class="button-heading-level-3">Header level 3</button>
+        <button type="button" class="button-paragraph">Normal</button>
+        <button type="button" class="button-bold">Bold</button>
+        <button type="button" class="button-italic">Italic</button>
+        <button type="button" class="button-strike">Strike</button>
+        <button type="button" class="button-unordered-list">Bullet list</button>
+        <button type="button" class="button-ordered-list">Ordered list</button>
+        <button type="button" class="button-undo">Undo</button>
+        <button type="button" class="button-redo">Redo</button>
+        <a class="button-link pat-modal" href="#modal-link">Link</a>
+      </div>
+      <textarea
+          class="pat-tiptap pat-autofocus"
+          data-pat-tiptap="
+            toolbar-external: #tiptap-external-toolbar-17;
+            link-panel: #pat-modal .link-panel;
+            link-menu: #context-menu-link"
+          placeholder="Your poem goes here...">
+      </textarea>
+    </section>
+
+    <section>
+      <h2>TipTap -18</h2>
+      <div id="tiptap-external-toolbar-18">
+        <button type="button" class="button-heading-level-1">Header level 1</button>
+        <button type="button" class="button-heading-level-2">Header level 2</button>
+        <button type="button" class="button-heading-level-3">Header level 3</button>
+        <button type="button" class="button-paragraph">Normal</button>
+        <button type="button" class="button-bold">Bold</button>
+        <button type="button" class="button-italic">Italic</button>
+        <button type="button" class="button-strike">Strike</button>
+        <button type="button" class="button-unordered-list">Bullet list</button>
+        <button type="button" class="button-ordered-list">Ordered list</button>
+        <button type="button" class="button-undo">Undo</button>
+        <button type="button" class="button-redo">Redo</button>
+        <a class="button-link pat-modal" href="#modal-link">Link</a>
+      </div>
+      <textarea
+          class="pat-tiptap pat-autofocus"
+          data-pat-tiptap="
+            toolbar-external: #tiptap-external-toolbar-18;
+            link-panel: #pat-modal .link-panel;
+            link-menu: #context-menu-link"
+          placeholder="Your poem goes here...">
+      </textarea>
+    </section>
+
+    <section>
+      <h2>TipTap -19</h2>
+      <div id="tiptap-external-toolbar-19">
+        <button type="button" class="button-heading-level-1">Header level 1</button>
+        <button type="button" class="button-heading-level-2">Header level 2</button>
+        <button type="button" class="button-heading-level-3">Header level 3</button>
+        <button type="button" class="button-paragraph">Normal</button>
+        <button type="button" class="button-bold">Bold</button>
+        <button type="button" class="button-italic">Italic</button>
+        <button type="button" class="button-strike">Strike</button>
+        <button type="button" class="button-unordered-list">Bullet list</button>
+        <button type="button" class="button-ordered-list">Ordered list</button>
+        <button type="button" class="button-undo">Undo</button>
+        <button type="button" class="button-redo">Redo</button>
+        <a class="button-link pat-modal" href="#modal-link">Link</a>
+      </div>
+      <textarea
+          class="pat-tiptap pat-autofocus"
+          data-pat-tiptap="
+            toolbar-external: #tiptap-external-toolbar-19;
+            link-panel: #pat-modal .link-panel;
+            link-menu: #context-menu-link"
+          placeholder="Your poem goes here...">
+      </textarea>
+    </section>
+
+    <section>
+      <h2>TipTap -20</h2>
+      <div id="tiptap-external-toolbar-20">
+        <button type="button" class="button-heading-level-1">Header level 1</button>
+        <button type="button" class="button-heading-level-2">Header level 2</button>
+        <button type="button" class="button-heading-level-3">Header level 3</button>
+        <button type="button" class="button-paragraph">Normal</button>
+        <button type="button" class="button-bold">Bold</button>
+        <button type="button" class="button-italic">Italic</button>
+        <button type="button" class="button-strike">Strike</button>
+        <button type="button" class="button-unordered-list">Bullet list</button>
+        <button type="button" class="button-ordered-list">Ordered list</button>
+        <button type="button" class="button-undo">Undo</button>
+        <button type="button" class="button-redo">Redo</button>
+        <a class="button-link pat-modal" href="#modal-link">Link</a>
+      </div>
+      <textarea
+          class="pat-tiptap pat-autofocus"
+          data-pat-tiptap="
+            toolbar-external: #tiptap-external-toolbar-20;
+            link-panel: #pat-modal .link-panel;
+            link-menu: #context-menu-link"
+          placeholder="Your poem goes here...">
+      </textarea>
+    </section>
+
+
+
+    <template id="modal-link">
+        <h1>Add / Edit Link</h1>
+        <form class="link-panel">
+          <label>
+            Link URL:
+            <input type="text" name="tiptap-href"/>
+          </label>
+          <label>
+            Link Text:
+            <input type="text" name="tiptap-text"/>
+          </label>
+          <label>
+            Open in new window:
+            <input type="checkbox" name="tiptap-target" value="_blank" />
+          </label>
+          <button class="close-panel" type="button" name="tiptap-confirm">submit</button>
+          <button class="close-panel" type="button" name="tiptap-remove">remove link</button>
+        </form>
+    </template>
+
+    <template id="context-menu-link">
+      <ul class="tiptap-link-context-menu">
+        <li>
+          <a
+            class="close-panel tiptap-open-new-link"
+            target="_blank"
+            href="">Visit linked web page</a>
+        </li>
+        <li>
+          <button
+            type="button"
+            class="close-panel tiptap-edit-link">Edit link</button>
+        </li>
+        <li>
+          <button
+            type="button"
+            class="close-panel tiptap-unlink">Unlink</button>
+        </li>
+      </ul>
+    </template>
+
+  </body>
+</html>
+

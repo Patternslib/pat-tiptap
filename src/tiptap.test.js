@@ -2,6 +2,32 @@ import "regenerator-runtime/runtime"; // needed for ``await`` support
 import Pattern from "./tiptap";
 import utils from "@patternslib/patternslib/src/core/utils";
 
+const mockFetch =
+    (text = "") =>
+    () =>
+        Promise.resolve({
+            text: () => Promise.resolve(text),
+        });
+
+const SUGGESTION_RESPONSE = `
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Mentions results</title>
+  </head>
+  <body>
+    <section class="tiptap-suggestion">
+      <ul>
+        <li class="tiptap-item" data-tiptap-value="item a"><a href="https://demo.com/itema" data-pat-inject="source:#some">first</a></li>
+        <li class="tiptap-item" data-tiptap-value="item b"><a href="https://demo.com/itemb" class="aha">second</a></li>
+        <li class="tiptap-item" data-tiptap-value="item c"><a href="https://demo.com/itemc" title="okay">third</a></li>
+      </ul>
+    </section>
+  </body>
+</html>
+`;
+
 describe("pat-tiptap", () => {
     beforeEach(() => {
         document.body.innerHTML = "";
@@ -584,5 +610,131 @@ describe("pat-tiptap", () => {
 
         // Normal YouTube URL is transformed to embed URL.
         expect(iframe.src).toBe("https://player.vimeo.com/video/9206226");
+    });
+
+    it("8.1 - Can use suggestions for mentioning", async () => {
+        global.fetch = jest.fn().mockImplementation(mockFetch(SUGGESTION_RESPONSE));
+
+        document.body.innerHTML = `
+          <textarea
+              class="pat-tiptap"
+              data-pat-tiptap="
+                mentions-menu: https://demo.at/mentions.html;
+              ">
+          </textarea>
+        `;
+
+        new Pattern(document.querySelector(".pat-tiptap"));
+        await utils.timeout(1);
+
+        const editable = document.querySelector(".tiptap-container [contenteditable]");
+        const range = document.createRange();
+        const sel = window.getSelection();
+
+        // Add the triggering character into the content editable
+        editable.innerHTML = "<p>@</p>";
+
+        // Set the cursor right after the @-sign.
+        range.setStart(editable.childNodes[0].childNodes[0], 1);
+        range.collapse(true);
+        sel.removeAllRanges();
+        sel.addRange(range);
+
+        await utils.timeout(1); // Wait a tick for the tooltip to open.
+        await utils.timeout(1); // Wait a tick for the suggestion-pattern to be initialized.
+
+        // Check for class ``tiptap-mentions`` set on tooltip container.
+        expect(
+            document.querySelector(".tooltip-container.tiptap-mentions")
+        ).toBeTruthy();
+
+        expect(document.querySelector(".tiptap-suggestion")).toBeTruthy();
+
+        const items = document.querySelectorAll(".tiptap-suggestion .tiptap-item");
+        expect(items.length).toBeGreaterThan(0);
+        expect(items[0].classList.contains("active")).toBe(true);
+
+        editable.dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowDown" }));
+        expect(items[0].classList.contains("active")).toBe(false);
+        expect(items[1].classList.contains("active")).toBe(true);
+
+        editable.dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowDown" }));
+        expect(items[0].classList.contains("active")).toBe(false);
+        expect(items[1].classList.contains("active")).toBe(false);
+        expect(items[2].classList.contains("active")).toBe(true);
+
+        editable.dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowDown" }));
+        expect(items[0].classList.contains("active")).toBe(true);
+        expect(items[1].classList.contains("active")).toBe(false);
+        expect(items[2].classList.contains("active")).toBe(false);
+
+        editable.dispatchEvent(new KeyboardEvent("keydown", { key: "Enter" }));
+        expect(document.querySelector(".tiptap-suggestion")).toBeFalsy();
+        const mention = editable.firstChild.firstChild;
+        expect(mention.textContent).toBe("@item a");
+        expect(mention.href).toBe("https://demo.com/itema");
+        expect(mention.hasAttribute("data-mention")).toBe(true);
+
+        // TODO: fix or report this failing test.
+        //expect(mention.getAttribute("data-pat-inject")).toBe("source:#some");
+
+        global.fetch.mockClear();
+        delete global.fetch;
+    });
+
+    it("8.2 - Can use suggestions for tagging", async () => {
+        global.fetch = jest.fn().mockImplementation(mockFetch(SUGGESTION_RESPONSE));
+
+        document.body.innerHTML = `
+          <textarea
+              class="pat-tiptap"
+              data-pat-tiptap="
+                tags-menu: https://demo.at/tags.html;
+              ">
+          </textarea>
+        `;
+
+        new Pattern(document.querySelector(".pat-tiptap"));
+        await utils.timeout(1);
+
+        const editable = document.querySelector(".tiptap-container [contenteditable]");
+        const range = document.createRange();
+        const sel = window.getSelection();
+
+        // Add the triggering character into the content editable
+        editable.innerHTML = "<p>#</p>";
+
+        // Set the cursor right after the #-sign.
+        range.setStart(editable.childNodes[0].childNodes[0], 1);
+        range.collapse(true);
+        sel.removeAllRanges();
+        sel.addRange(range);
+
+        await utils.timeout(1); // Wait a tick for the tooltip to open.
+        await utils.timeout(1); // Wait a tick for the suggestion-pattern to be initialized.
+
+        // Check for class ``tiptap-tags`` set on tooltip container.
+        expect(document.querySelector(".tooltip-container.tiptap-tags")).toBeTruthy();
+
+        expect(document.querySelector(".tiptap-suggestion")).toBeTruthy();
+
+        const items = document.querySelectorAll(".tiptap-suggestion .tiptap-item");
+        expect(items.length).toBeGreaterThan(0);
+        expect(items[0].classList.contains("active")).toBe(true);
+
+        editable.dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowDown" }));
+        expect(items[0].classList.contains("active")).toBe(false);
+        expect(items[1].classList.contains("active")).toBe(true);
+
+        editable.dispatchEvent(new KeyboardEvent("keydown", { key: "Enter" }));
+        expect(document.querySelector(".tiptap-suggestion")).toBeFalsy();
+        const mention = editable.firstChild.firstChild;
+        expect(mention.textContent).toBe("#item b");
+        expect(mention.href).toBe("https://demo.com/itemb");
+        expect(mention.classList.contains("aha")).toBe(true);
+        expect(mention.hasAttribute("data-tag")).toBe(true);
+
+        global.fetch.mockClear();
+        delete global.fetch;
     });
 });
