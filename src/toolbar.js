@@ -83,7 +83,7 @@ export async function init_extensions({ app }) {
         tb.heading_level_5 ||
         tb.heading_level_6
     ) {
-        extensions.push((await import("./extensions/heading")).Heading);
+        extensions.push((await import("./extensions/heading")).factory());
     }
 
     if (tb.blockquote) {
