@@ -330,7 +330,7 @@ export default Base.extend({
         }
 
         if (tb.image) {
-            extensions.push((await import("./extensions/image-inline")).default);
+            extensions.push((await import("./extensions/image-inline")).factory());
             extensions.push((await import("./extensions/image-figure")).factory());
         }
 
