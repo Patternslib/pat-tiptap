@@ -179,7 +179,7 @@ export async function init_extensions({ app }) {
     if (tb.image || tb.embed || has_tables) {
         extensions.push((await import("@tiptap/extension-dropcursor")).default);
         extensions.push((await import("./extensions/figure")).factory());
-        extensions.push((await import("./extensions/figcaption")).default);
+        extensions.push((await import("./extensions/figcaption")).factory());
     }
 
     return extensions;
