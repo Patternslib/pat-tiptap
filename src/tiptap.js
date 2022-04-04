@@ -92,7 +92,7 @@ export default Base.extend({
         if (this.options.mentionsMenu) {
             extra_extensions.push(
                 (await import("./extensions/suggestion"))
-                    .SuggestionFactory({
+                    .factory({
                         app: this,
                         name: "mention",
                         char: "@",
@@ -108,7 +108,7 @@ export default Base.extend({
         if (this.options.tagsMenu) {
             extra_extensions.push(
                 (await import("./extensions/suggestion"))
-                    .SuggestionFactory({
+                    .factory({
                         app: this,
                         name: "tag",
                         char: "#",

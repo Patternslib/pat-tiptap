@@ -120,7 +120,7 @@ function pattern_suggestion(app, props) {
     };
 }
 
-export const SuggestionFactory = ({ app, name, char, plural }) => {
+export const factory = ({ app, name, char, plural }) => {
     return Node.create({
         name: name,
         group: "inline",
