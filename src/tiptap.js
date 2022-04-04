@@ -36,8 +36,6 @@ export default Base.extend({
         // Constructor
         this.toolbar = {};
         this.toolbar_el = null;
-        //
-        this.observer_source_panel = null;
 
         const TipTap = (await import("@tiptap/core")).Editor;
         const ExtDocument = (await import("@tiptap/extension-document")).default;
@@ -444,68 +442,7 @@ export default Base.extend({
         }
 
         if (tb.source && this.options.sourcePanel) {
-            // Initialize modal after it has injected.
-            tb.source.addEventListener(
-                "pat-modal-ready",
-                this.initialize_source_panel.bind(this)
-            );
+            (await import("./extensions/source")).init({ app: this, button: tb.source });
         }
-    },
-
-    initialize_source_panel() {
-        const source_panel = document.querySelector(this.options.sourcePanel);
-        if (!source_panel) {
-            log.warn("No source panel found.");
-            return;
-        }
-        this.focus_handler(source_panel);
-
-        const reinit = () => {
-            const source_text = source_panel.querySelector("[name=tiptap-source]"); // prettier-ignore
-            const source_confirm = source_panel.querySelector(".tiptap-confirm, [name=tiptap-confirm]"); // prettier-ignore
-
-            // set form to initial values
-            source_text.value = this.editor.getHTML();
-            source_text.dispatchEvent(new Event("input"));
-
-            const update_callback = (set_focus) => {
-                const cmd = this.editor.chain();
-                if (set_focus === true) {
-                    cmd.focus();
-                }
-                cmd.setContent(source_text.value, true);
-                cmd.run();
-            };
-
-            if (source_confirm) {
-                // update on click on confirm
-                events.add_event_listener(
-                    source_confirm,
-                    "click",
-                    "tiptap_source_confirm",
-                    () => update_callback.bind(this)(true)
-                );
-            } else {
-                // update on input/change
-                events.add_event_listener(
-                    source_text,
-                    "input",
-                    "tiptap_source_text",
-                    update_callback.bind(this)
-                );
-            }
-        };
-
-        reinit();
-        if (this.observer_source_panel) {
-            this.observer_source_panel.disconnect();
-        }
-        this.observer_source_panel = new MutationObserver(reinit.bind(this));
-        this.observer_source_panel.observe(source_panel, {
-            childList: true,
-            subtree: true,
-            attributes: false,
-            characterData: false,
-        });
     },
 });
