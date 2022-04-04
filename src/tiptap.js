@@ -37,7 +37,6 @@ export default Base.extend({
         this.toolbar = {};
         this.toolbar_el = null;
         //
-        this.observer_image_panel = null;
         this.observer_embed_panel = null;
         this.observer_source_panel = null;
 
@@ -332,7 +331,7 @@ export default Base.extend({
 
         if (tb.image) {
             extensions.push((await import("./extensions/image-inline")).default);
-            extensions.push((await import("./extensions/image-figure")).default);
+            extensions.push((await import("./extensions/image-figure")).factory());
         }
 
         if (tb.embed) {
@@ -438,11 +437,7 @@ export default Base.extend({
         }
 
         if (tb.image && this.options.imagePanel) {
-            // Initialize modal after it has injected.
-            tb.image.addEventListener(
-                "pat-modal-ready",
-                this.initialize_image_panel.bind(this)
-            );
+            (await import("./extensions/image-figure")).init({ app: this, button: tb.image }); // prettier-ignore
         }
 
         if (tb.embed && this.options.embedPanel) {
@@ -460,118 +455,6 @@ export default Base.extend({
                 this.initialize_source_panel.bind(this)
             );
         }
-    },
-
-    initialize_image_panel() {
-        const image_panel = document.querySelector(this.options.imagePanel);
-        if (!image_panel) {
-            log.warn("No image panel found.");
-            return;
-        }
-        this.focus_handler(image_panel);
-
-        const reinit = () => {
-            const image_src = image_panel.querySelector("[name=tiptap-src]");
-            const image_alt = image_panel.querySelector("[name=tiptap-alt]");
-            const image_title = image_panel.querySelector("[name=tiptap-title]");
-            const image_caption = image_panel.querySelector("[name=tiptap-caption]");
-            const image_confirm = image_panel.querySelector(".tiptap-confirm, [name=tiptap-confirm]"); // prettier-ignore
-
-            const update_callback = (set_focus) => {
-                // Get the selected image on time of submitting
-                const selected_image_src = image_panel.querySelector(
-                    `[name=tiptap-src][type=radio]:checked,
-                         [name=tiptap-src][type=checkbox]:checked,
-                         [name=tiptap-src][type=option]:checked,
-                         [name=tiptap-src][type=hidden],
-                         [name=tiptap-src][type=text]`
-                );
-
-                const cmd = this.editor.chain();
-                cmd.insertContent({
-                    type: "figure",
-                    content: [
-                        {
-                            type: "image-figure",
-                            attrs: {
-                                src: selected_image_src.value,
-                                ...(image_alt?.value && { alt: image_alt?.value }),
-                                ...(image_title?.value && { title: image_title?.value }),
-                            },
-                        },
-                        // Conditionally add a figcaption
-                        ...(image_caption?.value
-                            ? [
-                                  {
-                                      type: "figcaption",
-                                      content: [
-                                          {
-                                              type: "text",
-                                              text: image_caption.value,
-                                          },
-                                      ],
-                                  },
-                              ]
-                            : []),
-                    ],
-                });
-                if (set_focus === true) {
-                    // set focus after setting image, otherwise image is
-                    // selected and right away deleted when starting typing.
-                    cmd.focus();
-                }
-                cmd.run();
-            };
-
-            // FORM UPDATE
-            if (image_confirm) {
-                // update on click on confirm
-                events.add_event_listener(
-                    image_confirm,
-                    "click",
-                    "tiptap_image_confirm",
-                    () => update_callback.bind(this)(true)
-                );
-            } else {
-                // update on input/change
-                events.add_event_listener(
-                    image_src,
-                    "change",
-                    "tiptap_image_src",
-                    update_callback.bind(this)
-                );
-                events.add_event_listener(
-                    image_alt,
-                    "change",
-                    "tiptap_image_alt",
-                    update_callback.bind(this)
-                );
-                events.add_event_listener(
-                    image_title,
-                    "change",
-                    "tiptap_image_title",
-                    update_callback.bind(this)
-                );
-                events.add_event_listener(
-                    image_caption,
-                    "change",
-                    "tiptap_image_caption",
-                    update_callback.bind(this)
-                );
-            }
-        };
-
-        reinit();
-        if (this.observer_image_panel) {
-            this.observer_image_panel.disconnect();
-        }
-        this.observer_image_panel = new MutationObserver(reinit.bind(this));
-        this.observer_image_panel.observe(image_panel, {
-            childList: true,
-            subtree: true,
-            attributes: false,
-            characterData: false,
-        });
     },
 
     initialize_embed_panel() {
