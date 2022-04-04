@@ -4,7 +4,6 @@ import Parser from "@patternslib/patternslib/src/core/parser";
 import events from "@patternslib/patternslib/src/core/events";
 import logging from "@patternslib/patternslib/src/core/logging";
 import utils from "@patternslib/patternslib/src/core/utils";
-import { context_menu, context_menu_close } from "./context_menu";
 
 export const log = logging.getLogger("tiptap");
 
@@ -38,18 +37,14 @@ export default Base.extend({
         this.toolbar = {};
         this.toolbar_el = null;
         //
-        this.observer_link_panel = null;
         this.observer_image_panel = null;
         this.observer_embed_panel = null;
         this.observer_source_panel = null;
-        //
-        this.dont_open_context_menu = false;
 
         const TipTap = (await import("@tiptap/core")).Editor;
         const ExtDocument = (await import("@tiptap/extension-document")).default;
         const ExtParagraph = (await import("@tiptap/extension-paragraph")).default;
         const ExtText = (await import("@tiptap/extension-text")).default;
-        this.debounced_context_menu = utils.debounce(context_menu, 50);
 
         this.focus_handler = (await import("./focus-handler")).focus_handler;
 
@@ -327,7 +322,7 @@ export default Base.extend({
 
         if (tb.link) {
             extensions.push(
-                (await import("@tiptap/extension-link")).default.configure({
+                (await import("./extensions/link")).factory().configure({
                     HTMLAttributes: { target: null, rel: null }, // don't set these attributes.
                     openOnClick: false, // don't open documents while editing.
                     linkOnPaste: false,
@@ -353,7 +348,7 @@ export default Base.extend({
         return extensions;
     },
 
-    toolbar_post_init() {
+    async toolbar_post_init() {
         if (Object.values(this.toolbar).length === 0) {
             return;
         }
@@ -438,32 +433,8 @@ export default Base.extend({
             });
         }
 
-        // non-standard functionality
         if (tb.link && this.options.link?.panel) {
-            // Initialize modal after it has injected.
-            tb.link.addEventListener(
-                "pat-modal-ready",
-                this.initialize_link_panel.bind(this)
-            );
-
-            this.editor.on("selectionUpdate", async () => {
-                this.editor.isActive("link")
-                    ? tb.link.classList.add("active")
-                    : tb.link.classList.remove("active");
-                this.editor.can().setLink()
-                    ? tb.link.classList.remove("disabled")
-                    : tb.link.classList.add("disabled");
-
-                !this.dont_open_context_menu &&
-                    this.options.link?.menu &&
-                    this.debounced_context_menu({
-                        url: this.options.link.menu,
-                        editor: this.editor,
-                        should_show_cb: () => this.editor.isActive("link"),
-                        register_pattern: this.pattern_link_context_menu(),
-                        extra_class: "link-panel",
-                    });
-            });
+            (await import("./extensions/link")).init({ app: this, button: tb.link });
         }
 
         if (tb.image && this.options.imagePanel) {
@@ -489,139 +460,6 @@ export default Base.extend({
                 this.initialize_source_panel.bind(this)
             );
         }
-    },
-
-    async initialize_link_panel() {
-        // Close eventual opened link context menus.
-        context_menu_close("tiptap-link-context-menu");
-
-        const link_panel = document.querySelector(this.options.link?.panel);
-        if (!link_panel) {
-            log.warn("No link panel found.");
-            return;
-        }
-        this.focus_handler(link_panel);
-
-        const reinit = () => {
-            const link_href = link_panel.querySelector("[name=tiptap-href]");
-            const link_text = link_panel.querySelector("[name=tiptap-text]");
-            const link_target = link_panel.querySelector("[name=tiptap-target]");
-            const link_confirm = link_panel.querySelector(".tiptap-confirm, [name=tiptap-confirm]"); // prettier-ignore
-            const link_remove = link_panel.querySelector("[name=tiptap-remove]");
-
-            const selection_from = this.editor.state.selection.from;
-            const selection_to = this.editor.state.selection.to;
-
-            const node = this.editor.state.doc.nodeAt(selection_from);
-            const attrs = this.editor.getAttributes("link");
-            const is_link = attrs.href !== undefined;
-
-            if (is_link) {
-                // Extend the selection to whole link.
-                // Necessary for link updates below in the update_callback
-                // to get the selection right which is replaced.
-                this.dont_open_context_menu = true; // setting a selection on a link would open the context menu.
-                this.editor.commands.extendMarkRange("link");
-                this.dont_open_context_menu = false;
-            }
-
-            // FORM INITIALIZATION
-            if (attrs?.href) {
-                link_href.value = attrs.href;
-                link_href.dispatchEvent(new Event("input"));
-            }
-            if (attrs?.target && link_target) {
-                link_target.checked = true;
-                link_target.dispatchEvent(new Event("input"));
-            }
-
-            let text_content = null;
-            if (selection_from !== selection_to) {
-                text_content = this.editor.state.doc.textBetween(
-                    selection_from,
-                    selection_to
-                );
-            } else if (is_link) {
-                text_content = node.text;
-            }
-            if (link_text && text_content) {
-                link_text.value = text_content;
-                link_text.dispatchEvent(new Event("input"));
-            }
-
-            const update_callback = (set_focus) => {
-                const cmd = this.editor.chain();
-                if (set_focus === true) {
-                    cmd.focus();
-                }
-                const link_text_value =
-                    (link_text ? link_text.value : text_content) || "";
-                cmd.command(async ({ tr }) => {
-                    // create = update
-                    // create prosemirror tree mark and node
-                    const mark = this.editor.state.schema.marks.link.create({
-                        href: link_href.value,
-                        target:
-                            link_target && link_target.checked
-                                ? link_target?.value
-                                : null,
-                    });
-                    const link_node = this.editor.state.schema
-                        .text(link_text_value)
-                        .mark([mark]);
-                    tr.replaceSelectionWith(link_node, false);
-                    return true;
-                });
-                cmd.run();
-            };
-
-            // FORM UPDATE
-            if (link_confirm) {
-                // update on click on confirm
-                events.add_event_listener(
-                    link_confirm,
-                    "click",
-                    "tiptap_link_confirm",
-                    () => update_callback.bind(this)(true)
-                );
-            } else {
-                // update on input/change
-                events.add_event_listener(
-                    link_href,
-                    "input",
-                    "tiptap_link_href",
-                    update_callback.bind(this)
-                );
-                events.add_event_listener(
-                    link_text,
-                    "input",
-                    "tiptap_link_text",
-                    update_callback.bind(this)
-                );
-                events.add_event_listener(
-                    link_target,
-                    "change",
-                    "tiptap_link_target",
-                    update_callback.bind(this)
-                );
-            }
-
-            events.add_event_listener(link_remove, "click", "tiptap_link_remove", () =>
-                this.editor.chain().focus().unsetLink().run()
-            );
-        };
-
-        reinit();
-        if (this.observer_link_panel) {
-            this.observer_link_panel.disconnect();
-        }
-        this.observer_link_panel = new MutationObserver(reinit.bind(this));
-        this.observer_link_panel.observe(link_panel, {
-            childList: true,
-            subtree: true,
-            attributes: false,
-            characterData: false,
-        });
     },
 
     initialize_image_panel() {
@@ -886,43 +724,5 @@ export default Base.extend({
             attributes: false,
             characterData: false,
         });
-    },
-
-    pattern_link_context_menu() {
-        // Dynamic pattern for the link context menu
-        const that = this;
-        return {
-            name: "tiptap-link-context-menu",
-            trigger: ".tiptap-link-context-menu",
-            async init($el) {
-                const el = $el[0];
-                that.focus_handler(el);
-
-                const btn_open = el.querySelector(".tiptap-open-new-link");
-                const btn_edit = el.querySelector(".tiptap-edit-link");
-                const btn_unlink = el.querySelector(".tiptap-unlink");
-
-                if (btn_open) {
-                    const attrs = that.editor.getAttributes("link");
-                    if (attrs?.href) {
-                        btn_open.setAttribute("href", attrs.href);
-                    }
-                    btn_open.addEventListener("click", () =>
-                        context_menu_close(this.name)
-                    );
-                }
-
-                btn_edit &&
-                    btn_edit.addEventListener("click", () => {
-                        context_menu_close(this.name);
-                        that.toolbar.link.click();
-                    });
-                btn_unlink &&
-                    btn_unlink.addEventListener("click", () => {
-                        context_menu_close(this.name);
-                        that.editor.chain().focus().unsetLink().run();
-                    });
-            },
-        };
     },
 });
