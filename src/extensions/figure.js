@@ -2,64 +2,64 @@
 import { Node, mergeAttributes } from "@tiptap/core";
 import { Plugin } from "prosemirror-state";
 
-const Figure = Node.create({
-    name: "figure",
+export const factory = () => {
+    return Node.create({
+        name: "figure",
 
-    addOptions() {
-        return {
-            HTMLAttributes: {},
-        };
-    },
+        addOptions() {
+            return {
+                HTMLAttributes: {},
+            };
+        },
 
-    group: "block",
-    content: "block figcaption?",
+        group: "block",
+        content: "block figcaption?",
 
-    allowGapCursor: true,
-    draggable: true,
-    isolating: true,
-    selectable: true,
+        allowGapCursor: true,
+        draggable: true,
+        isolating: true,
+        selectable: true,
 
-    parseHTML() {
-        return [
-            {
-                tag: `figure`,
-            },
-        ];
-    },
+        parseHTML() {
+            return [
+                {
+                    tag: `figure`,
+                },
+            ];
+        },
 
-    renderHTML({ HTMLAttributes }) {
-        return [
-            "figure",
-            mergeAttributes(this.options.HTMLAttributes, HTMLAttributes),
-            0,
-        ];
-    },
+        renderHTML({ HTMLAttributes }) {
+            return [
+                "figure",
+                mergeAttributes(this.options.HTMLAttributes, HTMLAttributes),
+                0,
+            ];
+        },
 
-    addProseMirrorPlugins() {
-        return [
-            new Plugin({
-                props: {
-                    handleDOMEvents: {
-                        // prevent dragging nodes out of the figure
-                        dragstart: (view, event) => {
-                            if (!event.target) {
+        addProseMirrorPlugins() {
+            return [
+                new Plugin({
+                    props: {
+                        handleDOMEvents: {
+                            // prevent dragging nodes out of the figure
+                            dragstart: (view, event) => {
+                                if (!event.target) {
+                                    return false;
+                                }
+
+                                const pos = view.posAtDOM(event.target, 0);
+                                const $pos = view.state.doc.resolve(pos);
+
+                                if ($pos.parent.type === this.type) {
+                                    event.preventDefault();
+                                }
+
                                 return false;
-                            }
-
-                            const pos = view.posAtDOM(event.target, 0);
-                            const $pos = view.state.doc.resolve(pos);
-
-                            if ($pos.parent.type === this.type) {
-                                event.preventDefault();
-                            }
-
-                            return false;
+                            },
                         },
                     },
-                },
-            }),
-        ];
-    },
-});
-
-export default Figure;
+                }),
+            ];
+        },
+    });
+};
