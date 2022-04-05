@@ -60,13 +60,12 @@ function pattern_suggestion(app, props) {
                     } else if (e.code === "Enter") {
                         // Use selected to insert in text area.
                         const value = this.active?.dataset?.tiptapValue;
-                        const el = this.active.querySelector("a");
-
                         if (!value) {
                             // nothing selected.
                             return;
                         }
 
+                        const el = this.active.querySelector("a");
                         this.command(el, value);
                     }
                 }
@@ -320,6 +319,9 @@ export const factory = ({ app, name, char, plural }) => {
                             props.event.preventDefault();
                             props.event.stopPropagation();
                             const ctx = document.querySelector(".tiptap-suggestion");
+                            if (!ctx) {
+                                return;
+                            }
 
                             // Dispatch the event to the context menu pattern
                             // while still keeping the focus in the textarea.
