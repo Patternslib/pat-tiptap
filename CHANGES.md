@@ -1,4 +1,95 @@
-## [2.1.0](https://github.com/patternslib/pat-tiptap/compare/2.0.2...2.1.0) (2022-02-15)
+
+
+## [3.0.0](https://github.com/patternslib/pat-tiptap/compare/2.1.0...3.0.0) (2022-04-05)
+
+
+### Features
+
+* Add extra classes tiptap-mentions and tiptap-tags to context menu wrapper. ([8318531](https://github.com/patternslib/pat-tiptap/commit/83185313cf34b53b5de12bc62aa42ae0486e7003))
+
+* Allow <br> line breaks. Use <mod><enter> or <shift><enter> on your keyboard. ([0e96118](https://github.com/patternslib/pat-tiptap/commit/0e9611816b2c1b6aa3c94a939abbf498c6987c53))
+
+* Rework suggestion support. ([673be2d](https://github.com/patternslib/pat-tiptap/commit/673be2d1fe1b3967bf115a8fdecb03e292b971c8))
+- Remove mentioning and tagging modules and combine the functionality in a new suggestion extension.
+
+- Implement filtering functionality where the text after the suggestion trigger character can be used to filter the results on the server side.
+
+- Implement suggestion item navigation via arrow keys, suggestion selection via enter key, selecting via mouse and closing via escape key.
+
+- Allow to configure the suggestion extension. This is used for ``@`` mentions and ``#`` tagging.
+
+
+### Bug Fixes
+
+* Do not close each others context menu from suggestion or links by passing the extension's own context menu instance. ([b98bfeb](https://github.com/patternslib/pat-tiptap/commit/b98bfeb99cb7284016372a96fa04fd29f81dd729))
+
+* Do not close/open the context menu when reloading it's contents unless force_reload is given. ([c808b76](https://github.com/patternslib/pat-tiptap/commit/c808b7619b199c59369e81ac5d68e757a67d3138))
+
+* Keep context menu on the left side. ([59c65df](https://github.com/patternslib/pat-tiptap/commit/59c65dfafbdfccd869c71d4b19999b2cc6c89775))
+
+* Position the context menu only when first opened and not while writing. ([4453eb6](https://github.com/patternslib/pat-tiptap/commit/4453eb672f769831de6c56e3f83bfd412edf0459))
+
+
+
+### Breaking Changes
+
+* Remove mentions-search-key and tags-search-key parameters. ([776f88f](https://github.com/patternslib/pat-tiptap/commit/776f88f67eea4d3068d04d9821cbeafe1c10f8e2))
+The filter term is just appended at the end of the URL, so you can configure any search query string you want.
+* Rename context-menu-link to link-menu, context-menu-mentions to mentions-menu and context-menu-tags to tags menu for easier names. ([2d0c0f3](https://github.com/patternslib/pat-tiptap/commit/2d0c0f379fca581df3d4a1d67df709857dcdbf58))
+
+
+
+### Maintenance
+
+* **Cleanup:** Align figcaption extension to factory pattern. ([62de8b7](https://github.com/patternslib/pat-tiptap/commit/62de8b75db37078ed0e5ccc0cc3303e94a522614))
+
+* **Cleanup:** Align figure extension to factory pattern. ([159efe4](https://github.com/patternslib/pat-tiptap/commit/159efe46b089fbc0e07c4b770d9fe55a697163d9))
+
+* **Cleanup:** Align heading extension to factory pattern. ([3a3cbdb](https://github.com/patternslib/pat-tiptap/commit/3a3cbdb61500556b9e50fc3f0b65759d73da945f))
+
+* **Cleanup:** Align image-inline extension to factory pattern. ([23b9830](https://github.com/patternslib/pat-tiptap/commit/23b98307969ff545f2c306b73ee91893ca0294f0))
+
+* **Cleanup:** Align suggestion factory naming to other extensions. ([c0ca99e](https://github.com/patternslib/pat-tiptap/commit/c0ca99e394134cf6d00c995373885deb86492f43))
+
+* **Cleanup:** Factor out embed panel initialization into embed extension module. ([8f79d08](https://github.com/patternslib/pat-tiptap/commit/8f79d085964e27330c273bd75fbdb564579f65a0))
+
+* **Cleanup:** Factor out image panel initialization into image-figure extension module. ([30f2ece](https://github.com/patternslib/pat-tiptap/commit/30f2ecec78ab74e48697201a013dee2375ec0313))
+
+* **Cleanup:** Factor out link extension and panel initialization to seperate module. ([71ca4e2](https://github.com/patternslib/pat-tiptap/commit/71ca4e2092fa36c10e9f837a097d2de7dcd0ce78))
+
+* **Cleanup:** Factor out source panel into own extension module. ([d5c65df](https://github.com/patternslib/pat-tiptap/commit/d5c65dffde41fbe0df40b833d43f2303d7cf214d))
+
+* **Cleanup:** Factor out toolbar initialization into own module. ([86fa69c](https://github.com/patternslib/pat-tiptap/commit/86fa69c12f535a789c0922eba218725c510d6d18))
+
+* **Cleanup:** Factor-out focus class handler which is responsible to set a focus class on specified elements like the toolbar when another element is active. ([a2eedfa](https://github.com/patternslib/pat-tiptap/commit/a2eedfabba1a713c3592232369bdd61bddad90bb))
+
+* **Cleanup:** Remove now unused import events from main module. ([4e3d096](https://github.com/patternslib/pat-tiptap/commit/4e3d0968d96c6a9d787e7f54d04f5a861a47ae97))
+
+* **Cleanup:** Remove unused extension placeholder-top-bottom. ([582f462](https://github.com/patternslib/pat-tiptap/commit/582f46293b6642170e169d823b35299655ee8959))
+
+* **Demo:** Add demo page for many tiptap instances. ([4e1b82d](https://github.com/patternslib/pat-tiptap/commit/4e1b82d23119b3de5df2808875c2fefdf64aafff))
+
+* **Demo:** Use better names for mentions and tags in the demo. ([afc9448](https://github.com/patternslib/pat-tiptap/commit/afc944830b540e02f00a89360777ea7ccf814c14))
+
+* **Demo:** Use extra unicode characters for suggestion names, contrasting better the difference between names and ``data-tiptap-value``. ([66a8fe6](https://github.com/patternslib/pat-tiptap/commit/66a8fe61997e3a8d855571995eaf010b662a84f8))
+
+* Depend on Patternslib 7.3.0. ([7f89d19](https://github.com/patternslib/pat-tiptap/commit/7f89d199404032e4704541e5ac43e56ba617e43d))
+
+* **Dependencies:** Upgrade dependencies. ([9644f7b](https://github.com/patternslib/pat-tiptap/commit/9644f7b562447b57af034726bd8be6827e925feb))
+
+* **Dependencies:** Upgrade to Patternslib 7.2.0. ([603aa87](https://github.com/patternslib/pat-tiptap/commit/603aa87076bbbccd501bc250018c8452feac5e77))
+
+* Export logger from tiptap to be used in extensions and other modules. JS can handle circular imports, so no worries. ([2e2025a](https://github.com/patternslib/pat-tiptap/commit/2e2025a2860c66041d03d5b62b4493b6020008b9))
+
+* Move documentation to src/documentation.md for consistency. ([ec4a97b](https://github.com/patternslib/pat-tiptap/commit/ec4a97b8dec8fc34700830bfbb911cc54295131b))
+
+* Remove resolution dependencies. Should not be needed anymore. ([4d374b7](https://github.com/patternslib/pat-tiptap/commit/4d374b702529cae69ac8a4dcb8e5a06244d5299d))
+
+* Upgrade dependencies ([6460330](https://github.com/patternslib/pat-tiptap/commit/646033004da36704e51a588ff73f9427b17758ae))
+
+* Upgrade dependencies. ([a8035b4](https://github.com/patternslib/pat-tiptap/commit/a8035b4eff428064f00f7de05424f68d2d07a50f))
+
+* Upgrade to Patternslib 7.5.0 which with pat-tooltip get_content API method which allows for reloading content without closing/opening the tooltip. ([6ab7435](https://github.com/patternslib/pat-tiptap/commit/6ab743514e257db08686300fa019792241a9c886))## [2.1.0](https://github.com/patternslib/pat-tiptap/compare/2.0.2...2.1.0) (2022-02-15)
 
 
 ### Features
@@ -120,4 +211,3 @@
 ## 1.0.0 - unreleased
 
 - Initial release.
-
