@@ -7,7 +7,7 @@
 
 * Add extra classes tiptap-mentions and tiptap-tags to context menu wrapper. ([8318531](https://github.com/patternslib/pat-tiptap/commit/83185313cf34b53b5de12bc62aa42ae0486e7003))
 
-* Allow <br> line breaks. Use <mod><enter> or <shift><enter> on your keyboard. ([0e96118](https://github.com/patternslib/pat-tiptap/commit/0e9611816b2c1b6aa3c94a939abbf498c6987c53))
+* Allow ``<br>`` line breaks. Use ``<mod><enter>`` or ``<shift><enter>`` on your keyboard. ([0e96118](https://github.com/patternslib/pat-tiptap/commit/0e9611816b2c1b6aa3c94a939abbf498c6987c53))
 
 * Rework suggestion support. ([673be2d](https://github.com/patternslib/pat-tiptap/commit/673be2d1fe1b3967bf115a8fdecb03e292b971c8))
 - Remove mentioning and tagging modules and combine the functionality in a new suggestion extension.
