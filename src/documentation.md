@@ -369,12 +369,12 @@ The suggestion list which is fetched from the server needs to wrap the individua
 - has a ``tiptap-item`` class,
 - and a ``data-tiptap-value`` attribute, which contains the text which as content for the resulting ``<a>`` tag.
 
-The whole content needs to be wrapped by an element which contains the ``tiptap-suggestion`` class.
+The whole content needs to be wrapped by an element which contains the ``tiptap-items`` class.
 This class is used to initlize the keyboard and mouse navigation for the overlay.
 
 This is an example:
 
-        <section class="tiptap-suggestion">
+        <section class="tiptap-items">
           <ul>
             <li class="tiptap-item" data-tiptap-value="hans"><a href="https://example.com/~hans" target="_blank">Hans</a></li>
             <li class="tiptap-item" data-tiptap-value="franz"><a href="https://example.com/~franz" target="_blank">Franz</a></li>

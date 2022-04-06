@@ -10,7 +10,7 @@ function pattern_suggestion(app, props) {
     // Dynamic pattern for the suggestion context menu
     return {
         name: "tiptap-suggestion",
-        trigger: ".tiptap-suggestion",
+        trigger: ".tiptap-items",
         async init($el) {
             focus_handler($el[0]);
 
@@ -318,7 +318,7 @@ export const factory = ({ app, name, char, plural }) => {
                         ) {
                             props.event.preventDefault();
                             props.event.stopPropagation();
-                            const ctx = document.querySelector(".tiptap-suggestion");
+                            const ctx = document.querySelector(".tiptap-items");
                             if (!ctx) {
                                 return;
                             }

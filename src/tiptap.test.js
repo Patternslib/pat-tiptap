@@ -17,7 +17,7 @@ const SUGGESTION_RESPONSE = `
     <title>Mentions results</title>
   </head>
   <body>
-    <section class="tiptap-suggestion">
+    <section class="tiptap-items">
       <ul>
         <li class="tiptap-item" data-tiptap-value="item a"><a href="https://demo.com/itema" data-pat-inject="source:#some">first</a></li>
         <li class="tiptap-item" data-tiptap-value="item b"><a href="https://demo.com/itemb" class="aha">second</a></li>
@@ -648,9 +648,9 @@ describe("pat-tiptap", () => {
             document.querySelector(".tooltip-container.tiptap-mentions")
         ).toBeTruthy();
 
-        expect(document.querySelector(".tiptap-suggestion")).toBeTruthy();
+        expect(document.querySelector(".tiptap-items")).toBeTruthy();
 
-        const items = document.querySelectorAll(".tiptap-suggestion .tiptap-item");
+        const items = document.querySelectorAll(".tiptap-items .tiptap-item");
         expect(items.length).toBeGreaterThan(0);
         expect(items[0].classList.contains("active")).toBe(true);
 
@@ -669,7 +669,7 @@ describe("pat-tiptap", () => {
         expect(items[2].classList.contains("active")).toBe(false);
 
         editable.dispatchEvent(new KeyboardEvent("keydown", { key: "Enter" }));
-        expect(document.querySelector(".tiptap-suggestion")).toBeFalsy();
+        expect(document.querySelector(".tiptap-items")).toBeFalsy();
         const mention = editable.firstChild.firstChild;
         expect(mention.textContent).toBe("@item a");
         expect(mention.href).toBe("https://demo.com/itema");
@@ -716,9 +716,9 @@ describe("pat-tiptap", () => {
         // Check for class ``tiptap-tags`` set on tooltip container.
         expect(document.querySelector(".tooltip-container.tiptap-tags")).toBeTruthy();
 
-        expect(document.querySelector(".tiptap-suggestion")).toBeTruthy();
+        expect(document.querySelector(".tiptap-items")).toBeTruthy();
 
-        const items = document.querySelectorAll(".tiptap-suggestion .tiptap-item");
+        const items = document.querySelectorAll(".tiptap-items .tiptap-item");
         expect(items.length).toBeGreaterThan(0);
         expect(items[0].classList.contains("active")).toBe(true);
 
@@ -727,7 +727,7 @@ describe("pat-tiptap", () => {
         expect(items[1].classList.contains("active")).toBe(true);
 
         editable.dispatchEvent(new KeyboardEvent("keydown", { key: "Enter" }));
-        expect(document.querySelector(".tiptap-suggestion")).toBeFalsy();
+        expect(document.querySelector(".tiptap-items")).toBeFalsy();
         const mention = editable.firstChild.firstChild;
         expect(mention.textContent).toBe("#item b");
         expect(mention.href).toBe("https://demo.com/itemb");
