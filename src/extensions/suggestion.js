@@ -3,8 +3,9 @@ import { PluginKey } from "prosemirror-state";
 import { Suggestion as ProseMirrorSuggestion } from "@tiptap/suggestion";
 import { context_menu, context_menu_close } from "../context_menu";
 import { focus_handler } from "../focus-handler";
-import utils from "@patternslib/patternslib/src/core/utils";
+import dom from "@patternslib/patternslib/src/core/dom";
 import events from "@patternslib/patternslib/src/core/events";
+import utils from "@patternslib/patternslib/src/core/utils";
 
 function pattern_suggestion(app, props) {
     // Dynamic pattern for the suggestion context menu
@@ -78,8 +79,7 @@ function pattern_suggestion(app, props) {
                 "tiptap-suggestion-click",
                 (e) => {
                     const el = e.target;
-                    const value = el.parentElement?.dataset?.tiptapValue;
-
+                    const value = dom.acquire_attribute(el, "data-tiptap-value");
                     if (!value) {
                         // clicked anywhere, but not on a selection item
                         return;
