@@ -140,6 +140,31 @@ describe("pat-tiptap", () => {
         expect(instance.editor.getHTML()).toBe("<p>hello<br><br>there</p>");
     });
 
+    it("1.5 - Updates the textarea after changes in tiptap.", async () => {
+        document.body.innerHTML = `
+          <textarea class="pat-tiptap">
+          </textarea>
+        `;
+
+        const el = document.querySelector(".pat-tiptap");
+
+        const instance = new Pattern(el);
+        await utils.timeout(1);
+
+        const tiptap = document.querySelector(".tiptap-container [contenteditable]");
+
+        let changed = false;
+        el.addEventListener("change", () => {
+            changed = true;
+        });
+
+        tiptap.innerHTML = "<p>hello</p>";
+        await utils.timeout(1);
+
+        expect(el.value).toBe("<p>hello</p>");
+        expect(changed).toBe(true);
+    });
+
     it("2.1 - adds a placeholder element.", async () => {
         document.body.innerHTML = `
           <textarea
