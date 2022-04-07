@@ -148,7 +148,7 @@ describe("pat-tiptap", () => {
 
         const el = document.querySelector(".pat-tiptap");
 
-        const instance = new Pattern(el);
+        new Pattern(el);
         await utils.timeout(1);
 
         const tiptap = document.querySelector(".tiptap-container [contenteditable]");
