@@ -1,6 +1,21 @@
 
 
-## [3.0.0](https://github.com/patternslib/pat-tiptap/compare/2.1.0...3.0.0) (2022-04-05)
+## [3.1.0](https://github.com/patternslib/pat-tiptap/compare/3.0.0...3.1.0) (2022-04-07)
+
+
+### Bug Fixes
+
+* After setting the text in an textarea, dispatch the change event. ([99c9647](https://github.com/patternslib/pat-tiptap/commit/99c9647af32056cc325983529b44cc39e3ba1403))
+
+* Allow data-tiptap-value not be the direct parent of the click target. ([3b0bb40](https://github.com/patternslib/pat-tiptap/commit/3b0bb400aaa16fcca46be095af8b70a1b4f0c16e))
+
+* Dont break with suggestion not following markup conventions. ([d3d18cb](https://github.com/patternslib/pat-tiptap/commit/d3d18cbf2b308bb80be9a020aa86789d27a3dd3a))
+
+
+
+### Breaking Changes
+
+* Rename tiptap-suggestion class to tiptap-items to better follow code/naming style conventions. ([9bfa537](https://github.com/patternslib/pat-tiptap/commit/9bfa537819ca7899f6b8abf6ade2f33280c444b1))## [3.0.0](https://github.com/patternslib/pat-tiptap/compare/2.1.0...3.0.0) (2022-04-05)
 
 
 ### Features
