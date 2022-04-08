@@ -140,7 +140,7 @@ describe("pat-tiptap", () => {
         expect(instance.editor.getHTML()).toBe("<p>hello<br><br>there</p>");
     });
 
-    it("1.5 - Updates the textarea after changes in tiptap.", async () => {
+    it("1.5 - Emits input events on update.", async () => {
         document.body.innerHTML = `
           <textarea class="pat-tiptap">
           </textarea>
@@ -154,7 +154,7 @@ describe("pat-tiptap", () => {
         const tiptap = document.querySelector(".tiptap-container [contenteditable]");
 
         let changed = false;
-        el.addEventListener("change", () => {
+        el.addEventListener("input", () => {
             changed = true;
         });
 
