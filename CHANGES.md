@@ -1,33 +1,20 @@
 
-
 ### [3.1.1](https://github.com/patternslib/pat-tiptap/compare/3.1.0...3.1.1) (2022-04-08)
 
 
 ### Bug Fixes
 
-
-<br>
-
 * After text changes dispatch the input event. ([2babe56](https://github.com/patternslib/pat-tiptap/commit/2babe564172b5d1f74f56cb340df273b17a2a736))
-
 
 
 ### Maintenance
 
-
-<br>
-
 * Cleanup and remove two unused patterns from the demo bundle. ([65bfc98](https://github.com/patternslib/pat-tiptap/commit/65bfc9887fe5738c35094f43a4d3b5ecb33df045))
-
-
-<br>
 
 * Upgrade dependencies. ([cf850da](https://github.com/patternslib/pat-tiptap/commit/cf850da4f3e381cb8a32356a8715bf9317f23d50))
 
 
-
-<br>
-<br>## [3.1.0](https://github.com/patternslib/pat-tiptap/compare/3.0.0...3.1.0) (2022-04-07)
+## [3.1.0](https://github.com/patternslib/pat-tiptap/compare/3.0.0...3.1.0) (2022-04-07)
 
 
 ### Bug Fixes
