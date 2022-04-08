@@ -68,10 +68,10 @@ export default Base.extend({
             // Textarea value setter
             if (is_form_el) {
                 this.el.value = text;
-                this.el.dispatchEvent(events.change_event());
             } else {
                 this.el.innerHTML = text;
             }
+            this.el.dispatchEvent(events.input_event());
         };
 
         const extra_extensions = [
