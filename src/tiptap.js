@@ -1,6 +1,7 @@
 import "regenerator-runtime/runtime"; // needed for ``await`` support
 import Base from "@patternslib/patternslib/src/core/base";
 import Parser from "@patternslib/patternslib/src/core/parser";
+import Registry from "@patternslib/patternslib/src/core/registry";
 import events from "@patternslib/patternslib/src/core/events";
 import logging from "@patternslib/patternslib/src/core/logging";
 import utils from "@patternslib/patternslib/src/core/utils";
@@ -145,6 +146,7 @@ export default Base.extend({
             onUpdate() {
                 // Note: ``this`` is the editor instance.
                 setText(this.getHTML());
+                Registry.scan(this.view.dom);
             },
             onFocus: async () => {
                 // Note: ``this`` is the pattern instance.
