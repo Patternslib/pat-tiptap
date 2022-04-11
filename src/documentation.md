@@ -347,10 +347,13 @@ This is the related ``pat-tiptap`` config:
 
 You can use the suggestion functionality to reference other content.
 It is invoked by a suggestion-character - like ``@`` for mentions or ``#`` for tags.
-When the suggestion overlay is opened, the list reloads from the server with the entered text as filter submitted as query string.
+Both - mentions and tags - are supported by pat-tiptap out of the box.
+
+After typing the suggestion character ``@`` or ``#`` a list of suggestion items is loaded from the server.
+The text you are entering after the suggestion character is used to filter the items by appending it as query string to the URL (You have to prepare the URL so that it contains the query key already).
 You can use the mouse to select an item or the arrow keys to move up/down, enter for select and escape to close the tooltip.
 
-When you select an item the text is replaced with a link which contains the attributes from the original link from the overlay:
+When you select an item, the text in the content area is replaced with a link which contains the attributes from the original link from the overlay:
 
     - class
     - href
@@ -364,21 +367,27 @@ When you select an item the text is replaced with a link which contains the attr
     - data-pat-tooltip
 
 
-The suggestion list which is fetched from the server needs to wrap the individual suggestion items which need to be an ``<a>`` tag with an element which:
+The whole list must be wrapped within an element with a ``tiptap-items`` class.
+The individual items in the list must be wrapped by an element which:
 
 - has a ``tiptap-item`` class,
 - and a ``data-tiptap-value`` attribute, which contains the text which as content for the resulting ``<a>`` tag.
 
-The whole content needs to be wrapped by an element which contains the ``tiptap-items`` class.
+The item itself must be a ``<a>`` element.
+
 This class is used to initlize the keyboard and mouse navigation for the overlay.
+
+You can add some patterns to the individual items which are then also copied to the content area (see the list above for supported patterns).
+If so, you probably want to disable those patterns to be initialized when shown in the suggestion-menu.
+To disable the patterns, just wrap the elements with a ``disable-patterns`` class - just not on the same level as ``tiptap-items`` and not on the ``<a>`` element itself.
 
 This is an example:
 
         <section class="tiptap-items">
           <ul>
-            <li class="tiptap-item" data-tiptap-value="hans"><a href="https://example.com/~hans" target="_blank">Hans</a></li>
-            <li class="tiptap-item" data-tiptap-value="franz"><a href="https://example.com/~franz" target="_blank">Franz</a></li>
-            <li class="tiptap-item" data-tiptap-value="sepp"><a href="https://example.com/~sepp" target="_blank">Sepp</a></li>
+            <li class="tiptap-item disable-patterns" data-tiptap-value="hans"><a href="https://example.com/~hans" target="_blank">Hans</a></li>
+            <li class="tiptap-item disable-patterns" data-tiptap-value="franz"><a href="https://example.com/~franz" target="_blank">Franz</a></li>
+            <li class="tiptap-item disable-patterns" data-tiptap-value="sepp"><a href="https://example.com/~sepp" target="_blank">Sepp</a></li>
           </ul>
         </section>
 
