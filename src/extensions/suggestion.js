@@ -7,6 +7,8 @@ import dom from "@patternslib/patternslib/src/core/dom";
 import events from "@patternslib/patternslib/src/core/events";
 import utils from "@patternslib/patternslib/src/core/utils";
 
+let context_menu_instance;
+
 function pattern_suggestion(app, props) {
     // Dynamic pattern for the suggestion context menu
     return {
@@ -203,8 +205,29 @@ export const factory = ({ app, name, char, plural }) => {
 
         addKeyboardShortcuts() {
             return {
-                Backspace: () =>
-                    this.editor.commands.command(({ tr, state }) => {
+                Enter: () => {
+                    if (context_menu_instance) {
+                        // While suggestion menu is open, do not add a line-break to the text.
+                        // Handle the ``Enter`` key as early as possible to prevent a line-break to happen.
+
+                        // Dispatch the event to the context menu pattern
+                        // while still keeping the focus in the textarea.
+                        context_menu_instance.tippy?.popper
+                            ?.querySelector(".tiptap-items")
+                            ?.dispatchEvent(
+                                new KeyboardEvent("keydown", {
+                                    code: "Enter",
+                                })
+                            );
+
+                        return true;
+                    }
+                    // Normal case, do not prevent the Enter key to add a line break.
+                    return false;
+                },
+
+                Backspace: ({ editor }) =>
+                    editor.commands.command(({ tr, state }) => {
                         let is_suggestion = false;
                         const { selection } = state;
                         const { empty, anchor } = selection;
@@ -254,7 +277,6 @@ export const factory = ({ app, name, char, plural }) => {
 
             // Suggestion render
             this.options.suggestion.render = () => {
-                let context_menu_instance;
                 let _debounced_context_menu;
                 return {
                     onStart: async (props) => {
