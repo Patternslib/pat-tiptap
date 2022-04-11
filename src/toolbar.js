@@ -162,7 +162,7 @@ export async function init_extensions({ app }) {
             (await import("./extensions/link")).factory().configure({
                 HTMLAttributes: { target: null, rel: null }, // don't set these attributes.
                 openOnClick: false, // don't open documents while editing.
-                linkOnPaste: false,
+                linkOnPaste: true,
             })
         );
     }
