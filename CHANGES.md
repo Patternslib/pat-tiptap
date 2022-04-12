@@ -33,7 +33,7 @@
 
 
 
-#### [3.1.1](https://github.com/patternslib/pat-tiptap/compare/3.1.0...3.1.1) (2022-04-08)
+### [3.1.1](https://github.com/patternslib/pat-tiptap/compare/3.1.0...3.1.1) (2022-04-08)
 
 
 ### Bug Fixes
