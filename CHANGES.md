@@ -1,5 +1,39 @@
 
-### [3.1.1](https://github.com/patternslib/pat-tiptap/compare/3.1.0...3.1.1) (2022-04-08)
+
+## [3.2.0](https://github.com/patternslib/pat-tiptap/compare/3.1.1...3.2.0) (2022-04-12)
+
+
+### Features
+
+
+* Scan content on update for patterns and initialize. ([420d6f5](https://github.com/patternslib/pat-tiptap/commit/420d6f533435c64e0fbff1467e184429465be368))
+
+
+* Transform pasted links to anchor elements. ([b537356](https://github.com/patternslib/pat-tiptap/commit/b537356ddecdcaeb2de8743a9d6db141a976fa05))
+
+
+
+### Bug Fixes
+
+
+* Don't add a line-break when selecting a suggestion from the context-menu. ([7b8738a](https://github.com/patternslib/pat-tiptap/commit/7b8738af0e5d9f1d2fbd4006aec8afbeca02f17c))
+
+
+
+### Maintenance
+
+
+* Update documentation with ``disable-patterns`` note for the suggestion menu and extend mentions/tags demo with patterns which are initialized when inserted into the content. ([f9d31bf](https://github.com/patternslib/pat-tiptap/commit/f9d31bf59a86ad188e718206ab922cea185679ba))
+
+
+* Upgrade dependencies. ([472ac86](https://github.com/patternslib/pat-tiptap/commit/472ac8652f6a30b2e78188eaed422db6dbb6914f))
+
+
+* Upgrade to Patternslib 7.7.0 with disable-patterns feature. ([2103d1b](https://github.com/patternslib/pat-tiptap/commit/2103d1bbd2abb4ee231585021e629cc5e7facc8c))
+
+
+
+#### [3.1.1](https://github.com/patternslib/pat-tiptap/compare/3.1.0...3.1.1) (2022-04-08)
 
 
 ### Bug Fixes
