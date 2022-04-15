@@ -60,10 +60,12 @@
 * Dont break with suggestion not following markup conventions. ([d3d18cb](https://github.com/patternslib/pat-tiptap/commit/d3d18cbf2b308bb80be9a020aa86789d27a3dd3a))
 
 
-
 ### Breaking Changes
 
-* Rename tiptap-suggestion class to tiptap-items to better follow code/naming style conventions. ([9bfa537](https://github.com/patternslib/pat-tiptap/commit/9bfa537819ca7899f6b8abf6ade2f33280c444b1))## [3.0.0](https://github.com/patternslib/pat-tiptap/compare/2.1.0...3.0.0) (2022-04-05)
+* Rename tiptap-suggestion class to tiptap-items to better follow code/naming style conventions. ([9bfa537](https://github.com/patternslib/pat-tiptap/commit/9bfa537819ca7899f6b8abf6ade2f33280c444b1))
+
+
+## [3.0.0](https://github.com/patternslib/pat-tiptap/compare/2.1.0...3.0.0) (2022-04-05)
 
 
 ### Features
@@ -93,13 +95,11 @@
 * Position the context menu only when first opened and not while writing. ([4453eb6](https://github.com/patternslib/pat-tiptap/commit/4453eb672f769831de6c56e3f83bfd412edf0459))
 
 
-
 ### Breaking Changes
 
 * Remove mentions-search-key and tags-search-key parameters. ([776f88f](https://github.com/patternslib/pat-tiptap/commit/776f88f67eea4d3068d04d9821cbeafe1c10f8e2))
 The filter term is just appended at the end of the URL, so you can configure any search query string you want.
 * Rename context-menu-link to link-menu, context-menu-mentions to mentions-menu and context-menu-tags to tags menu for easier names. ([2d0c0f3](https://github.com/patternslib/pat-tiptap/commit/2d0c0f379fca581df3d4a1d67df709857dcdbf58))
-
 
 
 ### Maintenance
@@ -152,7 +152,11 @@ The filter term is just appended at the end of the URL, so you can configure any
 
 * Upgrade dependencies. ([a8035b4](https://github.com/patternslib/pat-tiptap/commit/a8035b4eff428064f00f7de05424f68d2d07a50f))
 
-* Upgrade to Patternslib 7.5.0 which with pat-tooltip get_content API method which allows for reloading content without closing/opening the tooltip. ([6ab7435](https://github.com/patternslib/pat-tiptap/commit/6ab743514e257db08686300fa019792241a9c886))## [2.1.0](https://github.com/patternslib/pat-tiptap/compare/2.0.2...2.1.0) (2022-02-15)
+* Upgrade to Patternslib 7.5.0 which with pat-tooltip get_content API method which allows for reloading content without closing/opening the tooltip. ([6ab7435](https://github.com/patternslib/pat-tiptap/commit/6ab743514e257db08686300fa019792241a9c886))
+
+
+
+## [2.1.0](https://github.com/patternslib/pat-tiptap/compare/2.0.2...2.1.0) (2022-02-15)
 
 
 ### Features
@@ -166,7 +170,6 @@ The filter term is just appended at the end of the URL, so you can configure any
 * **Images:** Allow inline images and non-inline (within figure tags) images at the same time. ([8052b23](https://github.com/patternslib/pat-tiptap/commit/8052b239e458a3471b1a0360dc2e9b5dd15bddb5))
 
 
-
 ### Bug Fixes
 
 * Allow tiptap to be instantiated multiple times. ([f5289ff](https://github.com/patternslib/pat-tiptap/commit/f5289ff097b75f7c762994a2d484deb534e69aab))
@@ -174,7 +177,6 @@ The filter term is just appended at the end of the URL, so you can configure any
 * **Images:** Add custom image extension to also allow images with data src. ([29b5043](https://github.com/patternslib/pat-tiptap/commit/29b5043c9492aff57524a0508abe55b3eee1ab02))
 
 * **Images:** Do not allow any drag/drop of images within figure tags as long this doesn't work properly. ([c49f66a](https://github.com/patternslib/pat-tiptap/commit/c49f66a5f264ecd7b8b215341463f094775e3413))
-
 
 
 ### Maintenance
