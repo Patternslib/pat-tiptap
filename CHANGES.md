@@ -1,5 +1,16 @@
 
 
+### [3.2.1](https://github.com/patternslib/pat-tiptap/compare/3.2.0...3.2.1) (2022-04-15)
+
+
+### Maintenance
+
+
+* Ugrade to Patternslib 7.8.0 with a fix to re-init patterns in a tooltip after content was reloaded. ([8d2469f](https://github.com/patternslib/pat-tiptap/commit/8d2469f5cf77bc39cc4e5700ab3cb82dce47cffa))
+
+
+* Upgrade dependencies. ([e0942d5](https://github.com/patternslib/pat-tiptap/commit/e0942d52a596781438df17351ced5ddf63e5474c))
+
 ## [3.2.0](https://github.com/patternslib/pat-tiptap/compare/3.1.1...3.2.0) (2022-04-12)
 
 

@@ -1,6 +1,6 @@
 {
     "name": "@patternslib/pat-tiptap",
-    "version": "3.2.0",
+    "version": "3.2.1",
     "description": "A pattern for tiptap",
     "license": "MIT",
     "main": "./src/tiptap.js",
