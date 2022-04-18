@@ -19,9 +19,15 @@ const SUGGESTION_RESPONSE = `
   <body>
     <section class="tiptap-items">
       <ul>
-        <li class="tiptap-item" data-tiptap-value="item a"><a href="https://demo.com/itema" data-pat-inject="source:#some">first</a></li>
-        <li class="tiptap-item" data-tiptap-value="item b"><a href="https://demo.com/itemb" class="aha">second</a></li>
-        <li class="tiptap-item" data-tiptap-value="item c"><a href="https://demo.com/itemc" title="okay">third</a></li>
+        <li class="tiptap-item" data-tiptap-value="item a">
+          <a href="https://demo.com/itema"
+              data-pat-inject="source:#some"
+              data-mention="jepp">
+            first
+          </a>
+        </li>
+        <li class="tiptap-item" data-tiptap-value="item b"><a href="https://demo.com/itemb" class="class_item_b">second</a></li>
+        <li class="tiptap-item" data-tiptap-value="item c"><a href="https://demo.com/itemc" class="class_item_c" title="okay">third</a></li>
       </ul>
     </section>
   </body>
@@ -675,37 +681,94 @@ describe("pat-tiptap", () => {
 
         expect(document.querySelector(".tiptap-items")).toBeTruthy();
 
+        // 1st
         const items = document.querySelectorAll(".tiptap-items .tiptap-item");
         expect(items.length).toBeGreaterThan(0);
         expect(items[0].classList.contains("active")).toBe(true);
 
+        // 2nd
         editable.dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowDown" }));
         expect(items[0].classList.contains("active")).toBe(false);
         expect(items[1].classList.contains("active")).toBe(true);
+        expect(items[2].classList.contains("active")).toBe(false);
 
+        // 3rd
         editable.dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowDown" }));
         expect(items[0].classList.contains("active")).toBe(false);
         expect(items[1].classList.contains("active")).toBe(false);
         expect(items[2].classList.contains("active")).toBe(true);
 
+        // 1st
         editable.dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowDown" }));
         expect(items[0].classList.contains("active")).toBe(true);
         expect(items[1].classList.contains("active")).toBe(false);
         expect(items[2].classList.contains("active")).toBe(false);
 
+        // select
         editable.dispatchEvent(new KeyboardEvent("keydown", { key: "Enter" }));
         expect(document.querySelector(".tiptap-items")).toBeFalsy();
         const mention = editable.firstChild.firstChild;
         expect(mention.textContent).toBe("@item a");
         expect(mention.href).toBe("https://demo.com/itema");
         expect(mention.hasAttribute("data-mention")).toBe(true);
+        expect(mention.getAttribute("data-mention")).toBe("jepp");
         expect(mention.getAttribute("data-pat-inject")).toBe("source:#some");
 
         global.fetch.mockClear();
         delete global.fetch;
     });
 
-    it("8.2 - Can use suggestions for tagging", async () => {
+    it("8.2 - always inserts ``data-NAME`` even if not set", async () => {
+        global.fetch = jest.fn().mockImplementation(mockFetch(SUGGESTION_RESPONSE));
+
+        document.body.innerHTML = `
+          <textarea
+              class="pat-tiptap"
+              data-pat-tiptap="
+                mentions-menu: https://demo.at/mentions.html;
+              ">
+          </textarea>
+        `;
+
+        new Pattern(document.querySelector(".pat-tiptap"));
+        await utils.timeout(1);
+
+        const editable = document.querySelector(".tiptap-container [contenteditable]");
+        const range = document.createRange();
+        const sel = window.getSelection();
+
+        // Add the triggering character into the content editable
+        editable.innerHTML = "<p>@</p>";
+
+        // Set the cursor right after the @-sign.
+        range.setStart(editable.childNodes[0].childNodes[0], 1);
+        range.collapse(true);
+        sel.removeAllRanges();
+        sel.addRange(range);
+
+        await utils.timeout(1); // Wait a tick for the tooltip to open.
+        await utils.timeout(1); // Wait a tick for the suggestion-pattern to be initialized.
+
+        // Select 2nd
+        const items = document.querySelectorAll(".tiptap-items .tiptap-item");
+        editable.dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowDown" }));
+        expect(items[1].classList.contains("active")).toBe(true);
+
+        // select
+        editable.dispatchEvent(new KeyboardEvent("keydown", { key: "Enter" }));
+        expect(document.querySelector(".tiptap-items")).toBeFalsy();
+        const mention = editable.firstChild.firstChild;
+        expect(mention.textContent).toBe("@item b");
+        expect(mention.href).toBe("https://demo.com/itemb");
+        expect(mention.getAttribute("class")).toBe("class_item_b");
+        expect(mention.hasAttribute("data-mention")).toBe(true);
+        expect(mention.getAttribute("data-mention")).toBe("");
+
+        global.fetch.mockClear();
+        delete global.fetch;
+    });
+
+    it("9.1 - Can use suggestions for tagging", async () => {
         global.fetch = jest.fn().mockImplementation(mockFetch(SUGGESTION_RESPONSE));
 
         document.body.innerHTML = `
@@ -754,7 +817,7 @@ describe("pat-tiptap", () => {
         const mention = editable.firstChild.firstChild;
         expect(mention.textContent).toBe("#item b");
         expect(mention.href).toBe("https://demo.com/itemb");
-        expect(mention.classList.contains("aha")).toBe(true);
+        expect(mention.classList.contains("class_item_b")).toBe(true);
         expect(mention.hasAttribute("data-tag")).toBe(true);
 
         global.fetch.mockClear();
