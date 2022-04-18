@@ -80,7 +80,7 @@ function pattern_suggestion(app, props) {
                 "click",
                 "tiptap-suggestion-click",
                 (e) => {
-                    const el = e.target;
+                    const el = e.target.closest("a");
                     const value = dom.acquire_attribute(el, "data-tiptap-value");
                     if (!value) {
                         // clicked anywhere, but not on a selection item

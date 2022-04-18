@@ -21,9 +21,11 @@ const SUGGESTION_RESPONSE = `
       <ul>
         <li class="tiptap-item" data-tiptap-value="item a">
           <a href="https://demo.com/itema"
+              class="class_item_a"
               data-pat-inject="source:#some"
               data-mention="jepp">
             first
+            <span class="small">subtext</span>
           </a>
         </li>
         <li class="tiptap-item" data-tiptap-value="item b"><a href="https://demo.com/itemb" class="class_item_b">second</a></li>
@@ -763,6 +765,103 @@ describe("pat-tiptap", () => {
         expect(mention.getAttribute("class")).toBe("class_item_b");
         expect(mention.hasAttribute("data-mention")).toBe(true);
         expect(mention.getAttribute("data-mention")).toBe("");
+
+        global.fetch.mockClear();
+        delete global.fetch;
+    });
+
+    it("8.3 - Can use the mouse for suggestions", async () => {
+        global.fetch = jest.fn().mockImplementation(mockFetch(SUGGESTION_RESPONSE));
+
+        document.body.innerHTML = `
+          <textarea
+              class="pat-tiptap"
+              data-pat-tiptap="
+                mentions-menu: https://demo.at/mentions.html;
+              ">
+          </textarea>
+        `;
+
+        new Pattern(document.querySelector(".pat-tiptap"));
+        await utils.timeout(1);
+
+        const editable = document.querySelector(".tiptap-container [contenteditable]");
+        const range = document.createRange();
+        const sel = window.getSelection();
+
+        // Add the triggering character into the content editable
+        editable.innerHTML = "<p>@</p>";
+
+        // Set the cursor right after the @-sign.
+        range.setStart(editable.childNodes[0].childNodes[0], 1);
+        range.collapse(true);
+        sel.removeAllRanges();
+        sel.addRange(range);
+
+        await utils.timeout(1); // Wait a tick for the tooltip to open.
+        await utils.timeout(1); // Wait a tick for the suggestion-pattern to be initialized.
+
+        const items = document.querySelectorAll(".tiptap-items .tiptap-item");
+
+        // click first item
+        items[0].querySelector("a").click();
+
+        expect(document.querySelector(".tiptap-items")).toBeFalsy();
+        const mention = editable.firstChild.firstChild;
+        expect(mention.textContent).toBe("@item a");
+        expect(mention.href).toBe("https://demo.com/itema");
+        expect(mention.hasAttribute("data-mention")).toBe(true);
+        expect(mention.getAttribute("data-mention")).toBe("jepp");
+        expect(mention.getAttribute("data-pat-inject")).toBe("source:#some");
+
+        global.fetch.mockClear();
+        delete global.fetch;
+    });
+
+    it("8.4 - Can use the mouse for suggestions, click within the anchor and still copy correct attributes.", async () => {
+        global.fetch = jest.fn().mockImplementation(mockFetch(SUGGESTION_RESPONSE));
+
+        document.body.innerHTML = `
+          <textarea
+              class="pat-tiptap"
+              data-pat-tiptap="
+                mentions-menu: https://demo.at/mentions.html;
+              ">
+          </textarea>
+        `;
+
+        new Pattern(document.querySelector(".pat-tiptap"));
+        await utils.timeout(1);
+
+        const editable = document.querySelector(".tiptap-container [contenteditable]");
+        const range = document.createRange();
+        const sel = window.getSelection();
+
+        // Add the triggering character into the content editable
+        editable.innerHTML = "<p>@</p>";
+
+        // Set the cursor right after the @-sign.
+        range.setStart(editable.childNodes[0].childNodes[0], 1);
+        range.collapse(true);
+        sel.removeAllRanges();
+        sel.addRange(range);
+
+        await utils.timeout(1); // Wait a tick for the tooltip to open.
+        await utils.timeout(1); // Wait a tick for the suggestion-pattern to be initialized.
+
+        const items = document.querySelectorAll(".tiptap-items .tiptap-item");
+
+        // click first item
+        items[0].querySelector("span").click();
+
+        expect(document.querySelector(".tiptap-items")).toBeFalsy();
+        const mention = editable.firstChild.firstChild;
+        expect(mention.textContent).toBe("@item a");
+        expect(mention.href).toBe("https://demo.com/itema");
+        expect(mention.hasAttribute("data-mention")).toBe(true);
+        expect(mention.getAttribute("data-mention")).toBe("jepp");
+        expect(mention.getAttribute("class")).toBe("class_item_a"); // don't copy the span's class where click event happended.
+        expect(mention.getAttribute("data-pat-inject")).toBe("source:#some");
 
         global.fetch.mockClear();
         delete global.fetch;
