@@ -699,9 +699,7 @@ describe("pat-tiptap", () => {
         expect(mention.textContent).toBe("@item a");
         expect(mention.href).toBe("https://demo.com/itema");
         expect(mention.hasAttribute("data-mention")).toBe(true);
-
-        // TODO: fix or report this failing test.
-        //expect(mention.getAttribute("data-pat-inject")).toBe("source:#some");
+        expect(mention.getAttribute("data-pat-inject")).toBe("source:#some");
 
         global.fetch.mockClear();
         delete global.fetch;
