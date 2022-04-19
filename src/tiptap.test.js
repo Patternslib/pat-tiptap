@@ -867,7 +867,7 @@ describe("pat-tiptap", () => {
         delete global.fetch;
     });
 
-    it("9.1 - Can use suggestions for tagging", async () => {
+    it("8.5 - Suggestions: Can use suggestions for tagging", async () => {
         global.fetch = jest.fn().mockImplementation(mockFetch(SUGGESTION_RESPONSE));
 
         document.body.innerHTML = `
@@ -918,6 +918,52 @@ describe("pat-tiptap", () => {
         expect(mention.href).toBe("https://demo.com/itemb");
         expect(mention.classList.contains("class_item_b")).toBe(true);
         expect(mention.hasAttribute("data-tag")).toBe(true);
+
+        global.fetch.mockClear();
+        delete global.fetch;
+    });
+
+    it("8.6 - Suggestions: Don't copy disallowed attributes", async () => {
+        global.fetch = jest.fn().mockImplementation(mockFetch(SUGGESTION_RESPONSE));
+
+        document.body.innerHTML = `
+          <textarea
+              class="pat-tiptap"
+              data-pat-tiptap="
+                tags-menu: https://demo.at/tags.html;
+              ">
+          </textarea>
+        `;
+
+        new Pattern(document.querySelector(".pat-tiptap"));
+        await utils.timeout(1);
+
+        const editable = document.querySelector(".tiptap-container [contenteditable]");
+        const range = document.createRange();
+        const sel = window.getSelection();
+
+        // Add the triggering character into the content editable
+        editable.innerHTML = "<p>#</p>";
+
+        // Set the cursor right after the #-sign.
+        range.setStart(editable.childNodes[0].childNodes[0], 1);
+        range.collapse(true);
+        sel.removeAllRanges();
+        sel.addRange(range);
+
+        await utils.timeout(1); // Wait a tick for the tooltip to open.
+        await utils.timeout(1); // Wait a tick for the suggestion-pattern to be initialized.
+
+        const items = document.querySelectorAll(".tiptap-items .tiptap-item");
+        items[0].querySelector("a").click();
+
+        expect(document.querySelector(".tiptap-items")).toBeFalsy();
+        const mention = editable.firstChild.firstChild;
+        expect(mention.textContent).toBe("#item a");
+        expect(mention.href).toBe("https://demo.com/itema");
+        expect(mention.classList.contains("class_item_a")).toBe(true);
+        expect(mention.hasAttribute("data-tag")).toBe(true);
+        expect(mention.hasAttribute("data-mention")).toBe(false); // No mention when tagging.
 
         global.fetch.mockClear();
         delete global.fetch;
