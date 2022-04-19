@@ -1,5 +1,30 @@
 
 
+## [3.3.0](https://github.com/patternslib/pat-tiptap/compare/3.2.1...3.3.0) (2022-04-19)
+
+
+### Features
+
+
+* **Suggestions:** Allow data-NAME as attribute on the mention-link. ([e13397e](https://github.com/patternslib/pat-tiptap/commit/e13397e496e907cef457d4a1bf282eaeded1402c))
+
+
+
+### Bug Fixes
+
+
+* **Suggestions:** Use the closest <a> element as the one where attributes are copied from. e.target is not necessarily the anchor itself but can be any element within the anchor. ([eadde22](https://github.com/patternslib/pat-tiptap/commit/eadde22dbba7b59b63a3dd2e85d6fec4b8cc030a))
+
+
+
+### Maintenance
+
+
+* **Suggestions:** Enable the data-attribute copying test. It works in the meantime. ([7735af1](https://github.com/patternslib/pat-tiptap/commit/7735af17df7d9c1bf82aadd1be0928439b6c1f29))
+
+
+* **Suggestions:** Test to not copy disallowed attributes. ([62c4df6](https://github.com/patternslib/pat-tiptap/commit/62c4df6445c900cf3a17feeef030f134b1434885))
+
 ### [3.2.1](https://github.com/patternslib/pat-tiptap/compare/3.2.0...3.2.1) (2022-04-15)
 
 
