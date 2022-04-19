@@ -80,7 +80,7 @@ function pattern_suggestion(app, props) {
                 "click",
                 "tiptap-suggestion-click",
                 (e) => {
-                    const el = e.target;
+                    const el = e.target.closest("a");
                     const value = dom.acquire_attribute(el, "data-tiptap-value");
                     if (!value) {
                         // clicked anywhere, but not on a selection item
@@ -146,7 +146,7 @@ export const factory = ({ app, name, char, plural }) => {
         },
 
         addAttributes() {
-            return {
+            const attributes = {
                 "id": {
                     default: null,
                     parseHTML: (element) => element.getAttribute("data-id"),
@@ -173,6 +173,11 @@ export const factory = ({ app, name, char, plural }) => {
                 "data-pat-toggle": {},
                 "data-pat-tooltip": {},
             };
+
+            // Needs to be always included. A default of "" makes sure it is.
+            attributes[`data-${this.name}`] = { default: "" };
+
+            return attributes;
         },
 
         parseHTML() {
@@ -184,11 +189,9 @@ export const factory = ({ app, name, char, plural }) => {
         },
 
         renderHTML({ node, HTMLAttributes }) {
-            const attrs = {};
-            attrs[`data-${this.name}`] = "";
             return [
                 "a",
-                mergeAttributes(attrs, this.options.HTMLAttributes, HTMLAttributes),
+                mergeAttributes(this.options.HTMLAttributes, HTMLAttributes),
                 this.options.renderLabel({
                     options: this.options,
                     node,
