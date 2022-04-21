@@ -1,5 +1,27 @@
 
 
+## [3.4.0](https://github.com/patternslib/pat-tiptap/compare/3.3.0...3.4.0) (2022-04-21)
+
+
+### Features
+
+
+* **Suggestion:** Allow accessibility attributes on the suggestion link. ([2907d97](https://github.com/patternslib/pat-tiptap/commit/2907d97826b676c84ef7e8d5302c2f6fdd7b7ae4))
+
+
+
+### Bug Fixes
+
+
+* **Suggestion:** Use data-title to for the link's text. This frees up data-id which we need to add the suggestion id which can then be used by the backend to identify the term. ([6cd6669](https://github.com/patternslib/pat-tiptap/commit/6cd66690c33a5185463d61a5718f2b195c2adb9d))
+
+
+
+### Maintenance
+
+
+* Upgrade dependencies. ([a673507](https://github.com/patternslib/pat-tiptap/commit/a6735070afd636a053ed56feac26cf6a75a9d79a))
+
 ## [3.3.0](https://github.com/patternslib/pat-tiptap/compare/3.2.1...3.3.0) (2022-04-19)
 
 
