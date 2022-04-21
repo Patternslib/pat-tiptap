@@ -6,6 +6,7 @@ import { focus_handler } from "../focus-handler";
 import dom from "@patternslib/patternslib/src/core/dom";
 import events from "@patternslib/patternslib/src/core/events";
 import utils from "@patternslib/patternslib/src/core/utils";
+import tiptap_utils from "../utils";
 
 let context_menu_instance;
 
@@ -162,6 +163,11 @@ export const factory = ({ app, name, char, plural }) => {
 
             // Needs to be always included. A default of "" makes sure it is.
             attributes[`data-${this.name}`] = { default: "" };
+
+            for (const attr of tiptap_utils.accessibility_attributes) {
+                // Add a bunch of accessibility attributes
+                attributes[attr] = {};
+            }
 
             return attributes;
         },

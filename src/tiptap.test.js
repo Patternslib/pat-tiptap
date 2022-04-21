@@ -1,6 +1,7 @@
 import "regenerator-runtime/runtime"; // needed for ``await`` support
 import Pattern from "./tiptap";
 import utils from "@patternslib/patternslib/src/core/utils";
+import tiptap_utils from "./utils";
 
 const mockFetch =
     (text = "") =>
@@ -988,6 +989,42 @@ describe("pat-tiptap", () => {
                           data-pat-switch=""
                           data-pat-toggle=""
                           data-pat-tooltip=""
+                          aria-activedescendant=""
+                          aria-atomic=""
+                          aria-autocomplete=""
+                          aria-busy=""
+                          aria-checked=""
+                          aria-controls=""
+                          aria-describedby=""
+                          aria-disabled=""
+                          aria-dropeffect=""
+                          aria-expanded=""
+                          aria-flowto=""
+                          aria-grabbed=""
+                          aria-haspopup=""
+                          aria-hidden=""
+                          aria-invalid=""
+                          aria-label=""
+                          aria-labelledby=""
+                          aria-level=""
+                          aria-live=""
+                          aria-multiline=""
+                          aria-multiselectable=""
+                          aria-orientation=""
+                          aria-owns=""
+                          aria-posinset=""
+                          aria-pressed=""
+                          aria-readonly=""
+                          aria-relevant=""
+                          aria-required=""
+                          aria-selected=""
+                          aria-setsize=""
+                          aria-sort=""
+                          aria-valuemax=""
+                          aria-valuemin=""
+                          aria-valuenow=""
+                          aria-valuetext=""
+                          role=""
                       >
                         test
                       </a>
@@ -1052,6 +1089,11 @@ describe("pat-tiptap", () => {
         expect(mention.getAttribute("data-pat-switch")).toBe("");
         expect(mention.getAttribute("data-pat-toggle")).toBe("");
         expect(mention.getAttribute("data-pat-tooltip")).toBe("");
+
+        // Accessibility attributes
+        for (const attr of tiptap_utils.accessibility_attributes) {
+            expect(mention.getAttribute(attr)).toBe("");
+        }
 
         global.fetch.mockClear();
         delete global.fetch;
