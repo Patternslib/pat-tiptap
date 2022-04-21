@@ -968,4 +968,92 @@ describe("pat-tiptap", () => {
         global.fetch.mockClear();
         delete global.fetch;
     });
+
+    it("8.7 - Suggestions: Test more attributes", async () => {
+        const response = `
+            <html>
+              <body>
+                <section class="tiptap-items">
+                  <ul>
+                    <li class="tiptap-item" data-tiptap-value="item a">
+                      <a
+                          class=""
+                          href=""
+                          target=""
+                          title=""
+                          data-id=""
+                          data-pat-inject=""
+                          data-pat-forward=""
+                          data-pat-modal=""
+                          data-pat-switch=""
+                          data-pat-toggle=""
+                          data-pat-tooltip=""
+                      >
+                        test
+                      </a>
+                    </li>
+                  </ul>
+                </section>
+              </body>
+            </html>
+        `;
+
+        global.fetch = jest.fn().mockImplementation(mockFetch(response));
+
+        document.body.innerHTML = `
+          <textarea
+              class="pat-tiptap"
+              data-pat-tiptap="
+                tags-menu: https://demo.at/tags.html;
+              ">
+          </textarea>
+        `;
+
+        new Pattern(document.querySelector(".pat-tiptap"));
+        await utils.timeout(1);
+
+        const editable = document.querySelector(".tiptap-container [contenteditable]");
+        const range = document.createRange();
+        const sel = window.getSelection();
+
+        // Add the triggering character into the content editable
+        editable.innerHTML = "<p>#</p>";
+
+        // Set the cursor right after the #-sign.
+        range.setStart(editable.childNodes[0].childNodes[0], 1);
+        range.collapse(true);
+        sel.removeAllRanges();
+        sel.addRange(range);
+
+        await utils.timeout(1); // Wait a tick for the tooltip to open.
+        await utils.timeout(1); // Wait a tick for the suggestion-pattern to be initialized.
+
+        const items = document.querySelectorAll(".tiptap-items .tiptap-item");
+        items[0].querySelector("a").click();
+        await utils.timeout(1); // Wait a tick for the tooltip to open.
+        await utils.timeout(1); // Wait a tick for the tooltip to open.
+        await utils.timeout(1); // Wait a tick for the tooltip to open.
+        console.log(document.body.innerHTML);
+
+        expect(document.querySelector(".tiptap-items")).toBeFalsy();
+        const mention = editable.firstChild.firstChild;
+        expect(mention.textContent).toBe("#item a");
+
+        // Test all attributes
+        expect(mention.getAttribute("class")).toBe("");
+        expect(mention.getAttribute("href")).toBe("");
+        expect(mention.getAttribute("target")).toBe("");
+        expect(mention.getAttribute("title")).toBe("");
+        expect(mention.getAttribute("data-id")).toBe("");
+        expect(mention.getAttribute("data-title")).toBe("item a"); // automatically added. The value is the link's content.
+        expect(mention.getAttribute("data-pat-inject")).toBe("");
+        expect(mention.getAttribute("data-pat-forward")).toBe("");
+        expect(mention.getAttribute("data-pat-modal")).toBe("");
+        expect(mention.getAttribute("data-pat-switch")).toBe("");
+        expect(mention.getAttribute("data-pat-toggle")).toBe("");
+        expect(mention.getAttribute("data-pat-tooltip")).toBe("");
+
+        global.fetch.mockClear();
+        delete global.fetch;
+    });
 });
