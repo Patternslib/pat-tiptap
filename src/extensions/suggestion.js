@@ -6,6 +6,7 @@ import { focus_handler } from "../focus-handler";
 import dom from "@patternslib/patternslib/src/core/dom";
 import events from "@patternslib/patternslib/src/core/events";
 import utils from "@patternslib/patternslib/src/core/utils";
+import tiptap_utils from "../utils";
 
 let context_menu_instance;
 
@@ -98,7 +99,7 @@ function pattern_suggestion(app, props) {
                 [...el.attributes].map((it) => [it.name, it.value])
             );
             props.command({
-                id: value,
+                "data-title": value,
                 ...attributes,
             });
         },
@@ -134,9 +135,7 @@ export const factory = ({ app, name, char, plural }) => {
                 HTMLAttributes: {},
                 url: null,
                 renderLabel({ options, node }) {
-                    return `${options.suggestion.char}${
-                        node.attrs.label ?? node.attrs.id
-                    }`;
+                    return `${options.suggestion.char}${node.attrs["data-title"]}`;
                 },
                 suggestion: {
                     char: char,
@@ -147,24 +146,12 @@ export const factory = ({ app, name, char, plural }) => {
 
         addAttributes() {
             const attributes = {
-                "id": {
-                    default: null,
-                    parseHTML: (element) => element.getAttribute("data-id"),
-                    renderHTML: (attributes) => {
-                        if (!attributes.id) {
-                            return {};
-                        }
-
-                        return {
-                            "data-id": attributes.id,
-                        };
-                    },
-                },
-
                 "class": {},
                 "href": {},
                 "target": {},
                 "title": {},
+                "data-id": {},
+                "data-title": {},
                 // add a lot of patterns data attributes...
                 "data-pat-inject": {},
                 "data-pat-forward": {},
@@ -176,6 +163,11 @@ export const factory = ({ app, name, char, plural }) => {
 
             // Needs to be always included. A default of "" makes sure it is.
             attributes[`data-${this.name}`] = { default: "" };
+
+            for (const attr of tiptap_utils.accessibility_attributes) {
+                // Add a bunch of accessibility attributes
+                attributes[attr] = {};
+            }
 
             return attributes;
         },
