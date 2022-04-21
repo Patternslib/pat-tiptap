@@ -157,16 +157,6 @@ export async function init_extensions({ app }) {
         extensions.push((await import("@tiptap/extension-history")).History);
     }
 
-    if (tb.link) {
-        extensions.push(
-            (await import("./extensions/link")).factory().configure({
-                HTMLAttributes: { target: null, rel: null }, // don't set these attributes.
-                openOnClick: false, // don't open documents while editing.
-                linkOnPaste: true,
-            })
-        );
-    }
-
     if (tb.image) {
         extensions.push((await import("./extensions/image-inline")).factory());
         extensions.push((await import("./extensions/image-figure")).factory());
