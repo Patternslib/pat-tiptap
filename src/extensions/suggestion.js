@@ -110,6 +110,10 @@ function pattern_suggestion(app, props) {
         },
 
         set active(el) {
+            if (!el) {
+                // No item available, e.g. no search results and thus not this.items.
+                return;
+            }
             // Set an item to be selected.
             this.active?.classList.remove("active");
             el.classList.add("active");
