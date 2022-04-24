@@ -1,5 +1,18 @@
 
 
+### [3.4.1](https://github.com/patternslib/pat-tiptap/compare/3.4.0...3.4.1) (2022-04-24)
+
+
+### Bug Fixes
+
+
+* **Suggestion:** Do not break when trying to set a item active, but no results are available. ([d222ebd](https://github.com/patternslib/pat-tiptap/commit/d222ebd2d9bb87becdccf2c4c17a180115d20615))
+
+
+* **Suggestion:** Get whole suggestion text also when copying. ([bdd12ac](https://github.com/patternslib/pat-tiptap/commit/bdd12acc81a835161a3ca74fdc0e6bebf9e0a8d9))
+Always get the text starting from the suggestion character to the end.
+Previously when copying a suggestion text into the text area, the text wasn't recognized and not used to filter down the items.
+
 ## [3.4.0](https://github.com/patternslib/pat-tiptap/compare/3.3.0...3.4.0) (2022-04-21)
 
 
