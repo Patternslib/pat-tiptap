@@ -110,6 +110,10 @@ function pattern_suggestion(app, props) {
         },
 
         set active(el) {
+            if (!el) {
+                // No item available, e.g. no search results and thus not this.items.
+                return;
+            }
             // Set an item to be selected.
             this.active?.classList.remove("active");
             el.classList.add("active");
@@ -281,21 +285,24 @@ export const factory = ({ app, name, char, plural }) => {
                             // If the transaction parameter is given then this
                             // is a ``selectionUpdate``.
                             let url = this.options.url;
+
                             // Now get the text and pass it to the backend to
                             // query for the filter value.
-                            if (transaction) {
-                                // Get the text input between the suggestion
-                                // character and the cursor.
-                                // This is then used to filter items and submitted
-                                // as query string to the server.
-                                let from = props.range.to;
-                                let to = transaction.curSelection.$head.pos;
-                                const text = this.editor.state.doc.textBetween(from, to, ""); // prettier-ignore
+                            //
+                            // Get the text input between the suggestion
+                            // character and the cursor.
+                            // This is then used to filter items and submitted
+                            // as query string to the server.
+                            let from = props.range.from + 1; // start w/out suggestion character.
+                            let to = transaction
+                                ? transaction.curSelection.$head.pos
+                                : props.range.to;
+                            const text = this.editor.state.doc.textBetween(from, to, ""); // prettier-ignore
 
-                                // Add query string filter value.
-                                // The query string filter key must be already present on the URL.
-                                url = text ? url + text : url;
-                            }
+                            // Add query string filter value.
+                            // The query string filter key must be already present on the URL.
+                            url = text ? url + text : url;
+
                             return await context_menu({
                                 url: url,
                                 editor: this.editor,
