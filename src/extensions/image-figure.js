@@ -39,8 +39,8 @@ function image_panel({ app }) {
                         type: "image-figure",
                         attrs: {
                             src: selected_image_src.value,
-                            ...(image_alt?.value && { alt: image_alt?.value }),
-                            ...(image_title?.value && { title: image_title?.value }),
+                            ...(image_alt?.value && { alt: image_alt.value }),
+                            ...(image_title?.value && { title: image_title.value }),
                         },
                     },
                     // Conditionally add a figcaption

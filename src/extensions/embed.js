@@ -30,7 +30,7 @@ function embed_panel({ app }) {
                         type: "embed",
                         attrs: {
                             src: embed_src.value,
-                            ...(embed_title?.value && { title: embed_title?.value }),
+                            ...(embed_title?.value && { title: embed_title.value }),
                         },
                     },
                     // Conditionally add a figcaption
