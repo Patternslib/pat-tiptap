@@ -1,4 +1,3 @@
-import "regenerator-runtime/runtime"; // needed for ``await`` support
 import Pattern from "./tiptap";
 import utils from "@patternslib/patternslib/src/core/utils";
 import tiptap_utils from "./utils";
