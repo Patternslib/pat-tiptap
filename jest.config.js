@@ -1,1 +1,1 @@
-module.exports = require("@patternslib/patternslib/jest.config.js");
+module.exports = require("@patternslib/dev/jest.config.js");
