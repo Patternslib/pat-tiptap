@@ -1,4 +1,38 @@
+# Changelog
 
+See the [history](./docs/history/index.md) for older changelog entries.
+
+
+
+## [4.0.0-alpha.0](https://github.com/patternslib/pat-tiptap/compare/3.4.1...4.0.0-alpha.0) (2022-06-14)
+
+
+### Features
+
+
+* **Build:** Build module federation enabled bundles. ([f7012d3](https://github.com/patternslib/pat-tiptap/commit/f7012d3adacccbb56162f207ded9404c4febc868))
+
+
+### Maintenance
+
+
+* **Build:** @patternslib/patternslib as peerDependency. ([7dd2328](https://github.com/patternslib/pat-tiptap/commit/7dd23285275768849af42681371978a4ad26833b))Move @patternslib/patternslib dependency to peerDependencies and set to any version to avoid version conflicts when this package is a dependency of another Patternslib based package.
+
+* **Build:** Add @patternslib/patternslib also to devDependencies so that we get it installed. ([0e96688](https://github.com/patternslib/pat-tiptap/commit/0e966887eb4fe656972ce436174c4e5fddad0291))
+
+* **build:** Add build:dev script to package.json to create a unminified development build. ([d7a0cb2](https://github.com/patternslib/pat-tiptap/commit/d7a0cb236260a207657185b2b8ad7400d28aa21f))
+
+* **Build:** Add keyword "patternslib" to package.json. ([35e1714](https://github.com/patternslib/pat-tiptap/commit/35e1714ef6c16452bee65ad52af2f6c4cd77c82b))
+
+* **Build:** Extend jest.config.js from Patternslib and reuse their setupTests file too. ([f772a66](https://github.com/patternslib/pat-tiptap/commit/f772a6668c2aebd7ec84524bc870c9d1b1817609))
+
+* **Build:** Makefile - Allow OTP when publishing to npm, build bundles and publish them on GitHub, add pre-release targets. ([1a376cc](https://github.com/patternslib/pat-tiptap/commit/1a376cc1c23aa1ed131047da6974b40f34414d44))
+
+* **Build:** Remove dependency regenerator-runtime except from test setup. The async/await runtime handling is already built-in in current Babel. ([c88b735](https://github.com/patternslib/pat-tiptap/commit/c88b7359c9f5ec38384cdcb7e188bf5a4ffad2ba))
+
+* **Build:** Upgrade and cleanup dependencies. ([0558bfc](https://github.com/patternslib/pat-tiptap/commit/0558bfcda9b13545cf11f5ba4f6dcd94fe1caebe))
+
+* Make core a little more efficient and don't overuse optional chaining where it's not needed. ([f10b94a](https://github.com/patternslib/pat-tiptap/commit/f10b94abc6f22580f3b93c39af020f1b87c6ffd1))
 
 ### [3.4.1](https://github.com/patternslib/pat-tiptap/compare/3.4.0...3.4.1) (2022-04-24)
 
