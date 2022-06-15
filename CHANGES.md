@@ -1,5 +1,37 @@
 # Changelog
 
+
+
+## [4.0.0-alpha.1](https://github.com/patternslib/pat-tiptap/compare/4.0.0-alpha.0...4.0.0-alpha.1) (2022-06-15)
+
+
+### Breaking Changes
+
+
+* Depend on @patternslib/dev and extend config from there. ([c7989ac](https://github.com/patternslib/pat-tiptap/commit/c7989acc639eab92fb33410f9121dc1bc9214c9b))
+
+* Extend babel config from @patternslib/dev. ([b20800e](https://github.com/patternslib/pat-tiptap/commit/b20800e2710ef12c15b95ed965ad409d6378f67d))
+
+* Extend commitlint config from @patternslib/dev. ([96ef27e](https://github.com/patternslib/pat-tiptap/commit/96ef27ed92c33806825931291e81c26a624b12d8))
+
+* Extend eslint config from @patternslib/dev. ([6173108](https://github.com/patternslib/pat-tiptap/commit/6173108c6cdd2fb481bc45c4d21030d49abaeafb))
+
+* Extend jest config from @patternslib/dev. ([f80ad63](https://github.com/patternslib/pat-tiptap/commit/f80ad63655327ac7a48fec7144195f86a9d11218))
+
+* Extend Makefile from @patternslib/dev. ([37e2c0c](https://github.com/patternslib/pat-tiptap/commit/37e2c0ceb54be4233ae93377338b3a1b2c890592))
+
+* Extend prettier config from @patternslib/dev. ([36daaf8](https://github.com/patternslib/pat-tiptap/commit/36daaf86cb64ec0d0320e7ee0126cb467c6d8ac7))
+
+* Extend release-it config from @patternslib/dev. ([17cea4b](https://github.com/patternslib/pat-tiptap/commit/17cea4b95e06f993d2cbf0aa133c9f452bae0723))
+
+* Extend webpack config from @patternslib/dev. ([5c19f1a](https://github.com/patternslib/pat-tiptap/commit/5c19f1a58dd0820fedccbbcfa247cfa58e035228))
+
+
+### Maintenance
+
+
+* **Build:** Update GitHub actions setup. ([a516f9b](https://github.com/patternslib/pat-tiptap/commit/a516f9bcd608cfa94db2a917e13b7ef3fea7d668))
+
 See the [history](./docs/history/index.md) for older changelog entries.
 
 
