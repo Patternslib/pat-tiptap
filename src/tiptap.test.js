@@ -1,4 +1,5 @@
 import Pattern from "./tiptap";
+import events from "@patternslib/patternslib/src/core/events";
 import utils from "@patternslib/patternslib/src/core/utils";
 import tiptap_utils from "./utils";
 
@@ -1092,6 +1093,100 @@ describe("pat-tiptap", () => {
         for (const attr of tiptap_utils.accessibility_attributes) {
             expect(mention.getAttribute(attr)).toBe("");
         }
+
+        global.fetch.mockClear();
+        delete global.fetch;
+    });
+
+    it("8.8 - Close suggestion dialog when clicking outside", async () => {
+        global.fetch = jest.fn().mockImplementation(mockFetch(SUGGESTION_RESPONSE));
+
+        document.body.innerHTML = `
+          <textarea
+              class="pat-tiptap"
+              data-pat-tiptap="
+                tags-menu: https://demo.at/tags.html;
+              ">
+          </textarea>
+        `;
+
+        new Pattern(document.querySelector(".pat-tiptap"));
+        await utils.timeout(1);
+
+        const editable = document.querySelector(".tiptap-container [contenteditable]");
+        const range = document.createRange();
+        const sel = window.getSelection();
+
+        // Add the triggering character into the content editable
+        editable.innerHTML = "<p>#</p>";
+        // Set the cursor right after the #-sign.
+        range.setStart(editable.childNodes[0].childNodes[0], 1);
+        range.collapse(true);
+        sel.removeAllRanges();
+        sel.addRange(range);
+
+        await utils.timeout(1); // Wait a tick for the tooltip to open.
+        await utils.timeout(1); // Wait a tick for the suggestion-pattern to be initialized.
+
+        // Check for class ``tiptap-tags`` set on tooltip container.
+        expect(document.querySelector(".tooltip-container.tiptap-tags")).toBeTruthy();
+        expect(document.querySelector(".tiptap-items")).toBeTruthy();
+
+        // No close when clicking within the suggestion menu
+        document.querySelector(".tiptap-items").dispatchEvent(events.mousedown_event());
+        expect(document.querySelector(".tooltip-container.tiptap-tags")).toBeTruthy();
+
+        // Close when clicking outside the suggestion menu
+        document.body.dispatchEvent(events.mousedown_event());
+        expect(document.querySelector(".tooltip-container.tiptap-tags")).toBeFalsy();
+
+        global.fetch.mockClear();
+        delete global.fetch;
+    });
+
+    it("8.9 - Close suggestion with Escape", async () => {
+        global.fetch = jest.fn().mockImplementation(mockFetch(SUGGESTION_RESPONSE));
+
+        document.body.innerHTML = `
+          <textarea
+              class="pat-tiptap"
+              data-pat-tiptap="
+                tags-menu: https://demo.at/tags.html;
+              ">
+          </textarea>
+        `;
+
+        new Pattern(document.querySelector(".pat-tiptap"));
+        await utils.timeout(1);
+
+        const editable = document.querySelector(".tiptap-container [contenteditable]");
+        const range = document.createRange();
+        const sel = window.getSelection();
+
+        // Add the triggering character into the content editable
+        editable.innerHTML = "<p>#</p>";
+        // Set the cursor right after the #-sign.
+        range.setStart(editable.childNodes[0].childNodes[0], 1);
+        range.collapse(true);
+        sel.removeAllRanges();
+        sel.addRange(range);
+
+        await utils.timeout(1); // Wait a tick for the tooltip to open.
+        await utils.timeout(1); // Wait a tick for the suggestion-pattern to be initialized.
+
+        // Check for class ``tiptap-tags`` set on tooltip container.
+        expect(document.querySelector(".tooltip-container.tiptap-tags")).toBeTruthy();
+        expect(document.querySelector(".tiptap-items")).toBeTruthy();
+
+        // Close when pressing "Escape"
+        editable.dispatchEvent(
+            new KeyboardEvent("keydown", {
+                key: "Escape",
+                bubbles: true,
+                cancelable: true,
+            })
+        );
+        expect(document.querySelector(".tooltip-container.tiptap-tags")).toBeFalsy();
 
         global.fetch.mockClear();
         delete global.fetch;
