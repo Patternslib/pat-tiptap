@@ -1069,7 +1069,6 @@ describe("pat-tiptap", () => {
         await utils.timeout(1); // Wait a tick for the tooltip to open.
         await utils.timeout(1); // Wait a tick for the tooltip to open.
         await utils.timeout(1); // Wait a tick for the tooltip to open.
-        console.log(document.body.innerHTML);
 
         expect(document.querySelector(".tiptap-items")).toBeFalsy();
         const mention = editable.firstChild.firstChild;
