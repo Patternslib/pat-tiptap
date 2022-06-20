@@ -277,6 +277,16 @@ export const factory = ({ app, name, char, plural }) => {
             // Suggestion render
             this.options.suggestion.render = () => {
                 let _debounced_context_menu;
+
+                const ctx_close = () => {
+                    context_menu_instance = context_menu_close({
+                        instance: context_menu_instance,
+                        pattern_name: "tiptap-suggestion",
+                    });
+                    this.editor.off("selectionUpdate", _debounced_context_menu);
+                    events.remove_event_listener(document, "tiptap--suggestion_close");
+                };
+
                 return {
                     onStart: async (props) => {
                         const _context_menu = async (
@@ -303,13 +313,33 @@ export const factory = ({ app, name, char, plural }) => {
                             // The query string filter key must be already present on the URL.
                             url = text ? url + text : url;
 
-                            return await context_menu({
+                            const ctx_menu = await context_menu({
                                 url: url,
                                 editor: this.editor,
                                 instance: context_menu_instance,
                                 pattern: pattern_suggestion(app, props),
                                 extra_class: `tiptap-${plural || this.name}`, // plural form
                             });
+
+                            events.add_event_listener(
+                                document.body,
+                                "mousedown",
+                                "tiptap--suggestion_close",
+                                (e) => {
+                                    if (
+                                        [
+                                            e.target,
+                                            ...dom.get_parents(e.target),
+                                        ].includes(context_menu_instance?.tippy.popper)
+                                    ) {
+                                        // Do not close the context menu if we click in it.
+                                        return;
+                                    }
+                                    ctx_close.bind(this)();
+                                }
+                            );
+
+                            return ctx_menu;
                         };
                         _debounced_context_menu = utils.debounce(async (transaction) => {
                             context_menu_instance = await _context_menu(transaction);
@@ -328,11 +358,7 @@ export const factory = ({ app, name, char, plural }) => {
                         }
 
                         if (props.event.key === "Escape") {
-                            context_menu_instance = context_menu_close({
-                                instance: context_menu_instance,
-                                pattern_name: "tiptap-suggestion",
-                            });
-                            this.editor.off("selectionUpdate", _debounced_context_menu);
+                            ctx_close();
                             return true;
                         }
                         if (
@@ -357,11 +383,7 @@ export const factory = ({ app, name, char, plural }) => {
                         }
                     },
                     onExit: () => {
-                        context_menu_instance = context_menu_close({
-                            instance: context_menu_instance,
-                            pattern_name: "tiptap-suggestion",
-                        });
-                        this.editor.off("selectionUpdate", _debounced_context_menu);
+                        ctx_close();
                     },
                 };
             };
