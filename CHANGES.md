@@ -2,6 +2,22 @@
 
 
 
+## [4.0.0](https://github.com/patternslib/pat-tiptap/compare/4.0.0-alpha.1...4.0.0) (2022-06-21)
+
+
+### Bug Fixes
+
+
+* Close the suggestion popup when clicking outside. ([ca75099](https://github.com/patternslib/pat-tiptap/commit/ca75099745b56b3962d0c48d2f2a92ccfbba0aa6))
+
+* Update demo for correct bundle since we extend @patternslib/dev webpack config. ([6c21285](https://github.com/patternslib/pat-tiptap/commit/6c212852d0067fc261ce30e9cc1ae82813488f22))
+
+
+### Maintenance
+
+
+* Remove console.log message in tests. ([b82508c](https://github.com/patternslib/pat-tiptap/commit/b82508c84b73db471cb589fe8db85085808666a8))
+
 ## [4.0.0-alpha.1](https://github.com/patternslib/pat-tiptap/compare/4.0.0-alpha.0...4.0.0-alpha.1) (2022-06-15)
 
 
