@@ -3,6 +3,7 @@ const mf_config = require("@patternslib/dev/webpack/webpack.mf");
 const package_json = require("./package.json");
 const path = require("path");
 const patternslib_config = require("@patternslib/dev/webpack/webpack.config.js");
+const patternslib_package_json = require("@patternslib/patternslib/package.json");
 
 module.exports = async (env, argv) => {
     let config = {
@@ -16,8 +17,12 @@ module.exports = async (env, argv) => {
 
     config.plugins.push(
         mf_config({
-            package_json: package_json,
+            name: package_json.name,
             remote_entry: config.entry["bundle.min"],
+            dependencies: {
+                ...patternslib_package_json.dependencies,
+                ...package_json.dependencies,
+            },
         })
     );
 

@@ -16,11 +16,9 @@
         "@tiptap/extension-table-row": "2.0.0-beta.19",
         "@tiptap/starter-kit": "2.0.0-beta.185"
     },
-    "peerDependencies": {
-        "@patternslib/patternslib": "*"
-    },
     "devDependencies": {
-        "@patternslib/dev": "^2.0.0"
+        "@patternslib/dev": "^2.2.0",
+        "@patternslib/patternslib": "*"
     },
     "scripts": {
         "start": "NODE_ENV=development webpack serve --config webpack.config.js",
