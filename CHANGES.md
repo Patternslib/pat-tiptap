@@ -2,6 +2,31 @@
 
 
 
+## [4.1.0](https://github.com/patternslib/pat-tiptap/compare/4.0.0...4.1.0) (2022-06-27)
+
+
+### Bug Fixes
+
+
+* Allow to share one toolbar with multiple tiptap instances. ([86022a7](https://github.com/patternslib/pat-tiptap/commit/86022a756e6a6ce7f9819dbd69f3878483a2fc64))Fix an issue with a toolbar which is shared among multiple editor
+instances would invoke the command on each instance.
+Now you have to focus at least once the editor so that the toolbar will
+issue a command on it.
+When clicking a toolbar button, the last focused texteditor instance is
+used to issue to command on.
+To make sure that the toolbar will always invoke an action even without
+first clicking into a tiptap contenteditable area use pat-autofocus.
+
+* Fix demo index-many.html with many tiptap instances to use the correct bundle JavaScript. ([6ca04b1](https://github.com/patternslib/pat-tiptap/commit/6ca04b155e3edad351101cafd40bd7539916228f))
+
+* Use known good versions for [@tiptap](https://github.com/tiptap) until current issues with newer beta releases are resolved. ([c9d5716](https://github.com/patternslib/pat-tiptap/commit/c9d57165e5b8ccfb4cf471a81e9827f60a4c5094))Newer versions break with: "RangeError: Adding different instances of a keyed plugin (plugin$)"
+
+
+### Maintenance
+
+
+* Upgrade to @patternslib/dev 2.2.0 and adapt module federation config. ([603f12c](https://github.com/patternslib/pat-tiptap/commit/603f12c2574af5c312552a88ce5403fd5022e15c))
+
 ## [4.0.0](https://github.com/patternslib/pat-tiptap/compare/4.0.0-alpha.1...4.0.0) (2022-06-21)
 
 
