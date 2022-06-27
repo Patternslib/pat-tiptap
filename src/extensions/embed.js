@@ -3,6 +3,7 @@ import { focus_handler } from "../focus-handler";
 import log from "../tiptap";
 import { Node, mergeAttributes } from "@tiptap/core";
 import { Plugin } from "prosemirror-state";
+import dom from "@patternslib/patternslib/src/core/dom";
 import events from "@patternslib/patternslib/src/core/events";
 
 let panel_observer;
@@ -104,7 +105,15 @@ function embed_panel({ app }) {
 
 export function init({ app, button }) {
     // Initialize modal after it has injected.
-    button.addEventListener("pat-modal-ready", () => embed_panel({ app: app }));
+    button.addEventListener("pat-modal-ready", () => {
+        if (dom.get_data(app.toolbar_el, "tiptap-instance", null) !== app) {
+            // If this pat-tiptap instance is not the one which was last
+            // focused, just return and do nothing.
+            // This might be due to one toolbar shared by multiple editors.
+            return;
+        }
+        embed_panel({ app: app });
+    });
 }
 
 export const factory = () => {

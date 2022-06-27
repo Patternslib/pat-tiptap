@@ -99,6 +99,9 @@ describe("pat-tiptap", () => {
         new Pattern(document.querySelectorAll(".pat-tiptap")[1]);
         await utils.timeout(1);
 
+        const containers = document.querySelectorAll(".tiptap-container");
+
+        containers[0].querySelector("[contenteditable]").focus(); // Set focus to bypass toolbar check
         document
             .querySelector("#tiptap-external-toolbar-1 .button-link")
             .dispatchEvent(new Event("pat-modal-ready"));
@@ -109,6 +112,7 @@ describe("pat-tiptap", () => {
         document.querySelector("#link-panel [name=tiptap-confirm]").dispatchEvent(new Event("click")); // prettier-ignore
         await utils.timeout(1);
 
+        containers[1].querySelector("[contenteditable]").focus(); // Set focus to bypass toolbar check
         document
             .querySelector("#tiptap-external-toolbar-2 .button-link")
             .dispatchEvent(new Event("pat-modal-ready"));
@@ -118,8 +122,6 @@ describe("pat-tiptap", () => {
         document.querySelector("#link-panel [name=tiptap-text]").value = "Link text 2"; // prettier-ignore
         document.querySelector("#link-panel [name=tiptap-confirm]").dispatchEvent(new Event("click")); // prettier-ignore
         await utils.timeout(1);
-
-        const containers = document.querySelectorAll(".tiptap-container");
 
         const anchor1 = containers[0].querySelector("a");
         expect(anchor1).toBeTruthy();
@@ -310,6 +312,8 @@ describe("pat-tiptap", () => {
         new Pattern(document.querySelector(".pat-tiptap"));
         await utils.timeout(1);
 
+        document.querySelector(".tiptap-container [contenteditable]").focus(); // Set focus to bypass toolbar check
+
         document
             .querySelector("#tiptap-external-toolbar .button-link")
             .dispatchEvent(new Event("pat-modal-ready"));
@@ -349,6 +353,8 @@ describe("pat-tiptap", () => {
 
         new Pattern(document.querySelector(".pat-tiptap"));
         await utils.timeout(1);
+
+        document.querySelector(".tiptap-container [contenteditable]").focus(); // Set focus to bypass toolbar check
 
         document
             .querySelector("#tiptap-external-toolbar .button-image")
@@ -396,6 +402,8 @@ describe("pat-tiptap", () => {
         new Pattern(document.querySelector(".pat-tiptap"));
         await utils.timeout(1);
 
+        document.querySelector(".tiptap-container [contenteditable]").focus(); // Set focus to bypass toolbar check
+
         document
             .querySelector("#tiptap-external-toolbar .button-image")
             .dispatchEvent(new Event("pat-modal-ready"));
@@ -434,6 +442,8 @@ describe("pat-tiptap", () => {
 
         new Pattern(document.querySelector(".pat-tiptap"));
         await utils.timeout(1);
+
+        document.querySelector(".tiptap-container [contenteditable]").focus(); // Set focus to bypass toolbar check
 
         document
             .querySelector("#tiptap-external-toolbar .button-image")
@@ -507,6 +517,8 @@ describe("pat-tiptap", () => {
         new Pattern(document.querySelector(".pat-tiptap"));
         await utils.timeout(1);
 
+        document.querySelector(".tiptap-container [contenteditable]").focus(); // Set focus to bypass toolbar check
+
         document
             .querySelector("#tiptap-external-toolbar .button-embed")
             .dispatchEvent(new Event("pat-modal-ready"));
@@ -549,6 +561,8 @@ describe("pat-tiptap", () => {
         new Pattern(document.querySelector(".pat-tiptap"));
         await utils.timeout(1);
 
+        document.querySelector(".tiptap-container [contenteditable]").focus(); // Set focus to bypass toolbar check
+
         document
             .querySelector("#tiptap-external-toolbar .button-embed")
             .dispatchEvent(new Event("pat-modal-ready"));
@@ -587,6 +601,8 @@ describe("pat-tiptap", () => {
 
         new Pattern(document.querySelector(".pat-tiptap"));
         await utils.timeout(1);
+
+        document.querySelector(".tiptap-container [contenteditable]").focus(); // Set focus to bypass toolbar check
 
         document
             .querySelector("#tiptap-external-toolbar .button-embed")
@@ -629,6 +645,8 @@ describe("pat-tiptap", () => {
 
         new Pattern(document.querySelector(".pat-tiptap"));
         await utils.timeout(1);
+
+        document.querySelector(".tiptap-container [contenteditable]").focus(); // Set focus to bypass toolbar check
 
         document
             .querySelector("#tiptap-external-toolbar .button-embed")

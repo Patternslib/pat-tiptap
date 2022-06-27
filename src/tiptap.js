@@ -1,6 +1,7 @@
 import Base from "@patternslib/patternslib/src/core/base";
 import Parser from "@patternslib/patternslib/src/core/parser";
 import Registry from "@patternslib/patternslib/src/core/registry";
+import dom from "@patternslib/patternslib/src/core/dom";
 import events from "@patternslib/patternslib/src/core/events";
 import logging from "@patternslib/patternslib/src/core/logging";
 import utils from "@patternslib/patternslib/src/core/utils";
@@ -151,6 +152,10 @@ export default Base.extend({
                 // Note: ``this`` is the pattern instance.
                 utils.timeout(1); // short timeout to ensure focus class is set even if tiptap_blur_handler is called concurrently.
                 this.toolbar_el?.classList.add("tiptap-focus");
+
+                // Set the current focused pat-tiptap instance on the toolbar element.
+                this.toolbar_el &&
+                    dom.set_data(this.toolbar_el, "tiptap-instance", this);
             },
             onBlur: () => {
                 // Note: ``this`` is the pattern instance.
