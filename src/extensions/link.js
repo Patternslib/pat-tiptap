@@ -2,6 +2,7 @@ import { context_menu, context_menu_close } from "../context_menu";
 import { focus_handler } from "../focus-handler";
 import log from "../tiptap";
 import LinkExtension from "@tiptap/extension-link";
+import dom from "@patternslib/patternslib/src/core/dom";
 import events from "@patternslib/patternslib/src/core/events";
 import utils from "@patternslib/patternslib/src/core/utils";
 
@@ -189,7 +190,15 @@ async function link_panel({ app }) {
 
 export function init({ app, button }) {
     // Initialize modal after it has injected.
-    button.addEventListener("pat-modal-ready", () => link_panel({ app: app }));
+    button.addEventListener("pat-modal-ready", () => {
+        if (dom.get_data(app.toolbar_el, "tiptap-instance", null) !== app) {
+            // If this pat-tiptap instance is not the one which was last
+            // focused, just return and do nothing.
+            // This might be due to one toolbar shared by multiple editors.
+            return;
+        }
+        link_panel({ app: app });
+    });
 
     app.editor.on("selectionUpdate", async () => {
         app.editor.isActive("link")

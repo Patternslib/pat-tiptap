@@ -1,3 +1,5 @@
+import dom from "@patternslib/patternslib/src/core/dom";
+
 export function init_pre({ app }) {
     // pre-initialization step:
     // Search for available toolbar buttons.
@@ -195,6 +197,13 @@ export async function init_post({ app }) {
             return;
         }
         btn.addEventListener("click", () => {
+            if (dom.get_data(app.toolbar_el, "tiptap-instance", null) !== app) {
+                // If this pat-tiptap instance is not the one which was last
+                // focused, just return and do nothing.
+                // This might be due to one toolbar shared by multiple editors.
+                return;
+            }
+
             app.editor
                 .chain()
                 .focus()
@@ -254,6 +263,12 @@ export async function init_post({ app }) {
 
     if (tb.table_merge_cells) {
         tb.table_merge_cells.addEventListener("click", () => {
+            if (dom.get_data(app.toolbar_el, "tiptap-instance", null) !== app) {
+                // If this pat-tiptap instance is not the one which was last
+                // focused, just return and do nothing.
+                // This might be due to one toolbar shared by multiple editors.
+                return;
+            }
             app.editor.chain().focus().mergeOrSplit().run();
             app.editor.emit("selectionUpdate");
         });
