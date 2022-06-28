@@ -80,6 +80,12 @@ export default Base.extend({
             (await import("@tiptap/extension-hard-break")).default.configure(),
             // Gapcursor for images, tables etc to be able to add content below/above.
             (await import("@tiptap/extension-gapcursor")).Gapcursor.configure(),
+            // Always include basic link extension.
+            (await import("./extensions/link")).factory().configure({
+                HTMLAttributes: { target: null, rel: null }, // don't set these attributes.
+                openOnClick: false, // don't open documents while editing.
+                linkOnPaste: true,
+            }),
         ];
         const placeholder = this.el.getAttribute("placeholder");
         if (placeholder) {
