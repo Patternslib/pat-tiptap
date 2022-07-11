@@ -2,6 +2,24 @@
 
 
 
+## [4.2.0](https://github.com/patternslib/pat-tiptap/compare/4.1.0...4.2.0) (2022-07-11)
+
+
+### Features
+
+
+* Always include undo/redo functionality. ([870b22c](https://github.com/patternslib/pat-tiptap/commit/870b22c5a0f3989da3fcf5091646777902c97911))This allows to use undo/redo via keyboard shortcuts even if undo/redo buttons are not shown.
+
+
+### Maintenance
+
+
+* Remove dependency on starter-kit and directly depend on all necessary extensions. Upgrade extensions. ([0862192](https://github.com/patternslib/pat-tiptap/commit/086219238296b46770afdca1069bd444b12ab20c))
+
+* Upgrade @tiptap/core. ([1aa4688](https://github.com/patternslib/pat-tiptap/commit/1aa46886de03ae450fa7075eb6da892937055447))
+
+* Upgrade to @patternslib/dev 2.3.0. ([b55cbc4](https://github.com/patternslib/pat-tiptap/commit/b55cbc45ef02469d0561387dc388240b9624a317))
+
 ## [4.1.0](https://github.com/patternslib/pat-tiptap/compare/4.0.0...4.1.0) (2022-06-27)
 
 
