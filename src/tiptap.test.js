@@ -486,7 +486,11 @@ describe("pat-tiptap", () => {
         await utils.timeout(1);
 
         // Images are parsed and shown in the editor
-        expect(document.querySelectorAll(".tiptap-container img").length).toBe(3);
+        expect(
+            document.querySelectorAll(
+                ".tiptap-container img:not(.ProseMirror-separator)"
+            ).length
+        ).toBe(3);
 
         // Also those .ProseMirror-trailingBreak <br>s are added.
         // Only two of them - there is inline content after the second image and ProseMirror doesn't add the extra <br> in that case.
