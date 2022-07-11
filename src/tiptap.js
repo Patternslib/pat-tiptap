@@ -80,6 +80,8 @@ export default Base.extend({
             (await import("@tiptap/extension-hard-break")).default.configure(),
             // Gapcursor for images, tables etc to be able to add content below/above.
             (await import("@tiptap/extension-gapcursor")).Gapcursor.configure(),
+            // Allways include undo/redo support via keyboard shortcuts.
+            (await import("@tiptap/extension-history")).History.configure(),
         ];
         const placeholder = this.el.getAttribute("placeholder");
         if (placeholder) {
