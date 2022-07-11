@@ -17,7 +17,7 @@
         "@tiptap/starter-kit": "2.0.0-beta.185"
     },
     "devDependencies": {
-        "@patternslib/dev": "^2.2.0",
+        "@patternslib/dev": "^2.3.0",
         "@patternslib/patternslib": "*"
     },
     "scripts": {
