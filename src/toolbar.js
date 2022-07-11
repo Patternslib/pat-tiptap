@@ -155,10 +155,6 @@ export async function init_extensions({ app }) {
         );
     }
 
-    if (tb.undo || tb.redo) {
-        extensions.push((await import("@tiptap/extension-history")).History);
-    }
-
     if (tb.link) {
         extensions.push(
             (await import("./extensions/link")).factory().configure({
