@@ -28,31 +28,32 @@ function pattern_link_context_menu({ app }) {
                 if (attrs?.href) {
                     btn_open.setAttribute("href", attrs.href);
                 }
-                btn_open.addEventListener(
-                    "click",
-                    () =>
-                        (context_menu_instance = context_menu_close({
-                            instance: context_menu_instance,
-                            pattern_name: this.name,
-                        }))
-                );
+                btn_open.addEventListener("click", () => {
+                    context_menu_close({
+                        instance: context_menu_instance,
+                        pattern_name: this.name,
+                    });
+                    context_menu_instance = null;
+                });
             }
 
             btn_edit &&
                 btn_edit.addEventListener("click", () => {
-                    context_menu_instance = context_menu_close({
+                    context_menu_close({
                         instance: context_menu_instance,
                         pattern_name: this.name,
                     });
+                    context_menu_instance = null;
                     app.toolbar.link.click();
                 });
 
             btn_unlink &&
                 btn_unlink.addEventListener("click", () => {
-                    context_menu_instance = context_menu_close({
+                    context_menu_close({
                         instance: context_menu_instance,
                         pattern_name: this.name,
                     });
+                    context_menu_instance = null;
                     app.editor.chain().focus().unsetLink().run();
                 });
         },
@@ -61,10 +62,11 @@ function pattern_link_context_menu({ app }) {
 
 async function link_panel({ app }) {
     // Close eventual opened link context menus.
-    context_menu_instance = context_menu_close({
+    context_menu_close({
         instance: context_menu_instance,
         pattern_name: "tiptap-link-context-menu",
     });
+    context_menu_instance = null;
 
     const link_panel = document.querySelector(app.options.link?.panel);
     if (!link_panel) {
@@ -219,10 +221,11 @@ export function init({ app, button }) {
             if (!app.editor.isActive("link")) {
                 if (context_menu_instance) {
                     // If open, close.
-                    context_menu_instance = context_menu_close({
+                    context_menu_close({
                         instance: context_menu_instance,
                         pattern_name: "tiptap-link-context-menu",
                     });
+                    context_menu_instance = null;
                 }
                 return;
             }
