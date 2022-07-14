@@ -210,8 +210,8 @@ export function init({ app, button }) {
             ? button.classList.remove("disabled")
             : button.classList.add("disabled");
 
-        // Temporarily don't open the context menu.
-        if (dont_open_context_menu && !app.options.link?.menu) {
+        if (dont_open_context_menu) {
+            // Temporarily don't open the context menu.
             return;
         }
 
