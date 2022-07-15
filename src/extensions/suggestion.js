@@ -15,10 +15,16 @@ function pattern_suggestion(app, props) {
     return {
         name: "tiptap-suggestion",
         trigger: ".tiptap-items",
-        async init($el) {
-            focus_handler($el[0]);
-
+        init($el) {
             this.el = $el[0];
+
+            if (dom.get_data(this.el, this.name)) {
+                // Prevent double initialization.
+                return;
+            }
+            dom.set_data(this.el, this.name, this);
+
+            focus_handler(this.el);
 
             this.active = this.items[0];
 

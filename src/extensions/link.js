@@ -15,8 +15,15 @@ function pattern_link_context_menu({ app }) {
     return {
         name: "tiptap-link-context-menu",
         trigger: ".tiptap-link-context-menu",
-        async init($el) {
+        init($el) {
             const el = $el[0];
+
+            if (dom.get_data(el, this.name)) {
+                // Prevent double initialization.
+                return;
+            }
+            dom.set_data(el, this.name, this);
+
             focus_handler(el);
 
             const btn_open = el.querySelector(".tiptap-open-new-link");
