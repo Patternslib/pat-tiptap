@@ -46,6 +46,7 @@ function pattern_link_context_menu({ app }) {
                     });
                     app.toolbar.link.click();
                 });
+
             btn_unlink &&
                 btn_unlink.addEventListener("click", () => {
                     context_menu_instance = context_menu_close({
@@ -88,8 +89,7 @@ async function link_panel({ app }) {
 
         if (is_link) {
             // Extend the selection to whole link.
-            // Necessary for link updates below in the update_callback
-            // to get the selection right which is replaced.
+            // Necessary to get the whole link scope and the correct text.
             dont_open_context_menu = true; // setting a selection on a link would open the context menu.
             app.editor.commands.extendMarkRange("link");
             dont_open_context_menu = false;
