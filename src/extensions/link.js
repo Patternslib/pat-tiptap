@@ -82,6 +82,11 @@ async function link_panel({ app }) {
     }
     focus_handler(link_panel);
 
+    // Store the current cursor position.
+    // While extending the selection below the cursor position is changed and
+    // we want it back where we left.
+    const last_cursor_position = app.editor.state.selection.$head.pos;
+
     const reinit = () => {
         const link_href = link_panel.querySelector("[name=tiptap-href]");
         const link_text = link_panel.querySelector("[name=tiptap-text]");
@@ -130,9 +135,6 @@ async function link_panel({ app }) {
 
         const update_callback = (set_focus) => {
             const cmd = app.editor.chain();
-            if (set_focus === true) {
-                cmd.focus();
-            }
             const link_text_value = (link_text ? link_text.value : text_content) || "";
             cmd.command(async ({ tr }) => {
                 // create = update
@@ -146,6 +148,10 @@ async function link_panel({ app }) {
                     .text(link_text_value)
                     .mark([mark]);
                 tr.replaceSelectionWith(link_node, false);
+                if (set_focus === true) {
+                    // Set the cursor back to the position where we left.
+                    cmd.focus().setTextSelection(last_cursor_position);
+                }
                 return true;
             });
             cmd.run();
