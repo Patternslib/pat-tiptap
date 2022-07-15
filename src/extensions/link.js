@@ -199,14 +199,20 @@ async function link_panel({ app }) {
 
 export function init({ app, button }) {
     // Initialize modal after it has injected.
-    button.addEventListener("pat-modal-ready", () => {
-        if (dom.get_data(app.toolbar_el, "tiptap-instance", null) !== app) {
-            // If this pat-tiptap instance is not the one which was last
-            // focused, just return and do nothing.
-            // This might be due to one toolbar shared by multiple editors.
-            return;
-        }
-        link_panel({ app: app });
+    button.addEventListener("click", () => {
+        document.addEventListener(
+            "pat-modal-ready",
+            () => {
+                if (dom.get_data(app.toolbar_el, "tiptap-instance", null) !== app) {
+                    // If this pat-tiptap instance is not the one which was last
+                    // focused, just return and do nothing.
+                    // This might be due to one toolbar shared by multiple editors.
+                    return;
+                }
+                link_panel({ app: app });
+            },
+            { once: true }
+        );
     });
 
     app.editor.on("selectionUpdate", async () => {
