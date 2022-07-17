@@ -1,6 +1,6 @@
 // From: tiptap/demos/src/Experiments/GenericFigure/Vue/figure.ts
 import { focus_handler } from "../focus-handler";
-import log from "../tiptap";
+import { log } from "../tiptap";
 import { Node, mergeAttributes } from "@tiptap/core";
 import { Plugin } from "prosemirror-state";
 import dom from "@patternslib/patternslib/src/core/dom";

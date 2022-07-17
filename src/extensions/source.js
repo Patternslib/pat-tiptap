@@ -1,5 +1,5 @@
 import { focus_handler } from "../focus-handler";
-import log from "../tiptap";
+import { log } from "../tiptap";
 import dom from "@patternslib/patternslib/src/core/dom";
 import events from "@patternslib/patternslib/src/core/events";
 

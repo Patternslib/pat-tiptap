@@ -1,6 +1,6 @@
 import { context_menu, context_menu_close } from "../context_menu";
 import { focus_handler } from "../focus-handler";
-import log from "../tiptap";
+import { log } from "../tiptap";
 import LinkExtension from "@tiptap/extension-link";
 import dom from "@patternslib/patternslib/src/core/dom";
 import events from "@patternslib/patternslib/src/core/events";
