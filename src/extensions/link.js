@@ -1,6 +1,6 @@
 import { context_menu, context_menu_close } from "../context_menu";
 import { focus_handler } from "../focus-handler";
-import log from "../tiptap";
+import { log } from "../tiptap";
 import LinkExtension from "@tiptap/extension-link";
 import dom from "@patternslib/patternslib/src/core/dom";
 import events from "@patternslib/patternslib/src/core/events";
@@ -15,8 +15,15 @@ function pattern_link_context_menu({ app }) {
     return {
         name: "tiptap-link-context-menu",
         trigger: ".tiptap-link-context-menu",
-        async init($el) {
+        init($el) {
             const el = $el[0];
+
+            if (dom.get_data(el, this.name)) {
+                // Prevent double initialization.
+                return;
+            }
+            dom.set_data(el, this.name, this);
+
             focus_handler(el);
 
             const btn_open = el.querySelector(".tiptap-open-new-link");
@@ -28,30 +35,32 @@ function pattern_link_context_menu({ app }) {
                 if (attrs?.href) {
                     btn_open.setAttribute("href", attrs.href);
                 }
-                btn_open.addEventListener(
-                    "click",
-                    () =>
-                        (context_menu_instance = context_menu_close({
-                            instance: context_menu_instance,
-                            pattern_name: this.name,
-                        }))
-                );
+                btn_open.addEventListener("click", () => {
+                    context_menu_close({
+                        instance: context_menu_instance,
+                        pattern_name: this.name,
+                    });
+                    context_menu_instance = null;
+                });
             }
 
             btn_edit &&
                 btn_edit.addEventListener("click", () => {
-                    context_menu_instance = context_menu_close({
+                    context_menu_close({
                         instance: context_menu_instance,
                         pattern_name: this.name,
                     });
+                    context_menu_instance = null;
                     app.toolbar.link.click();
                 });
+
             btn_unlink &&
                 btn_unlink.addEventListener("click", () => {
-                    context_menu_instance = context_menu_close({
+                    context_menu_close({
                         instance: context_menu_instance,
                         pattern_name: this.name,
                     });
+                    context_menu_instance = null;
                     app.editor.chain().focus().unsetLink().run();
                 });
         },
@@ -60,10 +69,11 @@ function pattern_link_context_menu({ app }) {
 
 async function link_panel({ app }) {
     // Close eventual opened link context menus.
-    context_menu_instance = context_menu_close({
+    context_menu_close({
         instance: context_menu_instance,
         pattern_name: "tiptap-link-context-menu",
     });
+    context_menu_instance = null;
 
     const link_panel = document.querySelector(app.options.link?.panel);
     if (!link_panel) {
@@ -71,6 +81,11 @@ async function link_panel({ app }) {
         return;
     }
     focus_handler(link_panel);
+
+    // Store the current cursor position.
+    // While extending the selection below the cursor position is changed and
+    // we want it back where we left.
+    const last_cursor_position = app.editor.state.selection.$head.pos;
 
     const reinit = () => {
         const link_href = link_panel.querySelector("[name=tiptap-href]");
@@ -88,8 +103,7 @@ async function link_panel({ app }) {
 
         if (is_link) {
             // Extend the selection to whole link.
-            // Necessary for link updates below in the update_callback
-            // to get the selection right which is replaced.
+            // Necessary to get the whole link scope and the correct text.
             dont_open_context_menu = true; // setting a selection on a link would open the context menu.
             app.editor.commands.extendMarkRange("link");
             dont_open_context_menu = false;
@@ -121,9 +135,6 @@ async function link_panel({ app }) {
 
         const update_callback = (set_focus) => {
             const cmd = app.editor.chain();
-            if (set_focus === true) {
-                cmd.focus();
-            }
             const link_text_value = (link_text ? link_text.value : text_content) || "";
             cmd.command(async ({ tr }) => {
                 // create = update
@@ -137,6 +148,10 @@ async function link_panel({ app }) {
                     .text(link_text_value)
                     .mark([mark]);
                 tr.replaceSelectionWith(link_node, false);
+                if (set_focus === true) {
+                    // Set the cursor back to the position where we left.
+                    cmd.focus().setTextSelection(last_cursor_position);
+                }
                 return true;
             });
             cmd.run();
@@ -190,14 +205,20 @@ async function link_panel({ app }) {
 
 export function init({ app, button }) {
     // Initialize modal after it has injected.
-    button.addEventListener("pat-modal-ready", () => {
-        if (dom.get_data(app.toolbar_el, "tiptap-instance", null) !== app) {
-            // If this pat-tiptap instance is not the one which was last
-            // focused, just return and do nothing.
-            // This might be due to one toolbar shared by multiple editors.
-            return;
-        }
-        link_panel({ app: app });
+    button.addEventListener("click", () => {
+        document.addEventListener(
+            "pat-modal-ready",
+            () => {
+                if (dom.get_data(app.toolbar_el, "tiptap-instance", null) !== app) {
+                    // If this pat-tiptap instance is not the one which was last
+                    // focused, just return and do nothing.
+                    // This might be due to one toolbar shared by multiple editors.
+                    return;
+                }
+                link_panel({ app: app });
+            },
+            { once: true }
+        );
     });
 
     app.editor.on("selectionUpdate", async () => {
@@ -208,8 +229,8 @@ export function init({ app, button }) {
             ? button.classList.remove("disabled")
             : button.classList.add("disabled");
 
-        // Temporarily don't open the context menu.
-        if (dont_open_context_menu && !app.options.link?.menu) {
+        if (dont_open_context_menu) {
+            // Temporarily don't open the context menu.
             return;
         }
 
@@ -219,10 +240,11 @@ export function init({ app, button }) {
             if (!app.editor.isActive("link")) {
                 if (context_menu_instance) {
                     // If open, close.
-                    context_menu_instance = context_menu_close({
+                    context_menu_close({
                         instance: context_menu_instance,
                         pattern_name: "tiptap-link-context-menu",
                     });
+                    context_menu_instance = null;
                 }
                 return;
             }

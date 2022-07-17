@@ -10,6 +10,13 @@ const mockFetch =
             text: () => Promise.resolve(text),
         });
 
+const open_panel = (button_selector) => {
+    document.querySelector(button_selector).click();
+    document.dispatchEvent(
+        new Event("pat-modal-ready", { bubbles: true, cancelable: true })
+    );
+};
+
 const SUGGESTION_RESPONSE = `
 <!DOCTYPE html>
 <html>
@@ -102,9 +109,7 @@ describe("pat-tiptap", () => {
         const containers = document.querySelectorAll(".tiptap-container");
 
         containers[0].querySelector("[contenteditable]").focus(); // Set focus to bypass toolbar check
-        document
-            .querySelector("#tiptap-external-toolbar-1 .button-link")
-            .dispatchEvent(new Event("pat-modal-ready"));
+        open_panel("#tiptap-external-toolbar-1 .button-link");
         await utils.timeout(1);
 
         document.querySelector("#link-panel [name=tiptap-href]").value = "https://url1.com/"; // prettier-ignore
@@ -113,9 +118,7 @@ describe("pat-tiptap", () => {
         await utils.timeout(1);
 
         containers[1].querySelector("[contenteditable]").focus(); // Set focus to bypass toolbar check
-        document
-            .querySelector("#tiptap-external-toolbar-2 .button-link")
-            .dispatchEvent(new Event("pat-modal-ready"));
+        open_panel("#tiptap-external-toolbar-2 .button-link");
         await utils.timeout(1);
 
         document.querySelector("#link-panel [name=tiptap-href]").value = "https://url2.com/"; // prettier-ignore
@@ -314,9 +317,7 @@ describe("pat-tiptap", () => {
 
         document.querySelector(".tiptap-container [contenteditable]").focus(); // Set focus to bypass toolbar check
 
-        document
-            .querySelector("#tiptap-external-toolbar .button-link")
-            .dispatchEvent(new Event("pat-modal-ready"));
+        open_panel("#tiptap-external-toolbar .button-link");
         await utils.timeout(1);
 
         document.querySelector("#link-panel [name=tiptap-href]").value = "https://patternslib.com/"; // prettier-ignore
@@ -356,9 +357,7 @@ describe("pat-tiptap", () => {
 
         document.querySelector(".tiptap-container [contenteditable]").focus(); // Set focus to bypass toolbar check
 
-        document
-            .querySelector("#tiptap-external-toolbar .button-image")
-            .dispatchEvent(new Event("pat-modal-ready"));
+        open_panel("#tiptap-external-toolbar .button-image");
         await utils.timeout(1);
 
         document.querySelector("#image-panel [name=tiptap-src]").value = "https://path/to/image.png"; // prettier-ignore
@@ -404,9 +403,7 @@ describe("pat-tiptap", () => {
 
         document.querySelector(".tiptap-container [contenteditable]").focus(); // Set focus to bypass toolbar check
 
-        document
-            .querySelector("#tiptap-external-toolbar .button-image")
-            .dispatchEvent(new Event("pat-modal-ready"));
+        open_panel("#tiptap-external-toolbar .button-image");
         await utils.timeout(1);
 
         document.querySelector("#image-panel [name=tiptap-src]").value = "https://path/to/image.png"; // prettier-ignore
@@ -445,9 +442,7 @@ describe("pat-tiptap", () => {
 
         document.querySelector(".tiptap-container [contenteditable]").focus(); // Set focus to bypass toolbar check
 
-        document
-            .querySelector("#tiptap-external-toolbar .button-image")
-            .dispatchEvent(new Event("pat-modal-ready"));
+        open_panel("#tiptap-external-toolbar .button-image");
         await utils.timeout(1);
 
         document.querySelector("#image-panel [name=tiptap-src]").value =
@@ -523,9 +518,7 @@ describe("pat-tiptap", () => {
 
         document.querySelector(".tiptap-container [contenteditable]").focus(); // Set focus to bypass toolbar check
 
-        document
-            .querySelector("#tiptap-external-toolbar .button-embed")
-            .dispatchEvent(new Event("pat-modal-ready"));
+        open_panel("#tiptap-external-toolbar .button-embed");
         await utils.timeout(1);
 
         document.querySelector("#embed-panel [name=tiptap-src]").value = "https://www.youtube.com/embed/j8It1z7r1g4"; // prettier-ignore
@@ -567,9 +560,7 @@ describe("pat-tiptap", () => {
 
         document.querySelector(".tiptap-container [contenteditable]").focus(); // Set focus to bypass toolbar check
 
-        document
-            .querySelector("#tiptap-external-toolbar .button-embed")
-            .dispatchEvent(new Event("pat-modal-ready"));
+        open_panel("#tiptap-external-toolbar .button-embed");
         await utils.timeout(1);
 
         document.querySelector("#embed-panel [name=tiptap-src]").value = "https://www.youtube.com/watch?v=j8It1z7r1g4"; // prettier-ignore
@@ -608,9 +599,7 @@ describe("pat-tiptap", () => {
 
         document.querySelector(".tiptap-container [contenteditable]").focus(); // Set focus to bypass toolbar check
 
-        document
-            .querySelector("#tiptap-external-toolbar .button-embed")
-            .dispatchEvent(new Event("pat-modal-ready"));
+        open_panel("#tiptap-external-toolbar .button-embed");
         await utils.timeout(1);
 
         document.querySelector("#embed-panel [name=tiptap-src]").value = "https://player.vimeo.com/video/9206226"; // prettier-ignore
@@ -652,9 +641,7 @@ describe("pat-tiptap", () => {
 
         document.querySelector(".tiptap-container [contenteditable]").focus(); // Set focus to bypass toolbar check
 
-        document
-            .querySelector("#tiptap-external-toolbar .button-embed")
-            .dispatchEvent(new Event("pat-modal-ready"));
+        open_panel("#tiptap-external-toolbar .button-embed");
         await utils.timeout(1);
 
         document.querySelector("#embed-panel [name=tiptap-src]").value = "https://vimeo.com/9206226"; // prettier-ignore

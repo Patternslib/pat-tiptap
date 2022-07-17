@@ -15,10 +15,16 @@ function pattern_suggestion(app, props) {
     return {
         name: "tiptap-suggestion",
         trigger: ".tiptap-items",
-        async init($el) {
-            focus_handler($el[0]);
-
+        init($el) {
             this.el = $el[0];
+
+            if (dom.get_data(this.el, this.name)) {
+                // Prevent double initialization.
+                return;
+            }
+            dom.set_data(this.el, this.name, this);
+
+            focus_handler(this.el);
 
             this.active = this.items[0];
 
@@ -279,12 +285,12 @@ export const factory = ({ app, name, char, plural }) => {
                 let _debounced_context_menu;
 
                 const ctx_close = () => {
-                    context_menu_instance = context_menu_close({
+                    context_menu_close({
                         instance: context_menu_instance,
                         pattern_name: "tiptap-suggestion",
                     });
+                    context_menu_instance = null;
                     this.editor.off("selectionUpdate", _debounced_context_menu);
-                    events.remove_event_listener(document, "tiptap--suggestion_close");
                 };
 
                 return {
@@ -321,24 +327,6 @@ export const factory = ({ app, name, char, plural }) => {
                                 extra_class: `tiptap-${plural || this.name}`, // plural form
                             });
 
-                            events.add_event_listener(
-                                document.body,
-                                "mousedown",
-                                "tiptap--suggestion_close",
-                                (e) => {
-                                    if (
-                                        [
-                                            e.target,
-                                            ...dom.get_parents(e.target),
-                                        ].includes(context_menu_instance?.tippy.popper)
-                                    ) {
-                                        // Do not close the context menu if we click in it.
-                                        return;
-                                    }
-                                    ctx_close.bind(this)();
-                                }
-                            );
-
                             return ctx_menu;
                         };
                         _debounced_context_menu = utils.debounce(async (transaction) => {
@@ -357,10 +345,6 @@ export const factory = ({ app, name, char, plural }) => {
                             return;
                         }
 
-                        if (props.event.key === "Escape") {
-                            ctx_close();
-                            return true;
-                        }
                         if (
                             props.event.key === "ArrowDown" ||
                             props.event.key === "ArrowUp" ||

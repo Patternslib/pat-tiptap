@@ -1,4 +1,5 @@
 import Registry from "@patternslib/patternslib/src/core/registry";
+import dom from "@patternslib/patternslib/src/core/dom";
 import events from "@patternslib/patternslib/src/core/events";
 import patTooltip from "@patternslib/patternslib/src/pat/tooltip/tooltip";
 import { posToDOMRect } from "@tiptap/core";
@@ -15,15 +16,19 @@ export async function context_menu({
     const prev_node = PREV_NODE;
     const cur_node = (PREV_NODE = editor.state.doc.nodeAt(editor.state.selection.from));
 
-    if (instance !== null && cur_node !== prev_node) {
+    if (
+        instance !== null &&
+        (cur_node !== prev_node || !instance?.tippy.popperInstance)
+    ) {
         // Close context menu, when new node is selected.
-        instance = context_menu_close({
+        context_menu_close({
             instance: instance,
             pattern_name: pattern.name,
         });
+        instance = null;
     }
 
-    if (!instance) {
+    if (!instance || !instance?.tippy.popperInstance) {
         // Only re-initialize when not already opened.
 
         // 1) Dynamically register a pattern to be used in the context menu
@@ -57,6 +62,35 @@ export async function context_menu({
             getReferenceClientRect: () => reference_position,
         });
 
+        events.add_event_listener(
+            document,
+            "mousedown",
+            "tiptap--context_menu_close--click",
+            (e) => {
+                if (
+                    [e.target, ...dom.get_parents(e.target)].includes(
+                        instance?.tippy.popper
+                    )
+                ) {
+                    // Do not close the context menu if we click in it.
+                    return;
+                }
+                context_menu_close({ instance: instance, pattern_name: pattern.name });
+            }
+        );
+        events.add_event_listener(
+            document,
+            "keydown",
+            "tiptap--context_menu_close--esc",
+            (e) => {
+                if (e.key !== "Escape") {
+                    // Not a closing key.
+                    return;
+                }
+                context_menu_close({ instance: instance, pattern_name: pattern.name });
+            }
+        );
+
         instance.show();
     } else {
         instance.get_content(url);
@@ -77,5 +111,7 @@ export function context_menu_close({ instance, pattern_name }) {
     if (pattern_name) {
         delete Registry.patterns[pattern_name];
     }
+    events.remove_event_listener(document, "tiptap--context_menu_close--click");
+    events.remove_event_listener(document, "tiptap--context_menu_close--esc");
     return null;
 }
