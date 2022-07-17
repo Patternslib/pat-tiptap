@@ -2,6 +2,37 @@
 
 
 
+## [4.3.0](https://github.com/patternslib/pat-tiptap/compare/4.2.0...4.3.0) (2022-07-17)
+
+
+### Features
+
+
+* Close context menu on ESC and outside click. ([6de22c2](https://github.com/patternslib/pat-tiptap/commit/6de22c2a64e0fc05b66f43bb3fdbd8c7f05410df))Always close context menu (link, mentions, tagging) when clicked outside or
+escape key was pressed.
+
+* When editing links and closing the link edit panel restore the cursor position to the position where we left. ([2b00839](https://github.com/patternslib/pat-tiptap/commit/2b008396c18d7dfdcf962d95c9f4db0296f3fda3))
+
+
+### Bug Fixes
+
+
+* Align to changes in pat-modal where pat-modal-ready is thrown only once and not on the initiating button but on the injected modal. ([7011525](https://github.com/patternslib/pat-tiptap/commit/7011525e0b3d2e422bb56dc72cb7af27e163847d))
+
+* Correct import of logger. ([ee290e4](https://github.com/patternslib/pat-tiptap/commit/ee290e4964eb9a0a156df01ef7bd923e50b7cefb))
+
+* Do not open the link context menu after opening the link editing panel. ([f7d9e95](https://github.com/patternslib/pat-tiptap/commit/f7d9e95ac5c46e1ad0384e9b0443b60ca362e4ab))
+
+* Prevent double initialization of link and suggestion context menu patterns. ([fbda4f6](https://github.com/patternslib/pat-tiptap/commit/fbda4f60e449850539e767e5bd70e11821cb8d78))
+
+
+### Maintenance
+
+
+* **Demo:** Add a link to the demo. ([b424f19](https://github.com/patternslib/pat-tiptap/commit/b424f1969aa4ed8505e5c3eb8a404f3cd106ecce))
+
+* **Demo:** Mark focused element in red. ([c969ade](https://github.com/patternslib/pat-tiptap/commit/c969ade377d5165c904d8ab76f054d4710e2f645))
+
 ## [4.2.0](https://github.com/patternslib/pat-tiptap/compare/4.1.0...4.2.0) (2022-07-11)
 
 
