@@ -29,13 +29,73 @@ parser.addAlias("context-menu-link", "link-menu");
 parser.addAlias("context-menu-mentions", "mentions-menu");
 parser.addAlias("context-menu-tags", "tags-menu");
 
+parser.addArgument("lazy", false);
+
 export default Base.extend({
     name: "tiptap",
     trigger: ".pat-tiptap",
 
     async init() {
-        // Constructor
-        this.toolbar_el = null;
+        // Initialize the pattern and prepare initialization of the tiptap editor.
+        this.options = parser.parse(this.el, this.options);
+        this.is_form_el = ["TEXTAREA", "INPUT"].includes(this.el.tagName);
+
+        // Hide original element which will be replaced with tiptap instance.
+        this.el.style.display = "none";
+
+        // Create container for tiptap.
+        // In case of lazy initialization the container is an intermediate container
+        // which will later be replaced by a tiptap container, after tiptap
+        // has been initialized off-canvas and be ready.
+        this.tiptap_container = this.create_tiptap_container({
+            editable: this.options.lazy,
+        });
+        if (this.options.lazy) {
+            // Display the text content before tiptap is being loaded.
+            this.tiptap_container.innerHTML = this.get_textarea_text() || "<br>";
+        }
+        this.el.after(this.tiptap_container);
+
+        if (this.options.lazy) {
+            events.add_event_listener(
+                this.tiptap_container,
+                "focus",
+                "tiptap--initialization",
+                () => this.init_editor(),
+                { once: true }
+            );
+        } else {
+            await this.init_editor();
+        }
+    },
+
+    get_textarea_text() {
+        // Textarea value getter
+        return this.is_form_el ? this.el.value : this.el.innerHTML;
+    },
+
+    set_textarea_text(value) {
+        // Textarea value setter
+        if (this.is_form_el) {
+            this.el.value = value;
+        } else {
+            this.el.innerHTML = value;
+        }
+        this.el.dispatchEvent(events.input_event());
+    },
+
+    create_tiptap_container({ editable = false }) {
+        const tiptap_container = document.createElement("div");
+        tiptap_container.setAttribute("class", "tiptap-container");
+        if (editable) {
+            tiptap_container.setAttribute("contenteditable", true);
+            tiptap_container.setAttribute("tabindex", "-1"); // make selectable.
+        }
+        return tiptap_container;
+    },
+
+    async init_editor() {
+        // Initialize the tiptap editor itself.
 
         const TipTap = (await import("@tiptap/core")).Editor;
         const ExtDocument = (await import("@tiptap/extension-document")).default;
@@ -44,36 +104,19 @@ export default Base.extend({
 
         this.focus_handler = (await import("./focus-handler")).focus_handler;
 
-        this.options = parser.parse(this.el, this.options);
-
-        // Hide element which will be replaced with tiptap instance
-        this.el.style.display = "none";
-        // Create container for tiptap
-        const container = document.createElement("div");
-        container.setAttribute("class", "tiptap-container");
-        this.el.after(container);
+        this.toolbar_el = this.options.toolbarExternal
+            ? document.querySelector(this.options.toolbarExternal)
+            : null;
+        if (this.toolbar_el) {
+            const focus_handler_targets = (await import("./focus-handler")).TARGETS; // prettier-ignore
+            focus_handler_targets.push(this.toolbar_el); // We register the focus handler on itself.
+            this.focus_handler(this.toolbar_el);
+        }
 
         // Support for pat-autofocus and autofocus: Set focus depending on textarea's focus setting.
         const set_focus =
             this.el.classList.contains("pat-autofocus") ||
             this.el.hasAttribute("autofocus");
-
-        const is_form_el = ["TEXTAREA", "INPUT"].includes(this.el.tagName);
-
-        const getText = () => {
-            // Textarea value getter
-            return is_form_el ? this.el.value : this.el.innerHTML;
-        };
-
-        const setText = (text) => {
-            // Textarea value setter
-            if (is_form_el) {
-                this.el.value = text;
-            } else {
-                this.el.innerHTML = text;
-            }
-            this.el.dispatchEvent(events.input_event());
-        };
 
         const extra_extensions = [
             // Allow non-paragraph line-breaks by default.
@@ -124,19 +167,19 @@ export default Base.extend({
             );
         }
 
-        this.toolbar_el = this.options.toolbarExternal
-            ? document.querySelector(this.options.toolbarExternal)
-            : null;
-        if (this.toolbar_el) {
-            const focus_handler_targets = (await import("./focus-handler")).TARGETS; // prettier-ignore
-            focus_handler_targets.push(this.toolbar_el); // We register the focus handler on itself.
-            this.focus_handler(this.toolbar_el);
-        }
-
         const toolbar_ext = await import("./toolbar");
         this.toolbar = toolbar_ext.init_pre({ app: this });
+
+        // Late initialization - create new element where tiptap is initialized on.
+        // This will replace the intermediate element where we only showed the
+        // content until tiptap was initialized.
+        const tiptap_container = this.options.lazy
+            ? this.create_tiptap_container({ editable: false })
+            : this.tiptap_container;
+
+        const self = this;
         this.editor = new TipTap({
-            element: container,
+            element: tiptap_container,
             extensions: [
                 ExtDocument,
                 ExtText,
@@ -144,10 +187,19 @@ export default Base.extend({
                 ...(await toolbar_ext.init_extensions({ app: this })),
                 ...extra_extensions,
             ],
-            content: getText(),
+            content: this.get_textarea_text(),
+            onCreate: () => {
+                if (this.options.lazy) {
+                    // Late initialization - replace the intermediate tiptap container
+                    // with the tiptap-initialized one.
+                    this.tiptap_container.replaceWith(tiptap_container);
+                    // We also need to set the this.tiptap_container to the new one.
+                    this.tiptap_container = tiptap_container;
+                }
+            },
             onUpdate() {
                 // Note: ``this`` is the editor instance.
-                setText(this.getHTML());
+                self.set_textarea_text(this.getHTML());
                 Registry.scan(this.view.dom);
             },
             onFocus: async () => {
