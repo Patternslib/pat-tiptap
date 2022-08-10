@@ -5,6 +5,7 @@ import LinkExtension from "@tiptap/extension-link";
 import dom from "@patternslib/patternslib/src/core/dom";
 import events from "@patternslib/patternslib/src/core/events";
 import utils from "@patternslib/patternslib/src/core/utils";
+import tiptap_utils from "../utils";
 
 let panel_observer;
 let context_menu_instance;
@@ -137,6 +138,10 @@ async function link_panel({ app }) {
             const cmd = app.editor.chain();
             const link_text_value = (link_text ? link_text.value : text_content) || "";
             cmd.command(async ({ tr }) => {
+                if (!tiptap_utils.is_url(link_href.value)) {
+                    // Correct the link href if it's not a valid url.
+                    link_href.value = `https://${link_href.value}`;
+                }
                 // create = update
                 // create prosemirror tree mark and node
                 const mark = app.editor.state.schema.marks.link.create({

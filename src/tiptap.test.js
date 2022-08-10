@@ -331,6 +331,44 @@ describe("pat-tiptap", () => {
         expect(anchor.textContent).toBe("Link text");
     });
 
+    it("5.2 - Adds a link with https://, if the protocoll was missing.", async () => {
+        document.body.innerHTML = `
+          <div id="tiptap-external-toolbar">
+            <button class="button-link">Link</button>
+          </div>
+          <textarea
+              class="pat-tiptap"
+              data-pat-tiptap="
+                toolbar-external: #tiptap-external-toolbar;
+                link-panel: #link-panel
+              ">
+          </textarea>
+          <form id="link-panel">
+            <input name="tiptap-href"/>
+            <input name="tiptap-text"/>
+            <button type="submit" name="tiptap-confirm">submit</button>
+          </form>
+        `;
+
+        new Pattern(document.querySelector(".pat-tiptap"));
+        await utils.timeout(1);
+
+        document.querySelector(".tiptap-container [contenteditable]").focus(); // Set focus to bypass toolbar check
+
+        open_panel("#tiptap-external-toolbar .button-link");
+        await utils.timeout(1);
+
+        document.querySelector("#link-panel [name=tiptap-href]").value = "patternslib.com"; // prettier-ignore
+        document.querySelector("#link-panel [name=tiptap-text]").value = "Link text"; // prettier-ignore
+        document.querySelector("#link-panel [name=tiptap-confirm]").dispatchEvent(new Event("click")); // prettier-ignore
+        await utils.timeout(1);
+
+        const anchor = document.querySelector(".tiptap-container a");
+        expect(anchor).toBeTruthy();
+        expect(anchor.href).toBe("https://patternslib.com/");
+        expect(anchor.textContent).toBe("Link text");
+    });
+
     it("6.1 - Adds an image within <figure> tags including a <figcaption>", async () => {
         document.body.innerHTML = `
           <div id="tiptap-external-toolbar">
