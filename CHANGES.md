@@ -2,6 +2,24 @@
 
 
 
+## [4.4.0](https://github.com/patternslib/pat-tiptap/compare/4.3.0...4.4.0) (2022-08-11)
+
+
+### Features
+
+
+* Add utils.is_url to test if a string is a URL. ([28e197f](https://github.com/patternslib/pat-tiptap/commit/28e197fb7dae39228d64e0b4d23f12ac755ea937))
+
+* Link panel: Try to correct invalid URLs. ([72c25fd](https://github.com/patternslib/pat-tiptap/commit/72c25fda642fbb62a3f48f5dcd5756e8c591dadd))If a URL was entered in the link panel but the protocol part was
+forgotten, prepend https:// to the URL.
+Relative URLs are kept as-is.
+
+
+### Maintenance
+
+
+* Upgrade dependencies. ([2bf375b](https://github.com/patternslib/pat-tiptap/commit/2bf375b2e268fb5fb734d6063a8024c1be02a6b6))
+
 ## [4.3.0](https://github.com/patternslib/pat-tiptap/compare/4.2.0...4.3.0) (2022-07-17)
 
 
