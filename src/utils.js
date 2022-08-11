@@ -47,7 +47,19 @@ export const accessibility_attributes = [
     "role",
 ];
 
+/**
+ * Test, if a given string is a absolute or relative URL.
+ *
+ * @param {string} url - The URL to test.
+ * @returns {boolean} True, if the URL is absolute or relative.
+ */
+export const is_url = (url) => {
+    const re_url = /(^\.?\.?\/|:\/\/)/;
+    return re_url.test(url);
+};
+
 export default {
     add_search_params: add_search_params,
     accessibility_attributes: accessibility_attributes,
+    is_url: is_url,
 };
