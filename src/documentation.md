@@ -111,10 +111,10 @@ Note: You can also load the modal contents from any URL.
 This is the DOM structure with the overlay:
 
     <div id="modal-link" hidden>
-      <form class="link-panel">
+      <form class="link-panel pat-validation">
         <label>
           Link URL:
-          <input type="text" name="tiptap-href"/>
+          <input type="url" name="tiptap-href" placeholder="https://"/>
         </label>
         <label>
           Link Text:
@@ -207,10 +207,10 @@ Note: You can also load the modal contents from any URL.
 This is the DOM structure with the overlay:
 
     <div id="modal-image" hidden>
-      <form class="image-panel">
+      <form class="image-panel pat-validation">
         <label>
           Image URL:
-          <input type="text" name="tiptap-src"/>
+          <input type="url" name="tiptap-src" placeholder="https://"/>
         </label>
         <label>
           Title:
@@ -266,10 +266,10 @@ Note: You can also load the modal contents from any URL.
 This is the DOM structure with the overlay:
 
     <div id="modal-embed" hidden>
-      <form class="embed-panel">
+      <form class="embed-panel pat-validation">
         <label>
           Video URL:
-          <input type="text" name="tiptap-src"/>
+          <input type="url" name="tiptap-src" placeholder="https://"/>
         </label>
         <label>
           Title:
