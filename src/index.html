@@ -142,6 +142,7 @@
             link-panel: .link-panel;
             source-panel: .source-panel;
             embed-panel: .embed-panel;
+            image-menu: #context-menu-image;
             link-menu: #context-menu-link;
             mentions-menu: ./index-mentions-results.html?u=;
             tags-menu: ./index-tags-results.html?okay=1234&q=;
@@ -261,6 +262,21 @@
           </label>
           <button class="close-panel" type="button" name="tiptap-confirm">submit</button>
         </form>
+    </template>
+
+    <template id="context-menu-image">
+      <ul class="tiptap-image-context-menu">
+        <li>
+          <button
+            type="button"
+            class="close-panel tiptap-edit-image">Edit image</button>
+        </li>
+        <li>
+          <button
+            type="button"
+            class="close-panel tiptap-remove-image">Remove image</button>
+        </li>
+      </ul>
     </template>
 
     <template id="context-menu-link">

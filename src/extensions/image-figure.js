@@ -1,3 +1,4 @@
+import { context_menu, context_menu_close } from "../context_menu";
 import { focus_handler } from "../focus-handler";
 import { log } from "../tiptap";
 import { Node, mergeAttributes } from "@tiptap/core";
@@ -6,11 +7,40 @@ import Base from "@patternslib/patternslib/src/core/base";
 import Registry from "@patternslib/patternslib/src/core/registry";
 import dom from "@patternslib/patternslib/src/core/dom";
 import events from "@patternslib/patternslib/src/core/events";
+import utils from "@patternslib/patternslib/src/core/utils";
+
+let context_menu_instance;
+
+function pattern_image_context_menu({ app: app }) {
+    return Base.extend({
+        name: "tiptap-image-context-menu",
+        trigger: ".tiptap-image-context-menu",
+        autoregister: false,
+        init() {
+            focus_handler(this.el);
+
+            const btn_edit = this.el.querySelector(".tiptap-edit-image");
+            const btn_remove = this.el.querySelector(".tiptap-remove-image");
+
+            btn_edit &&
+                btn_edit.addEventListener("click", () => {
+                    app.toolbar.image.click();
+                });
+
+            btn_remove &&
+                btn_remove.addEventListener("click", () => {
+                    app.editor.commands.selectParentNode(); // Also select the surrounding <figure>
+                    app.editor.commands.deleteSelection();
+                    app.editor.commands.focus();
+                });
+        },
+    });
+}
 
 function image_panel({ app }) {
     return Base.extend({
         name: "tiptap-image-panel",
-        trigger: app.options.imagePanel,
+        trigger: app.options.image?.panel,
         autoregister: false,
         init() {
             const image_panel = this.el;
@@ -27,6 +57,34 @@ function image_panel({ app }) {
             const image_confirm = image_panel.querySelector(".tiptap-confirm, [name=tiptap-confirm]"); // prettier-ignore
             focus_handler(image_panel);
 
+            // Get image node
+            const node_image = app.editor.state.doc.nodeAt(
+                app.editor.state.selection.from
+            );
+
+            // Get figcaption node, if it exists
+            app.editor.commands.selectParentNode(); // Also select the surrounding <figure>
+            const node_figure = app.editor.state.doc.nodeAt(
+                app.editor.state.selection.from
+            );
+            const node_figcaption = node_figure?.content.content.filter(
+                (it) => it.type.name === "figcaption"
+            )?.[0];
+
+            // Populate form fields
+            if (node_image) {
+                image_src.value = node_image.attrs?.src || "";
+                if (image_title) {
+                    image_title.value = node_image.attrs?.title || "";
+                }
+                if (image_alt) {
+                    image_alt.value = node_image.attrs?.alt || "";
+                }
+            }
+            if (node_figcaption && image_caption) {
+                image_caption.value = node_figcaption.textContent || "";
+            }
+
             const update_callback = (set_focus) => {
                 // Get the selected image on time of submitting
                 const selected_image_src = image_panel.querySelector(
@@ -38,8 +96,7 @@ function image_panel({ app }) {
                          [name=tiptap-src][type=url]`
                 );
 
-                const cmd = app.editor.chain();
-                cmd.insertContent({
+                app.editor.commands.insertContent({
                     type: "figure",
                     content: [
                         {
@@ -69,11 +126,12 @@ function image_panel({ app }) {
                     ],
                 });
                 if (set_focus === true) {
-                    // set focus after setting image, otherwise image is
+                    // set cursor after the image, otherwise image is
                     // selected and right away deleted when starting typing.
-                    cmd.focus();
+                    app.editor.commands.selectParentNode();
+                    app.editor.commands.focus(app.editor.state.selection.to);
+                    //app.editor.commands.blur();
                 }
-                cmd.run();
             };
 
             // FORM UPDATE
@@ -140,6 +198,42 @@ export function init({ app, button }) {
             { once: true }
         );
     });
+
+    app.editor.on("selectionUpdate", async () => {
+        app.editor.isActive("image-figure")
+            ? button.classList.add("active")
+            : button.classList.remove("active");
+        app.editor.can().setImage()
+            ? button.classList.remove("disabled")
+            : button.classList.add("disabled");
+
+        if (app.options.image.menu) {
+            // Open the context menu with a small delay.
+            utils.debounce(async () => {
+                if (!app.editor.isActive("image-figure")) {
+                    // Image not active anymore. Return.
+                    if (context_menu_instance) {
+                        // If open, close.
+                        context_menu_close({
+                            instance: context_menu_instance,
+                            pattern_name: "tiptap-image-context-menu",
+                        });
+                        context_menu_instance = null;
+                    }
+                    return;
+                }
+
+                // Initialize the context menu
+                context_menu_instance = await context_menu({
+                    url: app.options.image.menu,
+                    editor: app.editor,
+                    instance: context_menu_instance,
+                    pattern: pattern_image_context_menu({ app: app }),
+                    extra_class: "tiptap-image-menu",
+                });
+            }, 50)();
+        }
+    });
 }
 
 export const factory = () => {
@@ -173,7 +267,7 @@ export const factory = () => {
         atom: true,
         draggable: false,
         isolating: true,
-        selectable: false,
+        selectable: true,
 
         parseHTML() {
             return [

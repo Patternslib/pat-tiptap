@@ -250,6 +250,42 @@ This is the related ``pat-tiptap`` config:
     "
 
 
+#### Adding a image context menu
+
+When clicking on an image in the editor in edit mode you can provide a popup which allows you to edit or remove the image.
+
+You have to provide a context menu container in the same document or accessible via an URL which content's are used for the ``pat-tooltip`` popup:
+
+    <div id="context-menu-image" hidden>
+      <ul class="tiptap-image-context-menu">
+        <li>
+          <button
+            type="button"
+            class="close-panel tiptap-edit-image">Edit image</button>
+        </li>
+        <li>
+          <button
+            type="button"
+            class="close-panel tiptap-remove-image">Remove image</button>
+        </li>
+      </ul>
+    </div>
+
+None of these elements are mandatory but if you want to provide the associated functionality you need to use these class names:
+
+- ``tiptap-edit-image``: The element which opens the edit overlay when clicking on it.
+- ``tiptap-remove-image``: The element which will remove the image including the figure and figcaption tag from the content.
+
+
+This is the pattern configuration:
+
+    data-pat-tiptap="
+        image-menu: #context-menu-image;
+    "
+
+``image-menu``: URL or CSS selector pointing to the context menu contents.
+
+
 #### Adding an embed overlay for videos
 
 With the embed functionality you can add YouTube and Vimeo videos to your document.

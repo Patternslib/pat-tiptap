@@ -283,7 +283,7 @@ export async function init_post({ app }) {
         (await import("./extensions/link")).init({ app: app, button: tb.link });
     }
 
-    if (tb.image && app.options.imagePanel) {
+    if (tb.image && app.options.image?.panel) {
         (await import("./extensions/image-figure")).init({ app: app, button: tb.image }); // prettier-ignore
     }
 
