@@ -262,7 +262,7 @@ export function init({ app, button }) {
                 editor: app.editor,
                 instance: context_menu_instance,
                 pattern: pattern_link_context_menu({ app: app }),
-                extra_class: "link-panel",
+                extra_class: "tiptap-link-menu",
             });
         }, 50)();
     });
