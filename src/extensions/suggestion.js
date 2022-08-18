@@ -3,6 +3,7 @@ import { PluginKey } from "prosemirror-state";
 import { Suggestion as ProseMirrorSuggestion } from "@tiptap/suggestion";
 import { context_menu, context_menu_close } from "../context_menu";
 import { focus_handler } from "../focus-handler";
+import Base from "@patternslib/patternslib/src/core/base";
 import dom from "@patternslib/patternslib/src/core/dom";
 import events from "@patternslib/patternslib/src/core/events";
 import utils from "@patternslib/patternslib/src/core/utils";
@@ -12,21 +13,15 @@ let context_menu_instance;
 
 function pattern_suggestion(app, props) {
     // Dynamic pattern for the suggestion context menu
-    return {
+
+    return Base.extend({
         name: "tiptap-suggestion",
         trigger: ".tiptap-items",
-        init($el) {
-            this.el = $el[0];
-
-            if (dom.get_data(this.el, this.name)) {
-                // Prevent double initialization.
-                return;
-            }
-            dom.set_data(this.el, this.name, this);
-
+        autoregister: false,
+        init() {
             focus_handler(this.el);
 
-            this.active = this.items[0];
+            this.set_active(this.get_items()[0]);
 
             // Support selections via keyboard navigation.
             events.add_event_listener(
@@ -37,45 +32,43 @@ function pattern_suggestion(app, props) {
                     e.preventDefault();
                     e.stopPropagation();
 
+                    const items = this.get_items();
+                    const active = this.get_active();
                     if (e.code === "ArrowDown") {
                         // Select next or first.
-                        if (!this.active) {
-                            this.active = this.items[0];
+                        if (!active) {
+                            this.set_active(items[0]);
                         } else {
-                            let next = this.active
-                                ? this.items.indexOf(this.active) + 1
-                                : 0;
-                            if (next >= this.items.length) {
+                            let next = active ? items.indexOf(active) + 1 : 0;
+                            if (next >= items.length) {
                                 // circular selection mode, start with first.
                                 next = 0;
                                 // TODO: should we load the next batch?
                             }
-                            this.active = this.items[next];
+                            this.set_active(items[next]);
                         }
                     } else if (e.code === "ArrowUp") {
                         // Select previous or last.
-                        if (!this.active) {
-                            this.active = this.items[0];
+                        if (!active) {
+                            this.set_active(items[0]);
                         } else {
-                            let prev = this.active
-                                ? this.items.indexOf(this.active) - 1
-                                : 0;
+                            let prev = active ? items.indexOf(active) - 1 : 0;
                             if (prev < 0) {
                                 // back to first
-                                prev = this.items.length - 1;
+                                prev = items.length - 1;
                                 // TODO: should we load the previous batch?
                             }
-                            this.active = this.items[prev];
+                            this.set_active(items[prev]);
                         }
                     } else if (e.code === "Enter") {
                         // Use selected to insert in text area.
-                        const value = this.active?.dataset?.tiptapValue;
+                        const value = active?.dataset?.tiptapValue;
                         if (!value) {
                             // nothing selected.
                             return;
                         }
 
-                        const el = this.active.querySelector("a");
+                        const el = active.querySelector("a");
                         this.command(el, value);
                     }
                 }
@@ -110,26 +103,32 @@ function pattern_suggestion(app, props) {
             });
         },
 
-        get active() {
+        get_active() {
+            // NOTE: jQuery extend via base pattern prevents usage of getter/setter.
+            // TODO: Make getter/setter once Base is class based.
+
             // Get the currently selected item.
             return this.el.querySelector(".tiptap-item.active");
         },
 
-        set active(el) {
+        set_active(el) {
             if (!el) {
                 // No item available, e.g. no search results and thus not this.items.
                 return;
             }
             // Set an item to be selected.
-            this.active?.classList.remove("active");
+            this.get_active()?.classList.remove("active");
             el.classList.add("active");
         },
 
-        get items() {
+        get_items() {
+            // NOTE: jQuery extend via base pattern prevents usage of getter/setter.
+            // TODO: Make getter/setter once Base is class based.
+
             // Get all items.
             return [...this.el.querySelectorAll(".tiptap-item")];
         },
-    };
+    });
 }
 
 export const factory = ({ app, name, char, plural }) => {

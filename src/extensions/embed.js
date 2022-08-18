@@ -3,119 +3,121 @@ import { focus_handler } from "../focus-handler";
 import { log } from "../tiptap";
 import { Node, mergeAttributes } from "@tiptap/core";
 import { Plugin } from "prosemirror-state";
+import Base from "@patternslib/patternslib/src/core/base";
+import Registry from "@patternslib/patternslib/src/core/registry";
 import dom from "@patternslib/patternslib/src/core/dom";
 import events from "@patternslib/patternslib/src/core/events";
 
-let panel_observer;
-
 function embed_panel({ app }) {
-    const embed_panel = document.querySelector(app.options.embedPanel);
-    if (!embed_panel) {
-        log.warn("No embed panel found.");
-        return;
-    }
-    focus_handler(embed_panel);
+    return Base.extend({
+        name: "tiptap-embed-panel",
+        trigger: app.options.embedPanel,
+        autoregister: false,
+        init() {
+            const embed_panel = this.el;
 
-    const reinit = () => {
-        const embed_src = embed_panel.querySelector("[name=tiptap-src]");
-        const embed_title = embed_panel.querySelector("[name=tiptap-title]");
-        const embed_caption = embed_panel.querySelector("[name=tiptap-caption]");
-        const embed_confirm = embed_panel.querySelector(".tiptap-confirm, [name=tiptap-confirm]"); // prettier-ignore
-
-        const update_callback = (set_focus) => {
-            const cmd = app.editor.chain();
-            cmd.insertContent({
-                type: "figure",
-                content: [
-                    {
-                        type: "embed",
-                        attrs: {
-                            src: embed_src.value,
-                            ...(embed_title?.value && { title: embed_title.value }),
-                        },
-                    },
-                    // Conditionally add a figcaption
-                    ...(embed_caption?.value
-                        ? [
-                              {
-                                  type: "figcaption",
-                                  content: [
-                                      {
-                                          type: "text",
-                                          text: embed_caption.value,
-                                      },
-                                  ],
-                              },
-                          ]
-                        : []),
-                ],
-            });
-            if (set_focus === true) {
-                // set focus after setting embed, otherwise embed is
-                // selected and right away deleted when starting typing.
-                cmd.focus();
+            const embed_src = embed_panel.querySelector("[name=tiptap-src]");
+            if (!embed_src) {
+                log.warn("No src input in embed panel found.");
+                return;
             }
-            cmd.run();
-        };
 
-        // FORM UPDATE
-        if (embed_confirm) {
-            // update on click on confirm
-            events.add_event_listener(
-                embed_confirm,
-                "click",
-                "tiptap_embed_confirm",
-                () => update_callback(true)
-            );
-        } else {
-            // update on input/change
-            events.add_event_listener(
-                embed_src,
-                "change",
-                "tiptap_embed_src",
-                update_callback
-            );
-            events.add_event_listener(
-                embed_title,
-                "change",
-                "tiptap_embed_title",
-                update_callback
-            );
-            events.add_event_listener(
-                embed_caption,
-                "change",
-                "tiptap_embed_caption",
-                update_callback
-            );
-        }
-    };
+            const embed_title = embed_panel.querySelector("[name=tiptap-title]");
+            const embed_caption = embed_panel.querySelector("[name=tiptap-caption]");
+            const embed_confirm = embed_panel.querySelector(".tiptap-confirm, [name=tiptap-confirm]"); // prettier-ignore
 
-    reinit();
-    if (panel_observer) {
-        panel_observer.disconnect();
-    }
-    panel_observer = new MutationObserver(reinit);
-    panel_observer.observe(embed_panel, {
-        childList: true,
-        subtree: true,
-        attributes: false,
-        characterData: false,
+            focus_handler(embed_panel);
+
+            const update_callback = (set_focus) => {
+                const cmd = app.editor.chain();
+                cmd.insertContent({
+                    type: "figure",
+                    content: [
+                        {
+                            type: "embed",
+                            attrs: {
+                                src: embed_src.value,
+                                ...(embed_title?.value && { title: embed_title.value }),
+                            },
+                        },
+                        // Conditionally add a figcaption
+                        ...(embed_caption?.value
+                            ? [
+                                  {
+                                      type: "figcaption",
+                                      content: [
+                                          {
+                                              type: "text",
+                                              text: embed_caption.value,
+                                          },
+                                      ],
+                                  },
+                              ]
+                            : []),
+                    ],
+                });
+                if (set_focus === true) {
+                    // set focus after setting embed, otherwise embed is
+                    // selected and right away deleted when starting typing.
+                    cmd.focus();
+                }
+                cmd.run();
+            };
+
+            // FORM UPDATE
+            if (embed_confirm) {
+                // update on click on confirm
+                events.add_event_listener(
+                    embed_confirm,
+                    "click",
+                    "tiptap_embed_confirm",
+                    () => update_callback(true)
+                );
+            } else {
+                // update on input/change
+                events.add_event_listener(
+                    embed_src,
+                    "change",
+                    "tiptap_embed_src",
+                    update_callback
+                );
+                events.add_event_listener(
+                    embed_title,
+                    "change",
+                    "tiptap_embed_title",
+                    update_callback
+                );
+                events.add_event_listener(
+                    embed_caption,
+                    "change",
+                    "tiptap_embed_caption",
+                    update_callback
+                );
+            }
+        },
     });
 }
 
 export function init({ app, button }) {
-    // Initialize modal after it has injected.
     button.addEventListener("click", () => {
+        if (dom.get_data(app.toolbar_el, "tiptap-instance", null) !== app) {
+            // If this pat-tiptap instance is not the one which was last
+            // focused, just return and do nothing.
+            // This might be due to one toolbar shared by multiple editors.
+            return;
+        }
+
+        // Register the embed-panel pattern.
+        // Multiple registrations from different tiptap instances are possible
+        // since we're registering it only after the toolbar's embed button has
+        // been clicked and clicking in another tiptap instance would override
+        // previous registrations.
+        const embed_panel_pattern = embed_panel({ app: app });
+        Registry.patterns[embed_panel_pattern.prototype.name] = embed_panel_pattern;
         document.addEventListener(
-            "pat-modal-ready",
-            () => {
-                if (dom.get_data(app.toolbar_el, "tiptap-instance", null) !== app) {
-                    // If this pat-tiptap instance is not the one which was last
-                    // focused, just return and do nothing.
-                    // This might be due to one toolbar shared by multiple editors.
-                    return;
-                }
-                embed_panel({ app: app });
+            "patterns-injected-delayed",
+            (e) => {
+                Registry.scan(e.detail.injected, [embed_panel_pattern.prototype.name]);
             },
             { once: true }
         );

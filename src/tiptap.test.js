@@ -2,6 +2,7 @@ import Pattern from "./tiptap";
 import events from "@patternslib/patternslib/src/core/events";
 import utils from "@patternslib/patternslib/src/core/utils";
 import tiptap_utils from "./utils";
+import PatternModal from "@patternslib/patternslib/src/pat/modal/modal";
 
 const mockFetch =
     (text = "") =>
@@ -9,13 +10,6 @@ const mockFetch =
         Promise.resolve({
             text: () => Promise.resolve(text),
         });
-
-const open_panel = (button_selector) => {
-    document.querySelector(button_selector).click();
-    document.dispatchEvent(
-        new Event("pat-modal-ready", { bubbles: true, cancelable: true })
-    );
-};
 
 const SUGGESTION_RESPONSE = `
 <!DOCTYPE html>
@@ -74,7 +68,7 @@ describe("pat-tiptap", () => {
     it("1.3 - Allow multiple instances of pat-tiptap", async () => {
         document.body.innerHTML = `
           <div id="tiptap-external-toolbar-1">
-            <button class="button-link">Link</button>
+            <a class="button-link pat-modal" href="#modal-link">Link</a>
           </div>
           <textarea
               class="pat-tiptap"
@@ -85,7 +79,7 @@ describe("pat-tiptap", () => {
           </textarea>
 
           <div id="tiptap-external-toolbar-2">
-            <button class="button-link">Link</button>
+            <a class="button-link pat-modal" href="#modal-link">Link</a>
           </div>
           <textarea
               class="pat-tiptap"
@@ -95,11 +89,16 @@ describe("pat-tiptap", () => {
               ">
           </textarea>
 
+        <template id="modal-link">
           <form id="link-panel">
             <input name="tiptap-href"/>
             <input name="tiptap-text"/>
-            <button type="submit" name="tiptap-confirm">submit</button>
+            <button
+                type="submit"
+                name="tiptap-confirm"
+                class="close-panel">submit</button>
           </form>
+        </template>
         `;
 
         new Pattern(document.querySelectorAll(".pat-tiptap")[0]);
@@ -107,9 +106,14 @@ describe("pat-tiptap", () => {
         await utils.timeout(1);
 
         const containers = document.querySelectorAll(".tiptap-container");
+        const button_1 = document.querySelector("#tiptap-external-toolbar-1 .button-link"); // prettier-ignore
+        const button_2 = document.querySelector("#tiptap-external-toolbar-2 .button-link"); // prettier-ignore
+
+        new PatternModal(button_1);
+        new PatternModal(button_2);
 
         containers[0].querySelector("[contenteditable]").focus(); // Set focus to bypass toolbar check
-        open_panel("#tiptap-external-toolbar-1 .button-link");
+        button_1.click();
         await utils.timeout(1);
 
         document.querySelector("#link-panel [name=tiptap-href]").value = "https://url1.com/"; // prettier-ignore
@@ -118,7 +122,7 @@ describe("pat-tiptap", () => {
         await utils.timeout(1);
 
         containers[1].querySelector("[contenteditable]").focus(); // Set focus to bypass toolbar check
-        open_panel("#tiptap-external-toolbar-2 .button-link");
+        button_2.click();
         await utils.timeout(1);
 
         document.querySelector("#link-panel [name=tiptap-href]").value = "https://url2.com/"; // prettier-ignore
@@ -296,7 +300,7 @@ describe("pat-tiptap", () => {
     it("5.1 - Adds a link", async () => {
         document.body.innerHTML = `
           <div id="tiptap-external-toolbar">
-            <button class="button-link">Link</button>
+            <a class="button-link pat-modal" href="#modal-link">Link</a>
           </div>
           <textarea
               class="pat-tiptap"
@@ -305,19 +309,27 @@ describe("pat-tiptap", () => {
                 link-panel: #link-panel
               ">
           </textarea>
-          <form id="link-panel">
-            <input name="tiptap-href"/>
-            <input name="tiptap-text"/>
-            <button type="submit" name="tiptap-confirm">submit</button>
-          </form>
+          <template id="modal-link">
+            <form id="link-panel">
+              <input name="tiptap-href"/>
+              <input name="tiptap-text"/>
+              <button
+                  type="submit"
+                  name="tiptap-confirm"
+                  class="close-panel">submit</button>
+            </form>
+          </template>
         `;
 
         new Pattern(document.querySelector(".pat-tiptap"));
         await utils.timeout(1);
 
+        const button_link = document.querySelector("#tiptap-external-toolbar .button-link"); // prettier-ignore
+        new PatternModal(button_link);
+
         document.querySelector(".tiptap-container [contenteditable]").focus(); // Set focus to bypass toolbar check
 
-        open_panel("#tiptap-external-toolbar .button-link");
+        button_link.click();
         await utils.timeout(1);
 
         document.querySelector("#link-panel [name=tiptap-href]").value = "https://patternslib.com/"; // prettier-ignore
@@ -334,7 +346,7 @@ describe("pat-tiptap", () => {
     it("5.2 - Adds a link with https://, if the protocoll was missing.", async () => {
         document.body.innerHTML = `
           <div id="tiptap-external-toolbar">
-            <button class="button-link">Link</button>
+            <a class="button-link pat-modal" href="#modal-link">Link</a>
           </div>
           <textarea
               class="pat-tiptap"
@@ -343,19 +355,27 @@ describe("pat-tiptap", () => {
                 link-panel: #link-panel
               ">
           </textarea>
-          <form id="link-panel">
-            <input name="tiptap-href"/>
-            <input name="tiptap-text"/>
-            <button type="submit" name="tiptap-confirm">submit</button>
-          </form>
+          <template id="modal-link">
+            <form id="link-panel">
+              <input name="tiptap-href"/>
+              <input name="tiptap-text"/>
+              <button
+                  type="submit"
+                  name="tiptap-confirm"
+                  class="close-panel">submit</button>
+            </form>
+          </template>
         `;
 
         new Pattern(document.querySelector(".pat-tiptap"));
         await utils.timeout(1);
 
+        const button_link = document.querySelector("#tiptap-external-toolbar .button-link"); // prettier-ignore
+        new PatternModal(button_link);
+
         document.querySelector(".tiptap-container [contenteditable]").focus(); // Set focus to bypass toolbar check
 
-        open_panel("#tiptap-external-toolbar .button-link");
+        button_link.click();
         await utils.timeout(1);
 
         document.querySelector("#link-panel [name=tiptap-href]").value = "patternslib.com"; // prettier-ignore
@@ -372,7 +392,7 @@ describe("pat-tiptap", () => {
     it("6.1 - Adds an image within <figure> tags including a <figcaption>", async () => {
         document.body.innerHTML = `
           <div id="tiptap-external-toolbar">
-            <button class="button-image">Image</button>
+            <a class="button-image pat-modal" href="#modal-image">Image</a>
           </div>
           <textarea
               class="pat-tiptap"
@@ -381,21 +401,29 @@ describe("pat-tiptap", () => {
                 image-panel: #image-panel
               ">
           </textarea>
-          <form id="image-panel">
-            <input name="tiptap-src" type="text"/>
-            <input name="tiptap-alt"/>
-            <input name="tiptap-title"/>
-            <input name="tiptap-caption"/>
-            <button type="submit" name="tiptap-confirm">submit</button>
-          </form>
+          <template id="modal-image">
+            <form id="image-panel">
+              <input name="tiptap-src" type="text"/>
+              <input name="tiptap-alt"/>
+              <input name="tiptap-title"/>
+              <input name="tiptap-caption"/>
+              <button
+                  type="submit"
+                  name="tiptap-confirm"
+                  class="close-panel">submit</button>
+            </form>
+          </template>
         `;
 
         new Pattern(document.querySelector(".pat-tiptap"));
         await utils.timeout(1);
 
+        const button_image = document.querySelector("#tiptap-external-toolbar .button-image"); // prettier-ignore
+        new PatternModal(button_image);
+
         document.querySelector(".tiptap-container [contenteditable]").focus(); // Set focus to bypass toolbar check
 
-        open_panel("#tiptap-external-toolbar .button-image");
+        button_image.click();
         await utils.timeout(1);
 
         document.querySelector("#image-panel [name=tiptap-src]").value = "https://path/to/image.png"; // prettier-ignore
@@ -418,7 +446,7 @@ describe("pat-tiptap", () => {
     it("6.2 - Adds an image within <figure> tags but without a <figcaption>", async () => {
         document.body.innerHTML = `
           <div id="tiptap-external-toolbar">
-            <button class="button-image">Image</button>
+            <a class="button-image pat-modal" href="#modal-image">Image</a>
           </div>
           <textarea
               class="pat-tiptap"
@@ -427,21 +455,29 @@ describe("pat-tiptap", () => {
                 image-panel: #image-panel
               ">
           </textarea>
-          <form id="image-panel">
-            <input name="tiptap-src" type="text"/>
-            <input name="tiptap-alt"/>
-            <input name="tiptap-title"/>
-            <input name="tiptap-caption"/>
-            <button type="submit" name="tiptap-confirm">submit</button>
-          </form>
+          <template id="modal-image">
+            <form id="image-panel">
+              <input name="tiptap-src" type="text"/>
+              <input name="tiptap-alt"/>
+              <input name="tiptap-title"/>
+              <input name="tiptap-caption"/>
+              <button
+                  type="submit"
+                  name="tiptap-confirm"
+                  class="close-panel">submit</button>
+            </form>
+          <template id="modal-image">
         `;
 
         new Pattern(document.querySelector(".pat-tiptap"));
         await utils.timeout(1);
 
+        const button_image = document.querySelector("#tiptap-external-toolbar .button-image"); // prettier-ignore
+        new PatternModal(button_image);
+
         document.querySelector(".tiptap-container [contenteditable]").focus(); // Set focus to bypass toolbar check
 
-        open_panel("#tiptap-external-toolbar .button-image");
+        button_image.click();
         await utils.timeout(1);
 
         document.querySelector("#image-panel [name=tiptap-src]").value = "https://path/to/image.png"; // prettier-ignore
@@ -460,7 +496,7 @@ describe("pat-tiptap", () => {
     it("6.3 - Adds an image with base64 encoded image data", async () => {
         document.body.innerHTML = `
           <div id="tiptap-external-toolbar">
-            <button class="button-image">Image</button>
+            <a class="button-image pat-modal" href="#modal-image">Image</a>
           </div>
           <textarea
               class="pat-tiptap"
@@ -469,18 +505,26 @@ describe("pat-tiptap", () => {
                 image-panel: #image-panel
               ">
           </textarea>
-          <form id="image-panel">
-            <input name="tiptap-src" type="text"/>
-            <button type="submit" name="tiptap-confirm">submit</button>
-          </form>
+          <template id="modal-image">
+            <form id="image-panel">
+              <input name="tiptap-src" type="text"/>
+              <button
+                  type="submit"
+                  name="tiptap-confirm"
+                  class="close-panel">submit</button>
+            </form>
+          </template>
         `;
 
         new Pattern(document.querySelector(".pat-tiptap"));
         await utils.timeout(1);
 
+        const button_image = document.querySelector("#tiptap-external-toolbar .button-image"); // prettier-ignore
+        new PatternModal(button_image);
+
         document.querySelector(".tiptap-container [contenteditable]").focus(); // Set focus to bypass toolbar check
 
-        open_panel("#tiptap-external-toolbar .button-image");
+        button_image.click();
         await utils.timeout(1);
 
         document.querySelector("#image-panel [name=tiptap-src]").value =
@@ -534,7 +578,7 @@ describe("pat-tiptap", () => {
     it("7.1 - Add a YouTube embed", async () => {
         document.body.innerHTML = `
           <div id="tiptap-external-toolbar">
-            <button class="button-embed">Embed</button>
+            <a class="button-embed pat-modal" href="#modal-embed">Embed</a>
           </div>
           <textarea
               class="pat-tiptap"
@@ -543,20 +587,28 @@ describe("pat-tiptap", () => {
                 embed-panel: #embed-panel
               ">
           </textarea>
-          <form id="embed-panel">
-            <input name="tiptap-src" type="text"/>
-            <input name="tiptap-title"/>
-            <input name="tiptap-caption"/>
-            <button type="submit" name="tiptap-confirm">submit</button>
-          </form>
+          <template id="modal-embed">
+            <form id="embed-panel">
+              <input name="tiptap-src" type="text"/>
+              <input name="tiptap-title"/>
+              <input name="tiptap-caption"/>
+              <button
+                  type="submit"
+                  name="tiptap-confirm"
+                  class="close-panel">submit</button>
+            </form>
+          </template>
         `;
 
         new Pattern(document.querySelector(".pat-tiptap"));
         await utils.timeout(1);
 
+        const button_embed = document.querySelector("#tiptap-external-toolbar .button-embed"); // prettier-ignore
+        new PatternModal(button_embed);
+
         document.querySelector(".tiptap-container [contenteditable]").focus(); // Set focus to bypass toolbar check
 
-        open_panel("#tiptap-external-toolbar .button-embed");
+        button_embed.click();
         await utils.timeout(1);
 
         document.querySelector("#embed-panel [name=tiptap-src]").value = "https://www.youtube.com/embed/j8It1z7r1g4"; // prettier-ignore
@@ -578,7 +630,7 @@ describe("pat-tiptap", () => {
     it("7.2 - Add a YouTube embed and transform to embed URL", async () => {
         document.body.innerHTML = `
           <div id="tiptap-external-toolbar">
-            <button class="button-embed">Embed</button>
+            <a class="button-embed pat-modal" href="#modal-embed">Embed</a>
           </div>
           <textarea
               class="pat-tiptap"
@@ -587,18 +639,26 @@ describe("pat-tiptap", () => {
                 embed-panel: #embed-panel
               ">
           </textarea>
-          <form id="embed-panel">
-            <input name="tiptap-src" type="text"/>
-            <button type="submit" name="tiptap-confirm">submit</button>
-          </form>
+          <template id="modal-embed">
+            <form id="embed-panel">
+              <input name="tiptap-src" type="text"/>
+              <button
+                  type="submit"
+                  name="tiptap-confirm"
+                  class="close-panel">submit</button>
+            </form>
+          </template>
         `;
 
         new Pattern(document.querySelector(".pat-tiptap"));
         await utils.timeout(1);
 
+        const button_embed = document.querySelector("#tiptap-external-toolbar .button-embed"); // prettier-ignore
+        new PatternModal(button_embed);
+
         document.querySelector(".tiptap-container [contenteditable]").focus(); // Set focus to bypass toolbar check
 
-        open_panel("#tiptap-external-toolbar .button-embed");
+        button_embed.click();
         await utils.timeout(1);
 
         document.querySelector("#embed-panel [name=tiptap-src]").value = "https://www.youtube.com/watch?v=j8It1z7r1g4"; // prettier-ignore
@@ -615,7 +675,7 @@ describe("pat-tiptap", () => {
     it("7.3 - Add a Vimeo embed", async () => {
         document.body.innerHTML = `
           <div id="tiptap-external-toolbar">
-            <button class="button-embed">Embed</button>
+            <a class="button-embed pat-modal" href="#modal-embed">Embed</a>
           </div>
           <textarea
               class="pat-tiptap"
@@ -624,20 +684,28 @@ describe("pat-tiptap", () => {
                 embed-panel: #embed-panel
               ">
           </textarea>
-          <form id="embed-panel">
-            <input name="tiptap-src" type="text"/>
-            <input name="tiptap-title"/>
-            <input name="tiptap-caption"/>
-            <button type="submit" name="tiptap-confirm">submit</button>
-          </form>
+          <template id="modal-embed">
+            <form id="embed-panel">
+              <input name="tiptap-src" type="text"/>
+              <input name="tiptap-title"/>
+              <input name="tiptap-caption"/>
+              <button
+                  type="submit"
+                  name="tiptap-confirm"
+                  class="close-panel">submit</button>
+            </form>
+          </template>
         `;
 
         new Pattern(document.querySelector(".pat-tiptap"));
         await utils.timeout(1);
 
+        const button_embed = document.querySelector("#tiptap-external-toolbar .button-embed"); // prettier-ignore
+        new PatternModal(button_embed);
+
         document.querySelector(".tiptap-container [contenteditable]").focus(); // Set focus to bypass toolbar check
 
-        open_panel("#tiptap-external-toolbar .button-embed");
+        button_embed.click();
         await utils.timeout(1);
 
         document.querySelector("#embed-panel [name=tiptap-src]").value = "https://player.vimeo.com/video/9206226"; // prettier-ignore
@@ -659,7 +727,7 @@ describe("pat-tiptap", () => {
     it("7.4 - Add a Vimeo embed and transform to embed URL", async () => {
         document.body.innerHTML = `
           <div id="tiptap-external-toolbar">
-            <button class="button-embed">Embed</button>
+            <a class="button-embed pat-modal" href="#modal-embed">Embed</a>
           </div>
           <textarea
               class="pat-tiptap"
@@ -668,18 +736,26 @@ describe("pat-tiptap", () => {
                 embed-panel: #embed-panel
               ">
           </textarea>
-          <form id="embed-panel">
-            <input name="tiptap-src" type="text"/>
-            <button type="submit" name="tiptap-confirm">submit</button>
-          </form>
+          <template id="modal-embed">
+            <form id="embed-panel">
+              <input name="tiptap-src" type="text"/>
+              <button
+                  type="submit"
+                  name="tiptap-confirm"
+                  class="close-panel">submit</button>
+            </form>
+          </template>
         `;
 
         new Pattern(document.querySelector(".pat-tiptap"));
         await utils.timeout(1);
 
+        const button_embed = document.querySelector("#tiptap-external-toolbar .button-embed"); // prettier-ignore
+        new PatternModal(button_embed);
+
         document.querySelector(".tiptap-container [contenteditable]").focus(); // Set focus to bypass toolbar check
 
-        open_panel("#tiptap-external-toolbar .button-embed");
+        button_embed.click();
         await utils.timeout(1);
 
         document.querySelector("#embed-panel [name=tiptap-src]").value = "https://vimeo.com/9206226"; // prettier-ignore

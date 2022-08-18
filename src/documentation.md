@@ -145,7 +145,7 @@ This way, you can use ``pat-inject``, ``pat-tabs``, ``pat-stacks`` or the like w
 This is the related ``pat-tiptap`` config:
 
     data-pat-tiptap="
-        link-panel: #pat-modal .link-panel;
+        link-panel: .link-panel;
     "
 
 
@@ -246,7 +246,7 @@ For an upload widget you can use a combination of ``pat-upload`` and ``pat-injec
 This is the related ``pat-tiptap`` config:
 
     data-pat-tiptap="
-        image-panel: #pat-modal .image-panel;
+        image-panel: .image-panel;
     "
 
 
@@ -298,7 +298,7 @@ This way, you can use ``pat-inject``, ``pat-tabs`` or ``pat-stacks`` which chang
 This is the related ``pat-tiptap`` config:
 
     data-pat-tiptap="
-        embed-panel: #pat-modal .embed-panel;
+        embed-panel: .embed-panel;
     "
 
 
@@ -339,7 +339,7 @@ This way, you can use ``pat-inject``, ``pat-tabs``, ``pat-stacks`` or the like w
 This is the related ``pat-tiptap`` config:
 
     data-pat-tiptap="
-        source-panel: #pat-modal .source-panel;
+        source-panel: .source-panel;
     "
 
 

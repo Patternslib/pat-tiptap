@@ -23,7 +23,7 @@ export async function context_menu({
         // Close context menu, when new node is selected.
         context_menu_close({
             instance: instance,
-            pattern_name: pattern.name,
+            pattern_name: pattern.prototype.name,
         });
         instance = null;
     }
@@ -36,7 +36,7 @@ export async function context_menu({
         //    to allow multiple tiptap editors on the same page because it
         //    references the current editor instance.
         if (pattern) {
-            Registry.patterns[pattern.name] = pattern;
+            Registry.patterns[pattern.prototype.name] = pattern;
         }
 
         // 2) Initialize the tooltip
@@ -75,7 +75,10 @@ export async function context_menu({
                     // Do not close the context menu if we click in it.
                     return;
                 }
-                context_menu_close({ instance: instance, pattern_name: pattern.name });
+                context_menu_close({
+                    instance: instance,
+                    pattern_name: pattern.prototype.name,
+                });
             }
         );
         events.add_event_listener(
@@ -87,7 +90,10 @@ export async function context_menu({
                     // Not a closing key.
                     return;
                 }
-                context_menu_close({ instance: instance, pattern_name: pattern.name });
+                context_menu_close({
+                    instance: instance,
+                    pattern_name: pattern.prototype.name,
+                });
             }
         );
 
