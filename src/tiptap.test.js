@@ -141,7 +141,79 @@ describe("pat-tiptap", () => {
         expect(anchor2.textContent).toBe("Link text 2");
     });
 
-    it("1.4 - allows non-paragraph line breaks", async () => {
+    it("1.4 - Allow multiple instances of pat-tiptap, sharing the same toolbar", async () => {
+        document.body.innerHTML = `
+          <div id="tiptap-external-toolbar">
+            <a class="button-link pat-modal" href="#modal-link">Link</a>
+          </div>
+
+          <textarea
+              class="pat-tiptap"
+              data-pat-tiptap="
+                toolbar-external: #tiptap-external-toolbar;
+                link-panel: #link-panel
+              ">
+          </textarea>
+
+          <textarea
+              class="pat-tiptap"
+              data-pat-tiptap="
+                toolbar-external: #tiptap-external-toolbar;
+                link-panel: #link-panel
+              ">
+          </textarea>
+
+          <template id="modal-link">
+            <form id="link-panel">
+              <input name="tiptap-href"/>
+              <input name="tiptap-text"/>
+              <button
+                  type="submit"
+                  name="tiptap-confirm"
+                  class="close-panel">submit</button>
+            </form>
+          </template>
+        `;
+
+        new Pattern(document.querySelectorAll(".pat-tiptap")[0]);
+        new Pattern(document.querySelectorAll(".pat-tiptap")[1]);
+        await utils.timeout(1);
+
+        const containers = document.querySelectorAll(".tiptap-container");
+        const button_link = document.querySelector("#tiptap-external-toolbar .button-link"); // prettier-ignore
+
+        new PatternModal(button_link);
+
+        containers[0].querySelector("[contenteditable]").focus(); // Set focus to bypass toolbar check
+        button_link.click();
+        await utils.timeout(1);
+
+        document.querySelector("#link-panel [name=tiptap-href]").value = "https://url1.com/"; // prettier-ignore
+        document.querySelector("#link-panel [name=tiptap-text]").value = "Link text 1"; // prettier-ignore
+        document.querySelector("#link-panel [name=tiptap-confirm]").dispatchEvent(new Event("click")); // prettier-ignore
+        await utils.timeout(1);
+
+        containers[1].querySelector("[contenteditable]").focus(); // Set focus to bypass toolbar check
+        button_link.click();
+        await utils.timeout(1);
+
+        document.querySelector("#link-panel [name=tiptap-href]").value = "https://url2.com/"; // prettier-ignore
+        document.querySelector("#link-panel [name=tiptap-text]").value = "Link text 2"; // prettier-ignore
+        document.querySelector("#link-panel [name=tiptap-confirm]").dispatchEvent(new Event("click")); // prettier-ignore
+        await utils.timeout(1);
+
+        const anchor1 = containers[0].querySelector("a");
+        expect(anchor1).toBeTruthy();
+        expect(anchor1.href).toBe("https://url1.com/");
+        expect(anchor1.textContent).toBe("Link text 1");
+
+        const anchor2 = containers[1].querySelector("a");
+        expect(anchor2).toBeTruthy();
+        expect(anchor2.href).toBe("https://url2.com/");
+        expect(anchor2.textContent).toBe("Link text 2");
+    });
+
+    it("1.5 - allows non-paragraph line breaks", async () => {
         document.body.innerHTML = `
           <textarea class="pat-tiptap">
             <p>hello<br><br>there</p>
@@ -158,7 +230,7 @@ describe("pat-tiptap", () => {
         expect(instance.editor.getHTML()).toBe("<p>hello<br><br>there</p>");
     });
 
-    it("1.5 - Emits input events on update.", async () => {
+    it("1.6 - Emits input events on update.", async () => {
         document.body.innerHTML = `
           <textarea class="pat-tiptap">
           </textarea>
