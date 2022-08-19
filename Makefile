@@ -27,4 +27,10 @@ stamp-yarn install:
 	touch stamp-yarn
 
 
+# Unlink any linked dependencies before building a bundle.
+bundle-pre:
+	-$(YARN) unlink @patternslib/dev
+	-$(YARN) unlink @patternslib/patternslib
+	$(YARN) install --force
+
 #
