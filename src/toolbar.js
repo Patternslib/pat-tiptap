@@ -287,7 +287,7 @@ export async function init_post({ app }) {
         (await import("./extensions/image-figure")).init({ app: app, button: tb.image }); // prettier-ignore
     }
 
-    if (tb.embed && app.options.embedPanel) {
+    if (tb.embed && app.options.embed?.panel) {
         (await import("./extensions/embed")).init({ app: app, button: tb.embed });
     }
 

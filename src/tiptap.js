@@ -20,6 +20,7 @@ parser.addArgument("link-panel", null);
 parser.addArgument("source-panel", null);
 
 parser.addArgument("image-menu", null);
+parser.addArgument("embed-menu", null);
 parser.addArgument("link-menu", null);
 parser.addArgument("mentions-menu", null);
 parser.addArgument("tags-menu", null);

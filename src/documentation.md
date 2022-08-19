@@ -338,6 +338,42 @@ This is the related ``pat-tiptap`` config:
     "
 
 
+#### Adding a embed context menu
+
+When clicking on an embed in the editor in edit mode you can provide a popup which allows you to edit or remove the embed.
+
+You have to provide a context menu container in the same document or accessible via an URL which content's are used for the ``pat-tooltip`` popup:
+
+    <div id="context-menu-embed" hidden>
+      <ul class="tiptap-embed-context-menu">
+        <li>
+          <button
+            type="button"
+            class="close-panel tiptap-edit-embed">Edit embed</button>
+        </li>
+        <li>
+          <button
+            type="button"
+            class="close-panel tiptap-remove-embed">Remove embed</button>
+        </li>
+      </ul>
+    </div>
+
+None of these elements are mandatory but if you want to provide the associated functionality you need to use these class names:
+
+- ``tiptap-edit-embed``: The element which opens the edit overlay when clicking on it.
+- ``tiptap-remove-embed``: The element which will remove the embed including the figure and figcaption tag from the content.
+
+
+This is the pattern configuration:
+
+    data-pat-tiptap="
+        embed-menu: #context-menu-embed;
+    "
+
+``embed-menu``: URL or CSS selector pointing to the context menu contents.
+
+
 #### Adding a source view overlay
 
 The following button uses ``pat-modal`` to open a overlay, referenced by the CSS selector ``#modal-source`` in the same document.

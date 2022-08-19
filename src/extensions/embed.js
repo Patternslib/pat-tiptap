@@ -1,4 +1,5 @@
 // From: tiptap/demos/src/Experiments/GenericFigure/Vue/figure.ts
+import { context_menu, context_menu_close } from "../context_menu";
 import { focus_handler } from "../focus-handler";
 import { log } from "../tiptap";
 import { Node, mergeAttributes } from "@tiptap/core";
@@ -7,11 +8,40 @@ import Base from "@patternslib/patternslib/src/core/base";
 import Registry from "@patternslib/patternslib/src/core/registry";
 import dom from "@patternslib/patternslib/src/core/dom";
 import events from "@patternslib/patternslib/src/core/events";
+import utils from "@patternslib/patternslib/src/core/utils";
+
+let context_menu_instance;
+
+function pattern_embed_context_menu({ app: app }) {
+    return Base.extend({
+        name: "tiptap-embed-context-menu",
+        trigger: ".tiptap-embed-context-menu",
+        autoregister: false,
+        init() {
+            focus_handler(this.el);
+
+            const btn_edit = this.el.querySelector(".tiptap-edit-embed");
+            const btn_remove = this.el.querySelector(".tiptap-remove-embed");
+
+            btn_edit &&
+                btn_edit.addEventListener("click", () => {
+                    app.toolbar.embed.click();
+                });
+
+            btn_remove &&
+                btn_remove.addEventListener("click", () => {
+                    app.editor.commands.selectParentNode(); // Also select the surrounding <figure>
+                    app.editor.commands.deleteSelection();
+                    app.editor.commands.focus();
+                });
+        },
+    });
+}
 
 function embed_panel({ app }) {
     return Base.extend({
         name: "tiptap-embed-panel",
-        trigger: app.options.embedPanel,
+        trigger: app.options.embed?.panel,
         autoregister: false,
         init() {
             const embed_panel = this.el;
@@ -28,9 +58,33 @@ function embed_panel({ app }) {
 
             focus_handler(embed_panel);
 
+            // Get embed node
+            const node_embed = app.editor.state.doc.nodeAt(
+                app.editor.state.selection.from
+            );
+
+            // Get figcaption node, if it exists
+            app.editor.commands.selectParentNode(); // Also select the surrounding <figure>
+            const node_figure = app.editor.state.doc.nodeAt(
+                app.editor.state.selection.from
+            );
+            const node_figcaption = node_figure?.content.content.filter(
+                (it) => it.type.name === "figcaption"
+            )?.[0];
+
+            // Populate form fields
+            if (node_embed) {
+                embed_src.value = node_embed.attrs?.src || "";
+                if (embed_title) {
+                    embed_title.value = node_embed.attrs?.title || "";
+                }
+            }
+            if (node_figcaption && embed_caption) {
+                embed_caption.value = node_figcaption.textContent || "";
+            }
+
             const update_callback = (set_focus) => {
-                const cmd = app.editor.chain();
-                cmd.insertContent({
+                app.editor.commands.insertContent({
                     type: "figure",
                     content: [
                         {
@@ -57,11 +111,12 @@ function embed_panel({ app }) {
                     ],
                 });
                 if (set_focus === true) {
-                    // set focus after setting embed, otherwise embed is
+                    // set cursor after the embed, otherwise embed is
                     // selected and right away deleted when starting typing.
-                    cmd.focus();
+                    app.editor.commands.selectParentNode();
+                    app.editor.commands.focus(app.editor.state.selection.to);
+                    //app.editor.commands.blur();
                 }
-                cmd.run();
             };
 
             // FORM UPDATE
@@ -122,6 +177,43 @@ export function init({ app, button }) {
             { once: true }
         );
     });
+
+    app.editor.on("selectionUpdate", async () => {
+        app.editor.isActive("embed")
+            ? button.classList.add("active")
+            : button.classList.remove("active");
+        app.editor.can().setEmbed()
+            ? button.classList.remove("disabled")
+            : button.classList.add("disabled");
+
+        if (app.options.embed.menu) {
+            // Open the context menu with a small delay.
+            utils.debounce(async () => {
+                console.log(app.editor.isActive("embed"));
+                if (!app.editor.isActive("embed")) {
+                    // Embed not active anymore. Return.
+                    if (context_menu_instance) {
+                        // If open, close.
+                        context_menu_close({
+                            instance: context_menu_instance,
+                            pattern_name: "tiptap-embed-context-menu",
+                        });
+                        context_menu_instance = null;
+                    }
+                    return;
+                }
+
+                // Initialize the context menu
+                context_menu_instance = await context_menu({
+                    url: app.options.embed.menu,
+                    editor: app.editor,
+                    instance: context_menu_instance,
+                    pattern: pattern_embed_context_menu({ app: app }),
+                    extra_class: "tiptap-embed-menu",
+                });
+            }, 50)();
+        }
+    });
 }
 
 export const factory = () => {
@@ -142,7 +234,7 @@ export const factory = () => {
         allowGapCursor: false,
         draggable: false,
         isolating: true,
-        selectable: false,
+        selectable: true,
 
         addAttributes() {
             return {

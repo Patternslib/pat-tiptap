@@ -6,7 +6,7 @@
     <script src="/bundle.min.js"></script>
     <style type="text/css">
       .tiptap-focus {
-        border: 2px solid red;
+        outline: 2px solid red;
       }
       .tiptap-editor__content {
         border: 1px solid black;
@@ -26,6 +26,10 @@
       th {
         background-color: grey;
         font-weight: bold;
+      }
+
+      iframe {
+        border: 1em solid blue;
       }
 
       /*
@@ -143,6 +147,7 @@
             source-panel: .source-panel;
             embed-panel: .embed-panel;
             image-menu: #context-menu-image;
+            embed-menu: #context-menu-embed;
             link-menu: #context-menu-link;
             mentions-menu: ./index-mentions-results.html?u=;
             tags-menu: ./index-tags-results.html?okay=1234&q=;
@@ -275,6 +280,21 @@
           <button
             type="button"
             class="close-panel tiptap-remove-image">Remove image</button>
+        </li>
+      </ul>
+    </template>
+
+    <template id="context-menu-embed">
+      <ul class="tiptap-embed-context-menu">
+        <li>
+          <button
+            type="button"
+            class="close-panel tiptap-edit-embed">Edit embed</button>
+        </li>
+        <li>
+          <button
+            type="button"
+            class="close-panel tiptap-remove-embed">Remove embed</button>
         </li>
       </ul>
     </template>
