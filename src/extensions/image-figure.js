@@ -1,6 +1,5 @@
 import { context_menu, context_menu_close } from "../context_menu";
 import { focus_handler } from "../focus-handler";
-import { log } from "../tiptap";
 import { Node, mergeAttributes } from "@tiptap/core";
 import { Plugin } from "prosemirror-state";
 import Base from "@patternslib/patternslib/src/core/base";
@@ -38,50 +37,62 @@ function pattern_image_context_menu({ app: app }) {
 }
 
 function image_panel({ app }) {
-    return Base.extend({
+    // Not Base-pattern based due to two reasons:
+    // - We need to reinitialize the pattern on already initialized nodes on possible tab-changes within the modal.
+    // - We need to keep the _node_image and _node_figure references among re-initializations.
+    return {
         name: "tiptap-image-panel",
         trigger: app.options.image?.panel,
         autoregister: false,
-        init() {
-            const image_panel = this.el;
 
-            const image_src = image_panel.querySelector("[name=tiptap-src]");
-            if (!image_src) {
-                log.warn("No src input in image panel found.");
-                return;
+        init($el) {
+            this.el = $el;
+            if ($el.jquery) {
+                this.el = $el[0];
             }
 
+            const image_panel = this.el;
+
+            const image_srcs = image_panel.querySelectorAll("[name=tiptap-src]");
             const image_alt = image_panel.querySelector("[name=tiptap-alt]");
             const image_title = image_panel.querySelector("[name=tiptap-title]");
             const image_caption = image_panel.querySelector("[name=tiptap-caption]");
             const image_confirm = image_panel.querySelector(".tiptap-confirm, [name=tiptap-confirm]"); // prettier-ignore
             focus_handler(image_panel);
 
-            // Get image node
-            const node_image = app.editor.state.doc.nodeAt(
-                app.editor.state.selection.from
-            );
-
-            // Get figcaption node, if it exists
-            app.editor.commands.selectParentNode(); // Also select the surrounding <figure>
-            const node_figure = app.editor.state.doc.nodeAt(
-                app.editor.state.selection.from
-            );
-            const node_figcaption = node_figure?.content.content.filter(
-                (it) => it.type.name === "figcaption"
-            )?.[0];
+            const node_image = this.get_node_image();
 
             // Populate form fields
             if (node_image) {
-                image_src.value = node_image.attrs?.src || "";
-                if (image_title) {
+                const current_src = node_image.attrs?.src;
+                // Filter for all inputs with the same src value but not an empty src.
+                let image_srcs_ = current_src
+                    ? [...image_srcs].filter((it) => it.value === current_src)
+                    : [];
+                if (image_srcs_.length > 0) {
+                    for (const image_src of image_srcs_) {
+                        image_src.checked = true;
+                        image_src.dispatchEvent(events.change_event());
+                    }
+                } else {
+                    let image_srcs_ = [...image_srcs].filter(
+                        (it) => it.type === "text" || it.type === "url"
+                    );
+                    if (image_srcs_.length > 0 && !image_srcs_[0].value) {
+                        image_srcs_[0].value = current_src || "";
+                    }
+                }
+                if (image_title && !image_title.value) {
                     image_title.value = node_image.attrs?.title || "";
                 }
-                if (image_alt) {
+                if (image_alt && !image_alt.value) {
                     image_alt.value = node_image.attrs?.alt || "";
                 }
             }
-            if (node_figcaption && image_caption) {
+
+            // Get / set figcaption node, if it exists
+            const node_figcaption = this.get_figcaption_node();
+            if (node_figcaption && image_caption && !image_caption.value) {
                 image_caption.value = node_figcaption.textContent || "";
             }
 
@@ -145,12 +156,14 @@ function image_panel({ app }) {
                 );
             } else {
                 // update on input/change
-                events.add_event_listener(
-                    image_src,
-                    "change",
-                    "tiptap_image_src",
-                    update_callback
-                );
+                for (const image_src of image_srcs) {
+                    events.add_event_listener(
+                        image_src,
+                        "change",
+                        "tiptap_image_src",
+                        update_callback
+                    );
+                }
                 events.add_event_listener(
                     image_alt,
                     "change",
@@ -171,7 +184,39 @@ function image_panel({ app }) {
                 );
             }
         },
-    });
+
+        _node_image: null,
+        get_node_image() {
+            // Get image node
+            if (this._node_image || this._node_image === undefined) {
+                return this._node_image;
+            }
+            this._node_image = app.editor.state.doc.nodeAt(
+                app.editor.state.selection.from
+            );
+            return this._node_image;
+        },
+
+        _figcaption: null, // initialized as null. If not found this will be set to undefined.
+        get_figcaption_node() {
+            // Return cached figcaption and avoid calling this method multiple times.
+            // Calling it again would select again a parent node which would lead to incorrect results.
+            // TODO: make a getter / setter
+            if (this._figcaption || this._figcaption === undefined) {
+                return this._figcaption;
+            }
+
+            app.editor.commands.selectParentNode(); // Also select the surrounding <figure>
+            const node_figure = app.editor.state.doc.nodeAt(
+                app.editor.state.selection.from
+            );
+            const node_figcaption = node_figure?.content.content.filter(
+                (it) => it.type.name === "figcaption"
+            )?.[0];
+            this._figcaption = node_figcaption; // if not found, this is undefined.
+            return node_figcaption;
+        },
+    };
 }
 
 export function init({ app, button }) {
@@ -189,11 +234,18 @@ export function init({ app, button }) {
         // been clicked and clicking in another tiptap instance would override
         // previous registrations.
         const image_panel_pattern = image_panel({ app: app });
-        Registry.patterns[image_panel_pattern.prototype.name] = image_panel_pattern;
+        Registry.patterns[image_panel_pattern.name] = image_panel_pattern;
+
         document.addEventListener(
             "patterns-injected-delayed",
             (e) => {
-                Registry.scan(e.detail.injected, [image_panel_pattern.prototype.name]);
+                Registry.scan(e.detail.injected, [image_panel_pattern.name]);
+
+                // Register listener on modal for any DOM changes done by pat-ineject.
+                app.current_modal.addEventListener("patterns-injected-delayed", () => {
+                    // Fore re-init of the image-panel pattern.
+                    image_panel_pattern.init(app.current_modal);
+                });
             },
             { once: true }
         );

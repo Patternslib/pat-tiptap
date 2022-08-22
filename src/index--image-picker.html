@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>tiptap demo</title>
+    <script src="/bundle.min.js"></script>
+    <style type="text/css">
+      .tiptap-focus {
+        outline: 2px solid red;
+      }
+      .tiptap-editor__content {
+        border: 1px solid black;
+        padding: 1em;
+      }
+      .ProseMirror:focus {
+        outline: none;
+      }
+      .active {
+        background-color: green;
+      }
+
+      table, td, th {
+        border: 1px solid black;
+      }
+
+      th {
+        background-color: grey;
+        font-weight: bold;
+      }
+
+      iframe {
+        border: 1em solid blue;
+      }
+
+      /*
+      .ProseMirror p.placeholder::before,
+      .ProseMirror p.placeholder-top::before,
+      .ProseMirror p.placeholder-bottom::before {
+        content: attr(data-placeholder);
+        float: left;
+        color: #ced4da;
+        pointer-events: none;
+        height: 0;
+      }*/
+
+      /* Placeholder (at the top) */
+      .ProseMirror p.is-editor-empty:first-child::before {
+        content: attr(data-placeholder);
+        float: left;
+        color: #ced4da;
+        pointer-events: none;
+        height: 0;
+      }
+
+      /* Placeholder (on every new line) */
+      /*.ProseMirror p.is-empty::before {
+        content: attr(data-placeholder);
+        float: left;
+        color: #ced4da;
+        pointer-events: none;
+        height: 0;
+      }*/
+
+      .tooltip-container a,
+      .tooltip-container a:visited {
+        color: white;
+      }
+
+      :focus {
+        outline: 3px solid red;
+      }
+    </style>
+  </head>
+  <body>
+
+    <h1>TipTap examples</h1>
+
+    <section>
+      <h2>TipTap basic example</h2>
+
+      <div id="tiptap-external-toolbar">
+       <a
+            class="button-image pat-modal"
+            href="#modal-image">Image</a>
+      </div>
+
+      <textarea
+          class="pat-tiptap"
+          data-pat-tiptap="
+            toolbar-external: #tiptap-external-toolbar;
+            image-panel: .image-panel;
+            image-menu: #context-menu-image;
+          "
+          autocomplete="off"
+          >
+
+          <figure>
+            <img
+              src="https://i.imgur.com/gW77FOJ.jpeg"
+              alt="a cat riding a unicorn, version 3"
+              title="cat rriding unicorn 3"
+            />
+            <figcaption>Picture of a cat riding a unicorn.</figcaption>
+          </figure>
+
+      </textarea>
+
+    </section>
+
+
+    <template id="modal-image">
+      <div>
+        <h1>Image Picker</h1>
+
+        <nav>
+          <a class="pat-inject" href="#image-panel-url" data-pat-inject="target: #image-panel-content">Set URL</a>
+          <a class="pat-inject" href="#image-panel-picker" data-pat-inject="target: #image-panel-content">Pick image</a>
+        </nav>
+
+        <form class="image-panel">
+
+          <div id="image-panel-content">
+          </div>
+
+          <label>
+            Title:
+            <input type="text" name="tiptap-title"/>
+          </label>
+          <label>
+            Alternative text:
+            <input type="text" name="tiptap-alt"/>
+          </label>
+          <label>
+            Caption:
+            <textarea name="tiptap-caption"></textarea>
+          </label>
+        </form>
+
+        <button class="close-panel" type="button" name="tiptap-confirm">submit</button>
+      </div>
+    </template>
+
+    <template id="image-panel-url">
+      <label>Image URL:
+        <input type="url" name="tiptap-src" placeholder="https://"/>
+      </label>
+    </template>
+
+    <template id="image-panel-picker">
+      <label>Cat riding unicorn 1
+        <input type="radio" name="tiptap-src" value="https://i.imgur.com/vmS0KlW.jpeg"/>
+      </label>
+      <label>Cat riding unicorn 2
+        <input type="radio" name="tiptap-src" value="https://i.imgur.com/78nRHSC.jpeg"/>
+      </label>
+      <label>Cat riding unicorn 3
+        <input type="radio" name="tiptap-src" value="https://i.imgur.com/gW77FOJ.jpeg"/>
+      </label>
+    </template>
+
+    <template id="context-menu-image">
+      <ul class="tiptap-image-context-menu">
+        <li>
+          <button
+            type="button"
+            class="close-panel tiptap-edit-image">Edit image</button>
+        </li>
+        <li>
+          <button
+            type="button"
+            class="close-panel tiptap-remove-image">Remove image</button>
+        </li>
+      </ul>
+    </template>
+
+  </body>
+</html>

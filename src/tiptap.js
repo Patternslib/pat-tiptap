@@ -35,6 +35,8 @@ export default Base.extend({
     name: "tiptap",
     trigger: ".pat-tiptap",
 
+    current_modal: null, // reference to currently open modal dialog
+
     async init() {
         // Constructor
         this.toolbar_el = null;
@@ -168,5 +170,13 @@ export default Base.extend({
             autofocus: set_focus,
         });
         toolbar_ext.init_post({ app: this });
+
+        document.addEventListener("pat-modal-ready", (e) => {
+            // store the reference to the modal dialog
+            // We need the reference to registter some modal functionality or
+            // patterns on it, where we would not easily get access to the
+            // modal DOM structure otherwise.
+            this.current_modal = e.target;
+        });
     },
 });
