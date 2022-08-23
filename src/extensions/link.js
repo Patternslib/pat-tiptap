@@ -241,30 +241,32 @@ export function init({ app, button }) {
             return;
         }
 
-        // Open the context menu with a small delay.
-        utils.debounce(async () => {
-            if (!app.editor.isActive("link")) {
-                // Link not active anymore. Return.
-                if (context_menu_instance) {
-                    // If open, close.
-                    context_menu_close({
-                        instance: context_menu_instance,
-                        pattern_name: "tiptap-link-context-menu",
-                    });
-                    context_menu_instance = null;
+        if (app.options.link.menu) {
+            // Open the context menu with a small delay.
+            utils.debounce(async () => {
+                if (!app.editor.isActive("link")) {
+                    // Link not active anymore. Return.
+                    if (context_menu_instance) {
+                        // If open, close.
+                        context_menu_close({
+                            instance: context_menu_instance,
+                            pattern_name: "tiptap-link-context-menu",
+                        });
+                        context_menu_instance = null;
+                    }
+                    return;
                 }
-                return;
-            }
 
-            // Initialize the context menu
-            context_menu_instance = await context_menu({
-                url: app.options.link.menu,
-                editor: app.editor,
-                instance: context_menu_instance,
-                pattern: pattern_link_context_menu({ app: app }),
-                extra_class: "tiptap-link-menu",
-            });
-        }, 50)();
+                // Initialize the context menu
+                context_menu_instance = await context_menu({
+                    url: app.options.link.menu,
+                    editor: app.editor,
+                    instance: context_menu_instance,
+                    pattern: pattern_link_context_menu({ app: app }),
+                    extra_class: "tiptap-link-menu",
+                });
+            }, 50)();
+        }
     });
 }
 
