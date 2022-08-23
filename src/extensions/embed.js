@@ -1,124 +1,218 @@
 // From: tiptap/demos/src/Experiments/GenericFigure/Vue/figure.ts
+import { context_menu, context_menu_close } from "../context_menu";
 import { focus_handler } from "../focus-handler";
 import { log } from "../tiptap";
 import { Node, mergeAttributes } from "@tiptap/core";
 import { Plugin } from "prosemirror-state";
+import Base from "@patternslib/patternslib/src/core/base";
+import Registry from "@patternslib/patternslib/src/core/registry";
 import dom from "@patternslib/patternslib/src/core/dom";
 import events from "@patternslib/patternslib/src/core/events";
+import utils from "@patternslib/patternslib/src/core/utils";
 
-let panel_observer;
+let context_menu_instance;
+
+function pattern_embed_context_menu({ app: app }) {
+    return Base.extend({
+        name: "tiptap-embed-context-menu",
+        trigger: ".tiptap-embed-context-menu",
+        autoregister: false,
+        init() {
+            focus_handler(this.el);
+
+            const btn_edit = this.el.querySelector(".tiptap-edit-embed");
+            const btn_remove = this.el.querySelector(".tiptap-remove-embed");
+
+            btn_edit &&
+                btn_edit.addEventListener("click", () => {
+                    app.toolbar.embed.click();
+                });
+
+            btn_remove &&
+                btn_remove.addEventListener("click", () => {
+                    app.editor.commands.selectParentNode(); // Also select the surrounding <figure>
+                    app.editor.commands.deleteSelection();
+                    app.editor.commands.focus();
+                });
+        },
+    });
+}
 
 function embed_panel({ app }) {
-    const embed_panel = document.querySelector(app.options.embedPanel);
-    if (!embed_panel) {
-        log.warn("No embed panel found.");
-        return;
-    }
-    focus_handler(embed_panel);
+    return Base.extend({
+        name: "tiptap-embed-panel",
+        trigger: app.options.embed?.panel,
+        autoregister: false,
+        init() {
+            const embed_panel = this.el;
 
-    const reinit = () => {
-        const embed_src = embed_panel.querySelector("[name=tiptap-src]");
-        const embed_title = embed_panel.querySelector("[name=tiptap-title]");
-        const embed_caption = embed_panel.querySelector("[name=tiptap-caption]");
-        const embed_confirm = embed_panel.querySelector(".tiptap-confirm, [name=tiptap-confirm]"); // prettier-ignore
-
-        const update_callback = (set_focus) => {
-            const cmd = app.editor.chain();
-            cmd.insertContent({
-                type: "figure",
-                content: [
-                    {
-                        type: "embed",
-                        attrs: {
-                            src: embed_src.value,
-                            ...(embed_title?.value && { title: embed_title.value }),
-                        },
-                    },
-                    // Conditionally add a figcaption
-                    ...(embed_caption?.value
-                        ? [
-                              {
-                                  type: "figcaption",
-                                  content: [
-                                      {
-                                          type: "text",
-                                          text: embed_caption.value,
-                                      },
-                                  ],
-                              },
-                          ]
-                        : []),
-                ],
-            });
-            if (set_focus === true) {
-                // set focus after setting embed, otherwise embed is
-                // selected and right away deleted when starting typing.
-                cmd.focus();
+            const embed_src = embed_panel.querySelector("[name=tiptap-src]");
+            if (!embed_src) {
+                log.warn("No src input in embed panel found.");
+                return;
             }
-            cmd.run();
-        };
 
-        // FORM UPDATE
-        if (embed_confirm) {
-            // update on click on confirm
-            events.add_event_listener(
-                embed_confirm,
-                "click",
-                "tiptap_embed_confirm",
-                () => update_callback(true)
-            );
-        } else {
-            // update on input/change
-            events.add_event_listener(
-                embed_src,
-                "change",
-                "tiptap_embed_src",
-                update_callback
-            );
-            events.add_event_listener(
-                embed_title,
-                "change",
-                "tiptap_embed_title",
-                update_callback
-            );
-            events.add_event_listener(
-                embed_caption,
-                "change",
-                "tiptap_embed_caption",
-                update_callback
-            );
-        }
-    };
+            const embed_title = embed_panel.querySelector("[name=tiptap-title]");
+            const embed_caption = embed_panel.querySelector("[name=tiptap-caption]");
+            const embed_confirm = embed_panel.querySelector(".tiptap-confirm, [name=tiptap-confirm]"); // prettier-ignore
 
-    reinit();
-    if (panel_observer) {
-        panel_observer.disconnect();
-    }
-    panel_observer = new MutationObserver(reinit);
-    panel_observer.observe(embed_panel, {
-        childList: true,
-        subtree: true,
-        attributes: false,
-        characterData: false,
+            focus_handler(embed_panel);
+
+            // Get embed node
+            const node_embed = app.editor.state.doc.nodeAt(
+                app.editor.state.selection.from
+            );
+
+            // Get figcaption node, if it exists
+            app.editor.commands.selectParentNode(); // Also select the surrounding <figure>
+            const node_figure = app.editor.state.doc.nodeAt(
+                app.editor.state.selection.from
+            );
+            const node_figcaption = node_figure?.content.content.filter(
+                (it) => it.type.name === "figcaption"
+            )?.[0];
+
+            // Populate form fields
+            if (node_embed) {
+                embed_src.value = node_embed.attrs?.src || "";
+                if (embed_title) {
+                    embed_title.value = node_embed.attrs?.title || "";
+                }
+            }
+            if (node_figcaption && embed_caption) {
+                embed_caption.value = node_figcaption.textContent || "";
+            }
+
+            const update_callback = (set_focus) => {
+                app.editor.commands.insertContent({
+                    type: "figure",
+                    content: [
+                        {
+                            type: "embed",
+                            attrs: {
+                                src: embed_src.value,
+                                ...(embed_title?.value && { title: embed_title.value }),
+                            },
+                        },
+                        // Conditionally add a figcaption
+                        ...(embed_caption?.value
+                            ? [
+                                  {
+                                      type: "figcaption",
+                                      content: [
+                                          {
+                                              type: "text",
+                                              text: embed_caption.value,
+                                          },
+                                      ],
+                                  },
+                              ]
+                            : []),
+                    ],
+                });
+                if (set_focus === true) {
+                    // set cursor after the embed, otherwise embed is
+                    // selected and right away deleted when starting typing.
+                    app.editor.commands.selectParentNode();
+                    app.editor.commands.focus(app.editor.state.selection.to);
+                    //app.editor.commands.blur();
+                }
+            };
+
+            // FORM UPDATE
+            if (embed_confirm) {
+                // update on click on confirm
+                events.add_event_listener(
+                    embed_confirm,
+                    "click",
+                    "tiptap_embed_confirm",
+                    () => update_callback(true)
+                );
+            } else {
+                // update on input/change
+                events.add_event_listener(
+                    embed_src,
+                    "change",
+                    "tiptap_embed_src",
+                    update_callback
+                );
+                events.add_event_listener(
+                    embed_title,
+                    "change",
+                    "tiptap_embed_title",
+                    update_callback
+                );
+                events.add_event_listener(
+                    embed_caption,
+                    "change",
+                    "tiptap_embed_caption",
+                    update_callback
+                );
+            }
+        },
     });
 }
 
 export function init({ app, button }) {
-    // Initialize modal after it has injected.
     button.addEventListener("click", () => {
+        if (dom.get_data(app.toolbar_el, "tiptap-instance", null) !== app) {
+            // If this pat-tiptap instance is not the one which was last
+            // focused, just return and do nothing.
+            // This might be due to one toolbar shared by multiple editors.
+            return;
+        }
+
+        // Register the embed-panel pattern.
+        // Multiple registrations from different tiptap instances are possible
+        // since we're registering it only after the toolbar's embed button has
+        // been clicked and clicking in another tiptap instance would override
+        // previous registrations.
+        const embed_panel_pattern = embed_panel({ app: app });
+        Registry.patterns[embed_panel_pattern.prototype.name] = embed_panel_pattern;
         document.addEventListener(
-            "pat-modal-ready",
-            () => {
-                if (dom.get_data(app.toolbar_el, "tiptap-instance", null) !== app) {
-                    // If this pat-tiptap instance is not the one which was last
-                    // focused, just return and do nothing.
-                    // This might be due to one toolbar shared by multiple editors.
-                    return;
-                }
-                embed_panel({ app: app });
+            "patterns-injected-delayed",
+            (e) => {
+                Registry.scan(e.detail.injected, [embed_panel_pattern.prototype.name]);
             },
             { once: true }
         );
+    });
+
+    app.editor.on("selectionUpdate", async () => {
+        app.editor.isActive("embed")
+            ? button.classList.add("active")
+            : button.classList.remove("active");
+        app.editor.can().setEmbed()
+            ? button.classList.remove("disabled")
+            : button.classList.add("disabled");
+
+        if (app.options.embed.menu) {
+            // Open the context menu with a small delay.
+            utils.debounce(async () => {
+                console.log(app.editor.isActive("embed"));
+                if (!app.editor.isActive("embed")) {
+                    // Embed not active anymore. Return.
+                    if (context_menu_instance) {
+                        // If open, close.
+                        context_menu_close({
+                            instance: context_menu_instance,
+                            pattern_name: "tiptap-embed-context-menu",
+                        });
+                        context_menu_instance = null;
+                    }
+                    return;
+                }
+
+                // Initialize the context menu
+                context_menu_instance = await context_menu({
+                    url: app.options.embed.menu,
+                    editor: app.editor,
+                    instance: context_menu_instance,
+                    pattern: pattern_embed_context_menu({ app: app }),
+                    extra_class: "tiptap-embed-menu",
+                });
+            }, 50)();
+        }
     });
 }
 
@@ -140,7 +234,7 @@ export const factory = () => {
         allowGapCursor: false,
         draggable: false,
         isolating: true,
-        selectable: false,
+        selectable: true,
 
         addAttributes() {
             return {

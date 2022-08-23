@@ -6,7 +6,7 @@
     <script src="/bundle.min.js"></script>
     <style type="text/css">
       .tiptap-focus {
-        border: 2px solid red;
+        outline: 2px solid red;
       }
       .tiptap-editor__content {
         border: 1px solid black;
@@ -26,6 +26,10 @@
       th {
         background-color: grey;
         font-weight: bold;
+      }
+
+      iframe {
+        border: 1em solid blue;
       }
 
       /*
@@ -138,10 +142,12 @@
           class="pat-tiptap pat-autofocus"
           data-pat-tiptap="
             toolbar-external: #tiptap-external-toolbar;
-            image-panel: #pat-modal .image-panel;
-            link-panel: #pat-modal .link-panel;
-            source-panel: #pat-modal .source-panel;
-            embed-panel: #pat-modal .embed-panel;
+            image-panel: .image-panel;
+            link-panel: .link-panel;
+            source-panel: .source-panel;
+            embed-panel: .embed-panel;
+            image-menu: #context-menu-image;
+            embed-menu: #context-menu-embed;
             link-menu: #context-menu-link;
             mentions-menu: ./index-mentions-results.html?u=;
             tags-menu: ./index-tags-results.html?okay=1234&q=;
@@ -190,10 +196,10 @@
 
     <template id="modal-link">
         <h1>Add / Edit Link</h1>
-        <form class="link-panel">
+        <form class="link-panel pat-validation" data-pat-validation="disable-selector: [name=tiptap-confirm]">
           <label>
             Link URL:
-            <input type="text" name="tiptap-href"/>
+            <input type="url" name="tiptap-href" placeholder="https://"/>
           </label>
           <label>
             Link Text:
@@ -210,10 +216,10 @@
 
     <template id="modal-image">
         <h1>Add Image</h1>
-        <form class="image-panel">
+        <form class="image-panel pat-validation" data-pat-validation="disable-selector: [name=tiptap-confirm]">
           <label>
             Image URL:
-            <input type="text" name="tiptap-src"/>
+            <input type="url" name="tiptap-src" placeholder="https://"/>
           </label>
           <label>
             Title:
@@ -234,10 +240,10 @@
 
     <template id="modal-embed">
         <h1>Add Video Embed</h1>
-        <form class="embed-panel">
+        <form class="embed-panel pat-validation" data-pat-validation="disable-selector: [name=tiptap-confirm]">
           <label>
             Video URL:
-            <input type="text" name="tiptap-src"/>
+            <input type="url" name="tiptap-src" placeholder="https://"/>
           </label>
           <label>
             Title:
@@ -261,6 +267,36 @@
           </label>
           <button class="close-panel" type="button" name="tiptap-confirm">submit</button>
         </form>
+    </template>
+
+    <template id="context-menu-image">
+      <ul class="tiptap-image-context-menu">
+        <li>
+          <button
+            type="button"
+            class="close-panel tiptap-edit-image">Edit image</button>
+        </li>
+        <li>
+          <button
+            type="button"
+            class="close-panel tiptap-remove-image">Remove image</button>
+        </li>
+      </ul>
+    </template>
+
+    <template id="context-menu-embed">
+      <ul class="tiptap-embed-context-menu">
+        <li>
+          <button
+            type="button"
+            class="close-panel tiptap-edit-embed">Edit embed</button>
+        </li>
+        <li>
+          <button
+            type="button"
+            class="close-panel tiptap-remove-embed">Remove embed</button>
+        </li>
+      </ul>
     </template>
 
     <template id="context-menu-link">

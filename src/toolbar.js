@@ -283,11 +283,11 @@ export async function init_post({ app }) {
         (await import("./extensions/link")).init({ app: app, button: tb.link });
     }
 
-    if (tb.image && app.options.imagePanel) {
+    if (tb.image && app.options.image?.panel) {
         (await import("./extensions/image-figure")).init({ app: app, button: tb.image }); // prettier-ignore
     }
 
-    if (tb.embed && app.options.embedPanel) {
+    if (tb.embed && app.options.embed?.panel) {
         (await import("./extensions/embed")).init({ app: app, button: tb.embed });
     }
 

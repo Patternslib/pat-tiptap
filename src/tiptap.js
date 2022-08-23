@@ -19,6 +19,8 @@ parser.addArgument("embed-panel", null);
 parser.addArgument("link-panel", null);
 parser.addArgument("source-panel", null);
 
+parser.addArgument("image-menu", null);
+parser.addArgument("embed-menu", null);
 parser.addArgument("link-menu", null);
 parser.addArgument("mentions-menu", null);
 parser.addArgument("tags-menu", null);
@@ -32,6 +34,8 @@ parser.addAlias("context-menu-tags", "tags-menu");
 export default Base.extend({
     name: "tiptap",
     trigger: ".pat-tiptap",
+
+    current_modal: null, // reference to currently open modal dialog
 
     async init() {
         // Constructor
@@ -166,5 +170,13 @@ export default Base.extend({
             autofocus: set_focus,
         });
         toolbar_ext.init_post({ app: this });
+
+        document.addEventListener("pat-modal-ready", (e) => {
+            // store the reference to the modal dialog
+            // We need the reference to registter some modal functionality or
+            // patterns on it, where we would not easily get access to the
+            // modal DOM structure otherwise.
+            this.current_modal = e.target;
+        });
     },
 });

@@ -34,8 +34,8 @@
         "@tiptap/extension-text": "^2.0.0-beta.17"
     },
     "devDependencies": {
-        "@patternslib/dev": "^2.4.0",
-        "@patternslib/patternslib": "*"
+        "@patternslib/dev": "^2.5.0",
+        "@patternslib/patternslib": ">=9.1.0-beta.1"
     },
     "scripts": {
         "start": "NODE_ENV=development webpack serve --config webpack.config.js",

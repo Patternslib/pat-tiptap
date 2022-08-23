@@ -111,10 +111,10 @@ Note: You can also load the modal contents from any URL.
 This is the DOM structure with the overlay:
 
     <div id="modal-link" hidden>
-      <form class="link-panel">
+      <form class="link-panel pat-validation">
         <label>
           Link URL:
-          <input type="text" name="tiptap-href"/>
+          <input type="url" name="tiptap-href" placeholder="https://"/>
         </label>
         <label>
           Link Text:
@@ -145,7 +145,7 @@ This way, you can use ``pat-inject``, ``pat-tabs``, ``pat-stacks`` or the like w
 This is the related ``pat-tiptap`` config:
 
     data-pat-tiptap="
-        link-panel: #pat-modal .link-panel;
+        link-panel: .link-panel;
     "
 
 
@@ -207,10 +207,10 @@ Note: You can also load the modal contents from any URL.
 This is the DOM structure with the overlay:
 
     <div id="modal-image" hidden>
-      <form class="image-panel">
+      <form class="image-panel pat-validation">
         <label>
           Image URL:
-          <input type="text" name="tiptap-src"/>
+          <input type="url" name="tiptap-src" placeholder="https://"/>
         </label>
         <label>
           Title:
@@ -246,8 +246,44 @@ For an upload widget you can use a combination of ``pat-upload`` and ``pat-injec
 This is the related ``pat-tiptap`` config:
 
     data-pat-tiptap="
-        image-panel: #pat-modal .image-panel;
+        image-panel: .image-panel;
     "
+
+
+#### Adding a image context menu
+
+When clicking on an image in the editor in edit mode you can provide a popup which allows you to edit or remove the image.
+
+You have to provide a context menu container in the same document or accessible via an URL which content's are used for the ``pat-tooltip`` popup:
+
+    <div id="context-menu-image" hidden>
+      <ul class="tiptap-image-context-menu">
+        <li>
+          <button
+            type="button"
+            class="close-panel tiptap-edit-image">Edit image</button>
+        </li>
+        <li>
+          <button
+            type="button"
+            class="close-panel tiptap-remove-image">Remove image</button>
+        </li>
+      </ul>
+    </div>
+
+None of these elements are mandatory but if you want to provide the associated functionality you need to use these class names:
+
+- ``tiptap-edit-image``: The element which opens the edit overlay when clicking on it.
+- ``tiptap-remove-image``: The element which will remove the image including the figure and figcaption tag from the content.
+
+
+This is the pattern configuration:
+
+    data-pat-tiptap="
+        image-menu: #context-menu-image;
+    "
+
+``image-menu``: URL or CSS selector pointing to the context menu contents.
 
 
 #### Adding an embed overlay for videos
@@ -266,10 +302,10 @@ Note: You can also load the modal contents from any URL.
 This is the DOM structure with the overlay:
 
     <div id="modal-embed" hidden>
-      <form class="embed-panel">
+      <form class="embed-panel pat-validation">
         <label>
           Video URL:
-          <input type="text" name="tiptap-src"/>
+          <input type="url" name="tiptap-src" placeholder="https://"/>
         </label>
         <label>
           Title:
@@ -298,8 +334,44 @@ This way, you can use ``pat-inject``, ``pat-tabs`` or ``pat-stacks`` which chang
 This is the related ``pat-tiptap`` config:
 
     data-pat-tiptap="
-        embed-panel: #pat-modal .embed-panel;
+        embed-panel: .embed-panel;
     "
+
+
+#### Adding a embed context menu
+
+When clicking on an embed in the editor in edit mode you can provide a popup which allows you to edit or remove the embed.
+
+You have to provide a context menu container in the same document or accessible via an URL which content's are used for the ``pat-tooltip`` popup:
+
+    <div id="context-menu-embed" hidden>
+      <ul class="tiptap-embed-context-menu">
+        <li>
+          <button
+            type="button"
+            class="close-panel tiptap-edit-embed">Edit embed</button>
+        </li>
+        <li>
+          <button
+            type="button"
+            class="close-panel tiptap-remove-embed">Remove embed</button>
+        </li>
+      </ul>
+    </div>
+
+None of these elements are mandatory but if you want to provide the associated functionality you need to use these class names:
+
+- ``tiptap-edit-embed``: The element which opens the edit overlay when clicking on it.
+- ``tiptap-remove-embed``: The element which will remove the embed including the figure and figcaption tag from the content.
+
+
+This is the pattern configuration:
+
+    data-pat-tiptap="
+        embed-menu: #context-menu-embed;
+    "
+
+``embed-menu``: URL or CSS selector pointing to the context menu contents.
 
 
 #### Adding a source view overlay
@@ -339,7 +411,7 @@ This way, you can use ``pat-inject``, ``pat-tabs``, ``pat-stacks`` or the like w
 This is the related ``pat-tiptap`` config:
 
     data-pat-tiptap="
-        source-panel: #pat-modal .source-panel;
+        source-panel: .source-panel;
     "
 
 
