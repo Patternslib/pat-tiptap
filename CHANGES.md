@@ -2,6 +2,38 @@
 
 
 
+## [4.5.0](https://github.com/patternslib/pat-tiptap/compare/4.4.0...4.5.0) (2022-08-23)
+
+
+### Features
+
+
+* Allow to edit embeds. ([7e665f6](https://github.com/patternslib/pat-tiptap/commit/7e665f6c9649a4aed44e13c894b88d7522393dd0))
+
+* Allow to edit images with a image picker and support multiple tabs within the image picker dialogue. ([95f9a05](https://github.com/patternslib/pat-tiptap/commit/95f9a05720a64ae27d3f23294f7e39d3b413bef4))
+
+* Allow to edit images. ([da89fc1](https://github.com/patternslib/pat-tiptap/commit/da89fc100889d52ecec2cab817287a8129c6df53))
+
+
+### Maintenance
+
+
+* Add test for multiple tiptap instances sharing one toolbar. ([50e5bfa](https://github.com/patternslib/pat-tiptap/commit/50e5bfab1f6633ef881d92741f6e5c2f1d1dd722))
+
+* **Build:** Include bundle name and version in generated files (Feature of @patternslib/dev 2.4.0.) ([34b16e5](https://github.com/patternslib/pat-tiptap/commit/34b16e53eeaf01d9387f9d11f77b4a2732b0337f))
+
+* **Build:** Unlink all linked dependencies before building a bundle. ([a97c615](https://github.com/patternslib/pat-tiptap/commit/a97c61526b3b6272596cac2dc82750fd0854e2b5))
+
+* **Build:** Upgrade dependencies. ([25e93c4](https://github.com/patternslib/pat-tiptap/commit/25e93c49d54c3426f6317d26048851da1158c878))
+
+* Change link context menu class to tiptap-link-menu to avoid potential same class as the trigger class for the link-panel pattern. ([c5500e0](https://github.com/patternslib/pat-tiptap/commit/c5500e05b51cad0f2fa60378ea0221814be6cdf7))
+
+* Document and demo URL validation in link panel. ([ce08c34](https://github.com/patternslib/pat-tiptap/commit/ce08c34cd83cf4019098c45007ee3c6683fe3300))
+
+* Only open link context menu if it is defined. ([46f9aeb](https://github.com/patternslib/pat-tiptap/commit/46f9aeba653cc368d9bc17360f5b6c1cdcba9ae8))
+
+* Switch to base pattern based patterns. ([83a51b5](https://github.com/patternslib/pat-tiptap/commit/83a51b58b8116851717dba8a9f20394b0b577aee))Change internal patterns to be base pattern based for better integration in the patterns registry and usage of features like preventin double initialization on already initialized nodes.
+
 ## [4.4.0](https://github.com/patternslib/pat-tiptap/compare/4.3.0...4.4.0) (2022-08-11)
 
 
