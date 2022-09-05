@@ -2,6 +2,16 @@
 
 
 
+## [4.5.1](https://github.com/patternslib/pat-tiptap/compare/4.5.0...4.5.1) (2022-09-05)
+
+
+### Maintenance
+
+
+* Add a video to the demo. ([6e8d310](https://github.com/patternslib/pat-tiptap/commit/6e8d310b93950c24692790a81cbaddf4b0a5e83d))
+
+* Upgrade dependencies. ([bfc7cea](https://github.com/patternslib/pat-tiptap/commit/bfc7cea96e3d876cd9f91b49f6c9033bc328913a))
+
 ## [4.5.0](https://github.com/patternslib/pat-tiptap/compare/4.4.0...4.5.0) (2022-08-23)
 
 
