@@ -1,8 +1,8 @@
 process.traceDeprecation = true;
 const mf_config = require("@patternslib/dev/webpack/webpack.mf");
 const package_json = require("./package.json");
+const package_json_patternslib = require("@patternslib/patternslib/package.json");
 const path = require("path");
-const patternslib_package_json = require("@patternslib/patternslib/package.json");
 const webpack_config = require("@patternslib/dev/webpack/webpack.config").config;
 
 module.exports = () => {
@@ -23,7 +23,7 @@ module.exports = () => {
             name: package_json.name,
             remote_entry: config.entry["bundle.min"],
             dependencies: {
-                ...patternslib_package_json.dependencies,
+                ...package_json_patternslib.dependencies,
                 ...package_json.dependencies,
             },
         })
