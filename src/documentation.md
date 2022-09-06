@@ -124,7 +124,7 @@ This is the DOM structure with the overlay:
           Open in new window:
           <input type="checkbox" name="tiptap-target" value="_blank" />
         </label>
-        <button class="close-panel" type="button" name="tiptap-confirm">submit</button>
+        <button class="close-panel" type="submit" name="tiptap-confirm">submit</button>
         <button class="close-panel" type="button" name="tiptap-remove">remove link</button>
       </form>
     </div>
@@ -148,6 +148,13 @@ This is the related ``pat-tiptap`` config:
         link-panel: .link-panel;
     "
 
+---
+**Note**
+
+When using buttons with type ``submit`` for ``.tiptap-confirm`` this would become the default action and the changes made in the form would be confirmed and taken over to the text editor.
+A real submit to the server and a full request/response cycle is automatically prevented.
+
+---
 
 #### Adding a link context menu
 
@@ -224,7 +231,7 @@ This is the DOM structure with the overlay:
           Caption:
           <textarea name="tiptap-caption"></textarea>
         </label>
-        <button class="close-panel" type="button" name="tiptap-confirm">submit</button>
+        <button class="close-panel" type="submit" name="tiptap-confirm">submit</button>
       </form>
     </div>
 
@@ -241,7 +248,8 @@ You also need to configure ``pat-tiptap`` with the ``image-panel`` option which 
 pat-tiptap uses a ``MutationObserver`` to check for changes in the overlay's DOM structure and re-initializes the functionality once the DOM structure changes.
 This way, you can use ``pat-inject``, ``pat-tabs`` or ``pat-stacks`` which changes the overlay content and automatically get the form reinitialized.
 One idea would be to use a list of styled radio buttons with name ``tiptap-src`` and as value the URL of the image. This would then serve as a image selection widget.
-For an upload widget you can use a combination of ``pat-upload`` and ``pat-inject`` to upload a image and then return a form with a hidden ``tiptap-src`` input field with the value of the new image URL. If the form is then finally submitted via ``tiptap-confirm`` the image is set into the editor.
+For an upload widget you can use a combination of ``pat-upload`` and ``pat-inject`` to upload a image and then return a form with a hidden ``tiptap-src`` input field with the value of the new image URL.
+If the form is then finally submitted via ``tiptap-confirm`` the image is set into the editor.
 
 This is the related ``pat-tiptap`` config:
 
@@ -315,7 +323,7 @@ This is the DOM structure with the overlay:
           Caption:
           <textarea name="tiptap-caption"></textarea>
         </label>
-        <button class="close-panel" type="button" name="tiptap-confirm">submit</button>
+        <button class="close-panel" type="submit" name="tiptap-confirm">submit</button>
       </form>
     </div>
 
@@ -393,7 +401,7 @@ This is the DOM structure with the overlay:
           Source:
           <textarea name="tiptap-source"></textarea>
         </label>
-        <button class="close-panel" type="button" name="tiptap-confirm">submit</button>
+        <button class="close-panel" type="submit" name="tiptap-confirm">submit</button>
       </form>
     </div>
 

@@ -120,6 +120,14 @@ function embed_panel({ app }) {
             };
 
             // FORM UPDATE
+            const form = dom.querySelectorAllAndMe(embed_panel, "form")?.[0];
+            if (form) {
+                events.add_event_listener(form, "submit", "tiptap_embed_submit", (e) => {
+                    // Prevent form submission when hitting "enter" within the form.
+                    // The form is handled by JS only.
+                    e.preventDefault();
+                });
+            }
             if (embed_confirm) {
                 // update on click on confirm
                 events.add_event_listener(
