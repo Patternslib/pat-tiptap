@@ -35,6 +35,20 @@ function source_panel({ app }) {
                 cmd.run();
             };
 
+            // FORM UPDATE
+            const form = dom.querySelectorAllAndMe(source_panel, "form")?.[0];
+            if (form) {
+                events.add_event_listener(
+                    form,
+                    "submit",
+                    "tiptap_source_submit",
+                    (e) => {
+                        // Prevent form submission when hitting "enter" within the form.
+                        // The form is handled by JS only.
+                        e.preventDefault();
+                    }
+                );
+            }
             if (source_confirm) {
                 // update on click on confirm
                 events.add_event_listener(
