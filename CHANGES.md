@@ -2,6 +2,26 @@
 
 
 
+## [4.6.0](https://github.com/patternslib/pat-tiptap/compare/4.5.1...4.6.0) (2022-09-06)
+
+
+### Features
+
+
+* Better handle submits in link, image, embed and source panels. ([97f14b4](https://github.com/patternslib/pat-tiptap/commit/97f14b4ccd8a3a48d9ece4a3f9241e36ae41049a))Encourage in documentation to use .tiptap-confirm buttons in link,
+image, embed and source panels and actually prevent a form
+submit. This allows to hit <Enter> in forms and take over the
+changes without submitting to the server and without doing a
+full request/response cycle.
+
+Fixes: https://github.com/Patternslib/pat-tiptap/issues/36
+
+
+### Maintenance
+
+
+* Update webpack config. ([c5816e8](https://github.com/patternslib/pat-tiptap/commit/c5816e8503129d91e6d30a886e2f342a1944acab))
+
 ## [4.5.1](https://github.com/patternslib/pat-tiptap/compare/4.5.0...4.5.1) (2022-09-05)
 
 
