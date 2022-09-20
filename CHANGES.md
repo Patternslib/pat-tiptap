@@ -2,6 +2,20 @@
 
 
 
+## [4.6.1](https://github.com/patternslib/pat-tiptap/compare/4.6.0...4.6.1) (2022-09-20)
+
+
+### Bug Fixes
+
+
+* Add missing extension @tiptap/suggestion. ([f4fd619](https://github.com/patternslib/pat-tiptap/commit/f4fd619770b6b11983f4822a2f7f1111985b98c8))
+
+
+### Maintenance
+
+
+* Upgrade dependencies. ([c3e51ae](https://github.com/patternslib/pat-tiptap/commit/c3e51aec747406a8bfe320c7f0b17723e3f1eb6f))
+
 ## [4.6.0](https://github.com/patternslib/pat-tiptap/compare/4.5.1...4.6.0) (2022-09-06)
 
 
