@@ -156,6 +156,7 @@ export const factory = ({ app, name, char, plural }) => {
         addAttributes() {
             const attributes = {
                 "class": {},
+                "contenteditable": {},
                 "href": {},
                 "target": {},
                 "title": {},
