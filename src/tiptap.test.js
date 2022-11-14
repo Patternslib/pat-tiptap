@@ -120,6 +120,7 @@ describe("pat-tiptap", () => {
         document.querySelector("#link-panel [name=tiptap-text]").value = "Link text 1"; // prettier-ignore
         document.querySelector("#link-panel [name=tiptap-confirm]").dispatchEvent(new Event("click")); // prettier-ignore
         await utils.timeout(1);
+        await utils.timeout(1);
 
         containers[1].querySelector("[contenteditable]").focus(); // Set focus to bypass toolbar check
         button_2.click();
@@ -128,6 +129,7 @@ describe("pat-tiptap", () => {
         document.querySelector("#link-panel [name=tiptap-href]").value = "https://url2.com/"; // prettier-ignore
         document.querySelector("#link-panel [name=tiptap-text]").value = "Link text 2"; // prettier-ignore
         document.querySelector("#link-panel [name=tiptap-confirm]").dispatchEvent(new Event("click")); // prettier-ignore
+        await utils.timeout(1);
         await utils.timeout(1);
 
         const anchor1 = containers[0].querySelector("a");
@@ -192,6 +194,7 @@ describe("pat-tiptap", () => {
         document.querySelector("#link-panel [name=tiptap-text]").value = "Link text 1"; // prettier-ignore
         document.querySelector("#link-panel [name=tiptap-confirm]").dispatchEvent(new Event("click")); // prettier-ignore
         await utils.timeout(1);
+        await utils.timeout(1);
 
         containers[1].querySelector("[contenteditable]").focus(); // Set focus to bypass toolbar check
         button_link.click();
@@ -200,6 +203,7 @@ describe("pat-tiptap", () => {
         document.querySelector("#link-panel [name=tiptap-href]").value = "https://url2.com/"; // prettier-ignore
         document.querySelector("#link-panel [name=tiptap-text]").value = "Link text 2"; // prettier-ignore
         document.querySelector("#link-panel [name=tiptap-confirm]").dispatchEvent(new Event("click")); // prettier-ignore
+        await utils.timeout(1);
         await utils.timeout(1);
 
         const anchor1 = containers[0].querySelector("a");
