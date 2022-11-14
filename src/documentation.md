@@ -447,7 +447,7 @@ When you select an item, the text in the content area is replaced with a link wh
     - data-pat-tooltip
 
 
-The whole list must be wrapped within an element with a ``tiptap-items`` class.
+The suggestion items must be wrapped within an element with a ``tiptap-items`` class.
 The individual items in the list must be wrapped by an element which:
 
 - has a ``tiptap-item`` class,
