@@ -154,6 +154,10 @@ export default Base.extend({
                 setText(this.getHTML());
                 Registry.scan(this.view.dom);
             },
+            onCreate() {
+                // Initially scan the dom for any Patterns in content.
+                Registry.scan(this.view.dom);
+            },
             onFocus: async () => {
                 // Note: ``this`` is the pattern instance.
                 utils.timeout(1); // short timeout to ensure focus class is set even if tiptap_blur_handler is called concurrently.
