@@ -2,6 +2,30 @@
 
 
 
+## [4.6.2](https://github.com/patternslib/pat-tiptap/compare/4.6.1...4.6.2) (2022-11-15)
+
+
+### Bug Fixes
+
+
+* Initialize patterns on load. ([022d75b](https://github.com/patternslib/pat-tiptap/commit/022d75b7c6e0191325f929d5be2f2e282bd32f93))Scan the content DOM not only when updating the content but also when the content is initially loaded.
+
+* **Suggestion:** Correctly initialize suggestions when initially loading the content. ([38332ec](https://github.com/patternslib/pat-tiptap/commit/38332ec67106aa5c7f4870718bf779cbcff6b653))Do not initialize suggestion as normal links instead as suggestions.
+This change also keeps all the suggestion-related attributes when loading the content.
+
+* **Suggestion:** Fall back to text content if data-title is not set. ([480916f](https://github.com/patternslib/pat-tiptap/commit/480916f8b26fc6b7c7980d5c7442c9724d862a51))When rendering suggestions which do not have a data-title attribute, use
+the source node's text content as text for the rendered suggestion.
+
+* **Suggestion:** Set suggestions as isolating content. ([d70f32b](https://github.com/patternslib/pat-tiptap/commit/d70f32b40f2ba58e69eb43d09aceb8475be6114a))Together with the atomic property it The text cannot be changed except by changing the selection.
+
+
+### Maintenance
+
+
+* Fix tests after Upgrading Patternslib. ([1ce3359](https://github.com/patternslib/pat-tiptap/commit/1ce3359bde8be01f0a5c66781e4ea0d9333a7c9b))
+
+* Upgrade dependencies. ([ac7f59e](https://github.com/patternslib/pat-tiptap/commit/ac7f59ec0ed0317674195e7bf7be0ca698639e4e))
+
 ## [4.6.1](https://github.com/patternslib/pat-tiptap/compare/4.6.0...4.6.1) (2022-09-20)
 
 
