@@ -1386,4 +1386,40 @@ describe("pat-tiptap", () => {
         global.fetch.mockClear();
         delete global.fetch;
     });
+
+    it("8.10 - Uses data-title for displaying the text", async () => {
+        document.body.innerHTML = `
+          <textarea
+              class="pat-tiptap"
+              data-pat-tiptap="
+                mentions-menu: https://demo.at/mentions.html;
+              ">
+            <a data-mention data-title="James Dean">James Byron Dean</a>
+          </textarea>
+        `;
+
+        new Pattern(document.querySelector(".pat-tiptap"));
+        await utils.timeout(1);
+
+        expect(document.querySelector("[data-mention]").textContent).toBe("@James Dean");
+    });
+
+    it("8.11 - Falls back to text if no data-title is available.", async () => {
+        document.body.innerHTML = `
+          <textarea
+              class="pat-tiptap"
+              data-pat-tiptap="
+                mentions-menu: https://demo.at/mentions.html;
+              ">
+            <a data-mention>James Byron Dean</a>
+          </textarea>
+        `;
+
+        new Pattern(document.querySelector(".pat-tiptap"));
+        await utils.timeout(1);
+
+        expect(document.querySelector("[data-mention]").textContent).toBe(
+            "@James Byron Dean"
+        );
+    });
 });

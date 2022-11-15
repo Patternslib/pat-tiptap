@@ -134,6 +134,7 @@ function pattern_suggestion(app, props) {
 export const factory = ({ app, name, char, plural }) => {
     return Node.create({
         name: name,
+        content: "inline*",
         group: "inline",
         inline: true,
         selectable: false,
@@ -145,7 +146,17 @@ export const factory = ({ app, name, char, plural }) => {
                 HTMLAttributes: {},
                 url: null,
                 renderLabel({ options, node }) {
-                    return `${options.suggestion.char}${node.attrs["data-title"]}`;
+                    // Prefer text from data-title attribute to the node's text
+                    // content. The node's text content (e.g. from the
+                    // suggestion overlay) could include some other text or
+                    // markup not suitable for rendering the suggestion.
+                    // Replace any existing suggestion char from the text.
+                    const text = (
+                        node.attrs["data-title"] ||
+                        node.content?.content?.[0]?.text ||
+                        ""
+                    ).replace(new RegExp(`^${options.suggestion.char}`), "");
+                    return `${options.suggestion.char}${text}`;
                 },
                 suggestion: {
                     char: char,
@@ -281,7 +292,7 @@ export const factory = ({ app, name, char, plural }) => {
                     .run();
             };
 
-            // Suggestion render
+            // Suggestion menu rendering
             this.options.suggestion.render = () => {
                 let _debounced_context_menu;
 
