@@ -156,40 +156,52 @@
           autocomplete="off"
           >
 
-          <p>Visit <a href="https://github.com/patternslib/pat-tiptap">pat-tiptap on GitHub</a>.</p>
+        <p>Visit <a href="https://github.com/patternslib/pat-tiptap">pat-tiptap on GitHub</a>.</p>
 
-          <p>The following should show an image directly on the top-level</p>
-          <img
-            src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAIAAAD/gAIDAAAAkElEQVR42u3QMQ0AAAjAsPk3DRb4 eJpUQavhTIEsWbJkyUKBLFmyZMlCgSxZsmTJQoEsWbJkyUKBLFmyZMlCgSxZsmTJQoEsWbJkyUKB LFmyZMlCgSxZsmTJQoEsWbJkyUKBLFmyZMlCgSxZsmTJQoEsWbJkyUKBLFmyZMlCgSxZsmTJQoEs WbJkyUKBLFnPFse76yukbN6SAAAAAElFTkSuQmCC"
-            alt="blue image"
-            title="this is a blue image"
-            />
-          <figure>
-            <img
-              src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAIAAAD/gAIDAAAAkElEQVR42u3QMQ0AAAjAsPk3DRb4 eJpUQWviSoEsWbJkyUKBLFmyZMlCgSxZsmTJQoEsWbJkyUKBLFmyZMlCgSxZsmTJQoEsWbJkyUKB LFmyZMlCgSxZsmTJQoEsWbJkyUKBLFmyZMlCgSxZsmTJQoEsWbJkyUKBLFmyZMlCgSxZsmTJQoEs WbJkyUKBLFnfFrL06ytLHYipAAAAAElFTkSuQmCC"
-              alt="green image"
-              title="this is a green image"
-            />
-            <figcaption>Above is a image within a figure/img/figcaption structure.</figcaption>
-          </figure>
+        <p>Hello,
+          <a class="pat-tooltip"
+             href="https://en.wikipedia.org/wiki/Mary_(name)"
+             data-mention
+             contenteditable="false"
+             data-pat-tooltip="url: ./index-remote-content.html#mary; source: ajax; trigger: click"
+             data-title="Mary">@Mary</a>, have a nice day!</p>
+
+        <p>Yo,
+          <a class="pat-tooltip"
+             href="https://en.wikipedia.org/wiki/James_(given_name)"
+             data-mention
+             data-pat-tooltip="url: ./index-remote-content.html#james; source: ajax; trigger: click">@James Dean</a>!
+        </p>
+
+
+        <p>The following should show an image directly on the top-level</p>
+
+        <p><img alt="blue image"
+               src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAIAAAD/gAIDAAAAkElEQVR42u3QMQ0AAAjAsPk3DRb4 eJpUQavhTIEsWbJkyUKBLFmyZMlCgSxZsmTJQoEsWbJkyUKBLFmyZMlCgSxZsmTJQoEsWbJkyUKB LFmyZMlCgSxZsmTJQoEsWbJkyUKBLFmyZMlCgSxZsmTJQoEsWbJkyUKBLFmyZMlCgSxZsmTJQoEs WbJkyUKBLFnPFse76yukbN6SAAAAAElFTkSuQmCC"
+               title="this is a blue image"
+          /></p>
+
+          <figure><img alt="green image"
+               src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAIAAAD/gAIDAAAAkElEQVR42u3QMQ0AAAjAsPk3DRb4 eJpUQWviSoEsWbJkyUKBLFmyZMlCgSxZsmTJQoEsWbJkyUKBLFmyZMlCgSxZsmTJQoEsWbJkyUKB LFmyZMlCgSxZsmTJQoEsWbJkyUKBLFmyZMlCgSxZsmTJQoEsWbJkyUKBLFmyZMlCgSxZsmTJQoEs WbJkyUKBLFnfFrL06ytLHYipAAAAAElFTkSuQmCC"
+               title="this is a green image"
+          /><figcaption>Above is a image within a figure/img/figcaption structure.</figcaption></figure>
+
           <p>Here is an inline-image. This image is allowed by our schema, parsed and displayed, but adding a new image will add it as and image within a figure tag.
-            <img
-              src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAIAAAD/gAIDAAAAkElEQVR42u3QMQ0AAAjAsPk3DRb4 eJpUQZviSIEsWbJkyUKBLFmyZMlCgSxZsmTJQoEsWbJkyUKBLFmyZMlCgSxZsmTJQoEsWbJkyUKB LFmyZMlCgSxZsmTJQoEsWbJkyUKBLFmyZMlCgSxZsmTJQoEsWbJkyUKBLFmyZMlCgSxZsmTJQoEs WbJkyUKBLFnvFp4t6yugc3LNAAAAAElFTkSuQmCC"
-              alt="red image"
-              title="this is a red image"
-              />
-          </p>
+            <img alt="red image"
+               src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAIAAAD/gAIDAAAAkElEQVR42u3QMQ0AAAjAsPk3DRb4 eJpUQZviSIEsWbJkyUKBLFmyZMlCgSxZsmTJQoEsWbJkyUKBLFmyZMlCgSxZsmTJQoEsWbJkyUKB LFmyZMlCgSxZsmTJQoEsWbJkyUKBLFmyZMlCgSxZsmTJQoEsWbJkyUKBLFmyZMlCgSxZsmTJQoEs WbJkyUKBLFnvFp4t6yugc3LNAAAAAElFTkSuQmCC"
+               title="this is a red image"
+            /></p>
+
           <figure>
-            <iframe
+            <iframe allowfullscreen
+                frameborder="0"
+                height="315"
                 src="https://www.youtube.com/embed/GO1mRJkGXTA"
                 width="560"
-                height="315"
-                allowfullscreen=""
-                frameborder="0"
-                contenteditable="false">
-            </iframe>
+            ></iframe>
             <figcaption>hello</figcaption>
           </figure>
+
           <p>A new paragraph.</p>
       </textarea>
 

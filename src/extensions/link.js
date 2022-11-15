@@ -279,5 +279,13 @@ export function init({ app, button }) {
 }
 
 export const factory = () => {
-    return LinkExtension;
+    return LinkExtension.extend({
+        parseHTML() {
+            return [
+                {
+                    tag: 'a[href]:not([href *= "javascript:" i]):not([contenteditable="false"]):not([data-mention]):not([data-tag])',
+                },
+            ];
+        },
+    });
 };
