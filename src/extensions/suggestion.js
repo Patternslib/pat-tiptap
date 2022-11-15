@@ -138,6 +138,7 @@ export const factory = ({ app, name, char, plural }) => {
         inline: true,
         selectable: false,
         atom: true,
+        isolating: true,
 
         addOptions() {
             return {
