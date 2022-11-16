@@ -62,7 +62,7 @@ function image_panel({ app }) {
             const image_confirm = image_panel.querySelector(".tiptap-confirm, [name=tiptap-confirm]"); // prettier-ignore
             focus_handler(image_panel);
 
-            const node_image = this.get_node_image();
+            const node_image = this.node_image;
 
             // Populate form fields
             if (node_image) {
@@ -93,7 +93,7 @@ function image_panel({ app }) {
             }
 
             // Get / set figcaption node, if it exists
-            const node_figcaption = this.get_figcaption_node();
+            const node_figcaption = this.figcaption_node;
             if (node_figcaption && image_caption && !image_caption.value) {
                 image_caption.value = node_figcaption.textContent || "";
             }
@@ -196,7 +196,7 @@ function image_panel({ app }) {
         },
 
         _node_image: null,
-        get_node_image() {
+        get node_image() {
             // Get image node
             if (this._node_image || this._node_image === undefined) {
                 return this._node_image;
@@ -208,10 +208,9 @@ function image_panel({ app }) {
         },
 
         _figcaption: null, // initialized as null. If not found this will be set to undefined.
-        get_figcaption_node() {
+        get figcaption_node() {
             // Return cached figcaption and avoid calling this method multiple times.
             // Calling it again would select again a parent node which would lead to incorrect results.
-            // TODO: make a getter / setter
             if (this._figcaption || this._figcaption === undefined) {
                 return this._figcaption;
             }
