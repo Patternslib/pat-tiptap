@@ -2,8 +2,8 @@ import { context_menu, context_menu_close } from "../context_menu";
 import { focus_handler } from "../focus-handler";
 import { Node, mergeAttributes } from "@tiptap/core";
 import { Plugin } from "prosemirror-state";
-import Base from "@patternslib/patternslib/src/core/base";
-import Registry from "@patternslib/patternslib/src/core/registry";
+import { BasePattern } from "@patternslib/patternslib/src/core/basepattern";
+import registry from "@patternslib/patternslib/src/core/registry";
 import dom from "@patternslib/patternslib/src/core/dom";
 import events from "@patternslib/patternslib/src/core/events";
 import utils from "@patternslib/patternslib/src/core/utils";
@@ -11,10 +11,10 @@ import utils from "@patternslib/patternslib/src/core/utils";
 let context_menu_instance;
 
 function pattern_image_context_menu({ app: app }) {
-    return Base.extend({
-        name: "tiptap-image-context-menu",
-        trigger: ".tiptap-image-context-menu",
-        autoregister: false,
+    class Pattern extends BasePattern {
+        static name = "tiptap-image-context-menu";
+        static trigger = ".tiptap-image-context-menu";
+
         init() {
             focus_handler(this.el);
 
@@ -32,8 +32,10 @@ function pattern_image_context_menu({ app: app }) {
                     app.editor.commands.deleteSelection();
                     app.editor.commands.focus();
                 });
-        },
-    });
+        }
+    }
+
+    return Pattern;
 }
 
 function image_panel({ app }) {
@@ -242,12 +244,12 @@ export function init({ app, button }) {
         // been clicked and clicking in another tiptap instance would override
         // previous registrations.
         const image_panel_pattern = image_panel({ app: app });
-        Registry.patterns[image_panel_pattern.name] = image_panel_pattern;
+        registry.patterns[image_panel_pattern.name] = image_panel_pattern;
 
         document.addEventListener(
             "patterns-injected-delayed",
             (e) => {
-                Registry.scan(e.detail.injected, [image_panel_pattern.name]);
+                registry.scan(e.detail.injected, [image_panel_pattern.name]);
 
                 // Register listener on modal for any DOM changes done by pat-ineject.
                 app.current_modal.addEventListener("patterns-injected-delayed", () => {

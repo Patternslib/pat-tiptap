@@ -3,7 +3,7 @@ import { PluginKey } from "prosemirror-state";
 import { Suggestion as ProseMirrorSuggestion } from "@tiptap/suggestion";
 import { context_menu, context_menu_close } from "../context_menu";
 import { focus_handler } from "../focus-handler";
-import Base from "@patternslib/patternslib/src/core/base";
+import { BasePattern } from "@patternslib/patternslib/src/core/basepattern";
 import dom from "@patternslib/patternslib/src/core/dom";
 import events from "@patternslib/patternslib/src/core/events";
 import utils from "@patternslib/patternslib/src/core/utils";
@@ -14,10 +14,10 @@ let context_menu_instance;
 function pattern_suggestion(app, props) {
     // Dynamic pattern for the suggestion context menu
 
-    return Base.extend({
-        name: "tiptap-suggestion",
-        trigger: ".tiptap-items",
-        autoregister: false,
+    class Pattern extends BasePattern {
+        static name = "tiptap-suggestion";
+        static trigger = ".tiptap-items";
+
         init() {
             focus_handler(this.el);
 
@@ -91,7 +91,7 @@ function pattern_suggestion(app, props) {
                     this.command(el, value);
                 }
             );
-        },
+        }
 
         command(el, value) {
             const attributes = Object.fromEntries(
@@ -101,7 +101,7 @@ function pattern_suggestion(app, props) {
                 "data-title": value,
                 ...attributes,
             });
-        },
+        }
 
         get_active() {
             // NOTE: jQuery extend via base pattern prevents usage of getter/setter.
@@ -109,7 +109,7 @@ function pattern_suggestion(app, props) {
 
             // Get the currently selected item.
             return this.el.querySelector(".tiptap-item.active");
-        },
+        }
 
         set_active(el) {
             if (!el) {
@@ -119,7 +119,7 @@ function pattern_suggestion(app, props) {
             // Set an item to be selected.
             this.get_active()?.classList.remove("active");
             el.classList.add("active");
-        },
+        }
 
         get_items() {
             // NOTE: jQuery extend via base pattern prevents usage of getter/setter.
@@ -127,8 +127,10 @@ function pattern_suggestion(app, props) {
 
             // Get all items.
             return [...this.el.querySelectorAll(".tiptap-item")];
-        },
-    });
+        }
+    }
+
+    return Pattern;
 }
 
 export const factory = ({ app, name, char, plural }) => {
