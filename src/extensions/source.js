@@ -5,9 +5,6 @@ import events from "@patternslib/patternslib/src/core/events";
 
 function source_panel({ app }) {
     return {
-        name: "tiptap-source-panel",
-        trigger: app.options.sourcePanel,
-
         init(source_panel) {
             focus_handler(source_panel);
 

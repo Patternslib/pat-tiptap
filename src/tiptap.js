@@ -14,11 +14,6 @@ parser.addArgument("collaboration-document", null);
 
 parser.addArgument("toolbar-external", null);
 
-parser.addArgument("image-panel", null);
-parser.addArgument("embed-panel", null);
-parser.addArgument("link-panel", null);
-parser.addArgument("source-panel", null);
-
 parser.addArgument("image-menu", null);
 parser.addArgument("embed-menu", null);
 parser.addArgument("link-menu", null);
@@ -30,6 +25,12 @@ parser.addArgument("tags-menu", null);
 parser.addAlias("context-menu-link", "link-menu");
 parser.addAlias("context-menu-mentions", "mentions-menu");
 parser.addAlias("context-menu-tags", "tags-menu");
+
+// BBB - Backwards compatibility for old options
+parser.addArgument("image-panel");
+parser.addArgument("embed-panel");
+parser.addArgument("link-panel");
+parser.addArgument("source-panel");
 
 class Pattern extends BasePattern {
     static name = "tiptap";

@@ -66,9 +66,6 @@ function pattern_link_context_menu({ app }) {
 
 function link_panel({ app }) {
     return {
-        name: "tiptap-link-panel",
-        trigger: app.options.link?.panel,
-
         init(link_panel) {
             // Close eventual opened link context menus.
             //context_menu_close({
