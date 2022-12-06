@@ -2,6 +2,34 @@
 
 
 
+## [4.7.0](https://github.com/patternslib/pat-tiptap/compare/4.6.2...4.7.0) (2022-12-06)
+
+
+### Features
+
+
+* Remove embed, image, link and source panel options. ([e7f5da1](https://github.com/patternslib/pat-tiptap/commit/e7f5da1e9232f319c72c0937a5b5b6a89c7d0d35))Remove the need to define embed, image, link and source panel options
+and classes. Since the recent change on the panel initialization these
+options are not needed anymore but kept for backwards compatibility.
+
+* Support multiple tabs in modal panels. ([da9e2d0](https://github.com/patternslib/pat-tiptap/commit/da9e2d0e020fe899de3cdea44ca799772205c05b))The embed, link and source panels now support multiple tabs like the
+image panel, which can be switched with pat-inject. This allows for more
+complex panels.
+
+Fixes: https://github.com/Patternslib/pat-tiptap/issues/45
+
+
+### Maintenance
+
+
+* Install missing peerDependencies. ([4181132](https://github.com/patternslib/pat-tiptap/commit/41811322be76828e32851bed6bc6d701c07afdcd))
+
+* Switch to class based patterns. ([fe97124](https://github.com/patternslib/pat-tiptap/commit/fe9712447398c33794a75206f234555ed34dde7f))
+
+* Upgrade dependencies. ([5eb5724](https://github.com/patternslib/pat-tiptap/commit/5eb57245a5cae5f88f28267afc572cc477ed258e))
+
+* Use getter/setter now that we can‌ (since class based patterns). ([d3a9b5b](https://github.com/patternslib/pat-tiptap/commit/d3a9b5bf752e6eb7170ba41e6b9e59aa3d1c09b5))
+
 ## [4.6.2](https://github.com/patternslib/pat-tiptap/compare/4.6.1...4.6.2) (2022-11-15)
 
 
