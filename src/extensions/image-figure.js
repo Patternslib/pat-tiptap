@@ -3,7 +3,6 @@ import { focus_handler } from "../focus-handler";
 import { Node, mergeAttributes } from "@tiptap/core";
 import { Plugin } from "prosemirror-state";
 import { BasePattern } from "@patternslib/patternslib/src/core/basepattern";
-import registry from "@patternslib/patternslib/src/core/registry";
 import dom from "@patternslib/patternslib/src/core/dom";
 import events from "@patternslib/patternslib/src/core/events";
 import utils from "@patternslib/patternslib/src/core/utils";
@@ -41,20 +40,12 @@ function pattern_image_context_menu({ app: app }) {
 function image_panel({ app }) {
     // Not Base-pattern based due to two reasons:
     // - We need to reinitialize the pattern on already initialized nodes on possible tab-changes within the modal.
-    // - We need to keep the _node_image and _node_figure references among re-initializations.
+    // - We need to keep the _node_image and _figcaption references among re-initializations.
     return {
         name: "tiptap-image-panel",
         trigger: app.options.image?.panel,
-        autoregister: false,
 
-        init($el) {
-            this.el = $el;
-            if ($el.jquery) {
-                this.el = $el[0];
-            }
-
-            const image_panel = this.el;
-
+        init(image_panel) {
             const image_srcs = image_panel.querySelectorAll("[name=tiptap-src]");
             const image_alt = image_panel.querySelector("[name=tiptap-alt]");
             const image_title = image_panel.querySelector("[name=tiptap-title]");
@@ -243,16 +234,14 @@ export function init({ app, button }) {
         // been clicked and clicking in another tiptap instance would override
         // previous registrations.
         const image_panel_pattern = image_panel({ app: app });
-        registry.patterns[image_panel_pattern.name] = image_panel_pattern;
-
         document.addEventListener(
             "patterns-injected-delayed",
             (e) => {
-                registry.scan(e.detail.injected, [image_panel_pattern.name]);
+                image_panel_pattern.init(e.detail.injected);
 
-                // Register listener on modal for any DOM changes done by pat-ineject.
+                // Register listener on modal for any DOM changes done by pat-inject.
                 app.current_modal.addEventListener("patterns-injected-delayed", () => {
-                    // Fore re-init of the image-panel pattern.
+                    // Re-init panel after injection.
                     image_panel_pattern.init(app.current_modal);
                 });
             },

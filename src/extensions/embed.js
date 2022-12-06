@@ -5,7 +5,6 @@ import { log } from "../tiptap";
 import { Node, mergeAttributes } from "@tiptap/core";
 import { Plugin } from "prosemirror-state";
 import { BasePattern } from "@patternslib/patternslib/src/core/basepattern";
-import registry from "@patternslib/patternslib/src/core/registry";
 import dom from "@patternslib/patternslib/src/core/dom";
 import events from "@patternslib/patternslib/src/core/events";
 import utils from "@patternslib/patternslib/src/core/utils";
@@ -41,13 +40,11 @@ function pattern_embed_context_menu({ app: app }) {
 }
 
 function embed_panel({ app }) {
-    class Pattern extends BasePattern {
-        static name = "tiptap-embed-panel";
-        static trigger = app.options.embed?.panel;
+    return {
+        name: "tiptap-embed-panel",
+        trigger: app.options.embed?.panel,
 
-        init() {
-            const embed_panel = this.el;
-
+        init(embed_panel) {
             const embed_src = embed_panel.querySelector("[name=tiptap-src]");
             if (!embed_src) {
                 log.warn("No src input in embed panel found.");
@@ -159,10 +156,8 @@ function embed_panel({ app }) {
                     update_callback
                 );
             }
-        }
-    }
-
-    return Pattern;
+        },
+    };
 }
 
 export function init({ app, button }) {
@@ -180,11 +175,16 @@ export function init({ app, button }) {
         // been clicked and clicking in another tiptap instance would override
         // previous registrations.
         const embed_panel_pattern = embed_panel({ app: app });
-        registry.patterns[embed_panel_pattern.name] = embed_panel_pattern;
         document.addEventListener(
             "patterns-injected-delayed",
             (e) => {
-                registry.scan(e.detail.injected, [embed_panel_pattern.name]);
+                embed_panel_pattern.init(e.detail.injected);
+
+                // Register listener on modal for any DOM changes done by pat-inject.
+                app.current_modal.addEventListener("patterns-injected-delayed", () => {
+                    // Re-init panel after injection.
+                    embed_panel_pattern.init(app.current_modal);
+                });
             },
             { once: true }
         );
@@ -201,7 +201,6 @@ export function init({ app, button }) {
         if (app.options.embed.menu) {
             // Open the context menu with a small delay.
             utils.debounce(async () => {
-                console.log(app.editor.isActive("embed"));
                 if (!app.editor.isActive("embed")) {
                     // Embed not active anymore. Return.
                     if (context_menu_instance) {
