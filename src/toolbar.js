@@ -279,19 +279,19 @@ export async function init_post({ app }) {
         });
     }
 
-    if (tb.link && app.options.link?.panel) {
+    if (tb.link) {
         (await import("./extensions/link")).init({ app: app, button: tb.link });
     }
 
-    if (tb.image && app.options.image?.panel) {
+    if (tb.image) {
         (await import("./extensions/image-figure")).init({ app: app, button: tb.image }); // prettier-ignore
     }
 
-    if (tb.embed && app.options.embed?.panel) {
+    if (tb.embed) {
         (await import("./extensions/embed")).init({ app: app, button: tb.embed });
     }
 
-    if (tb.source && app.options.sourcePanel) {
+    if (tb.source) {
         (await import("./extensions/source")).init({ app: app, button: tb.source });
     }
 }

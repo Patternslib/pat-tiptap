@@ -1,17 +1,11 @@
 import { focus_handler } from "../focus-handler";
 import { log } from "../tiptap";
-import { BasePattern } from "@patternslib/patternslib/src/core/basepattern";
-import registry from "@patternslib/patternslib/src/core/registry";
 import dom from "@patternslib/patternslib/src/core/dom";
 import events from "@patternslib/patternslib/src/core/events";
 
 function source_panel({ app }) {
-    class Pattern extends BasePattern {
-        static name = "tiptap-source-panel";
-        static trigger = app.options.sourcePanel;
-
-        init() {
-            const source_panel = this.el;
+    return {
+        init(source_panel) {
             focus_handler(source_panel);
 
             const source_text = source_panel.querySelector("[name=tiptap-source]"); // prettier-ignore
@@ -66,10 +60,8 @@ function source_panel({ app }) {
                     update_callback
                 );
             }
-        }
-    }
-
-    return Pattern;
+        },
+    };
 }
 
 export function init({ app, button }) {
@@ -87,11 +79,16 @@ export function init({ app, button }) {
         // been clicked and clicking in another tiptap instance would override
         // previous registrations.
         const source_panel_pattern = source_panel({ app: app });
-        registry.patterns[source_panel_pattern.name] = source_panel_pattern;
         document.addEventListener(
             "patterns-injected-delayed",
             (e) => {
-                registry.scan(e.detail.injected, [source_panel_pattern.name]);
+                source_panel_pattern.init(e.detail.injected);
+
+                // Register listener on modal for any DOM changes done by pat-inject.
+                app.current_modal.addEventListener("patterns-injected-delayed", () => {
+                    // Re-init panel after injection.
+                    source_panel_pattern.init(app.current_modal);
+                });
             },
             { once: true }
         );

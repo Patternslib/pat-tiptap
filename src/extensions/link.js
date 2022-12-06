@@ -3,7 +3,6 @@ import { focus_handler } from "../focus-handler";
 import { log } from "../tiptap";
 import LinkExtension from "@tiptap/extension-link";
 import { BasePattern } from "@patternslib/patternslib/src/core/basepattern";
-import registry from "@patternslib/patternslib/src/core/registry";
 import dom from "@patternslib/patternslib/src/core/dom";
 import events from "@patternslib/patternslib/src/core/events";
 import utils from "@patternslib/patternslib/src/core/utils";
@@ -66,19 +65,14 @@ function pattern_link_context_menu({ app }) {
 }
 
 function link_panel({ app }) {
-    class Pattern extends BasePattern {
-        static name = "tiptap-link-panel";
-        static trigger = app.options.link?.panel;
-
-        init() {
+    return {
+        init(link_panel) {
             // Close eventual opened link context menus.
             //context_menu_close({
             //    instance: context_menu_instance,
             //    pattern_name: "tiptap-link-context-menu",
             //});
             //context_menu_instance = null;
-
-            const link_panel = this.el;
 
             const link_href = link_panel.querySelector("[name=tiptap-href]");
             if (!link_href) {
@@ -210,10 +204,8 @@ function link_panel({ app }) {
             events.add_event_listener(link_remove, "click", "tiptap_link_remove", () =>
                 app.editor.chain().focus().unsetLink().run()
             );
-        }
-    }
-
-    return Pattern;
+        },
+    };
 }
 
 export function init({ app, button }) {
@@ -231,11 +223,16 @@ export function init({ app, button }) {
         // been clicked and clicking in another tiptap instance would override
         // previous registrations.
         const link_panel_pattern = link_panel({ app: app });
-        registry.patterns[link_panel_pattern.name] = link_panel_pattern;
         document.addEventListener(
             "patterns-injected-delayed",
             (e) => {
-                registry.scan(e.detail.injected, [link_panel_pattern.name]);
+                link_panel_pattern.init(e.detail.injected);
+
+                // Register listener on modal for any DOM changes done by pat-inject.
+                app.current_modal.addEventListener("patterns-injected-delayed", () => {
+                    // Re-init panel after injection.
+                    link_panel_pattern.init(app.current_modal);
+                });
             },
             { once: true }
         );
