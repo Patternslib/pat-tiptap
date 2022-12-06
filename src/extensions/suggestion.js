@@ -3,7 +3,7 @@ import { PluginKey } from "prosemirror-state";
 import { Suggestion as ProseMirrorSuggestion } from "@tiptap/suggestion";
 import { context_menu, context_menu_close } from "../context_menu";
 import { focus_handler } from "../focus-handler";
-import Base from "@patternslib/patternslib/src/core/base";
+import { BasePattern } from "@patternslib/patternslib/src/core/basepattern";
 import dom from "@patternslib/patternslib/src/core/dom";
 import events from "@patternslib/patternslib/src/core/events";
 import utils from "@patternslib/patternslib/src/core/utils";
@@ -14,14 +14,14 @@ let context_menu_instance;
 function pattern_suggestion(app, props) {
     // Dynamic pattern for the suggestion context menu
 
-    return Base.extend({
-        name: "tiptap-suggestion",
-        trigger: ".tiptap-items",
-        autoregister: false,
+    class Pattern extends BasePattern {
+        static name = "tiptap-suggestion";
+        static trigger = ".tiptap-items";
+
         init() {
             focus_handler(this.el);
 
-            this.set_active(this.get_items()[0]);
+            this.active = this.items[0];
 
             // Support selections via keyboard navigation.
             events.add_event_listener(
@@ -32,12 +32,12 @@ function pattern_suggestion(app, props) {
                     e.preventDefault();
                     e.stopPropagation();
 
-                    const items = this.get_items();
-                    const active = this.get_active();
+                    const items = this.items;
+                    const active = this.active;
                     if (e.code === "ArrowDown") {
                         // Select next or first.
                         if (!active) {
-                            this.set_active(items[0]);
+                            this.active = items[0];
                         } else {
                             let next = active ? items.indexOf(active) + 1 : 0;
                             if (next >= items.length) {
@@ -45,12 +45,12 @@ function pattern_suggestion(app, props) {
                                 next = 0;
                                 // TODO: should we load the next batch?
                             }
-                            this.set_active(items[next]);
+                            this.active = items[next];
                         }
                     } else if (e.code === "ArrowUp") {
                         // Select previous or last.
                         if (!active) {
-                            this.set_active(items[0]);
+                            this.active = items[0];
                         } else {
                             let prev = active ? items.indexOf(active) - 1 : 0;
                             if (prev < 0) {
@@ -58,7 +58,7 @@ function pattern_suggestion(app, props) {
                                 prev = items.length - 1;
                                 // TODO: should we load the previous batch?
                             }
-                            this.set_active(items[prev]);
+                            this.active = items[prev];
                         }
                     } else if (e.code === "Enter") {
                         // Use selected to insert in text area.
@@ -91,7 +91,7 @@ function pattern_suggestion(app, props) {
                     this.command(el, value);
                 }
             );
-        },
+        }
 
         command(el, value) {
             const attributes = Object.fromEntries(
@@ -101,34 +101,30 @@ function pattern_suggestion(app, props) {
                 "data-title": value,
                 ...attributes,
             });
-        },
+        }
 
-        get_active() {
-            // NOTE: jQuery extend via base pattern prevents usage of getter/setter.
-            // TODO: Make getter/setter once Base is class based.
-
+        get active() {
             // Get the currently selected item.
             return this.el.querySelector(".tiptap-item.active");
-        },
+        }
 
-        set_active(el) {
+        set active(el) {
             if (!el) {
                 // No item available, e.g. no search results and thus not this.items.
                 return;
             }
             // Set an item to be selected.
-            this.get_active()?.classList.remove("active");
+            this.active?.classList.remove("active");
             el.classList.add("active");
-        },
+        }
 
-        get_items() {
-            // NOTE: jQuery extend via base pattern prevents usage of getter/setter.
-            // TODO: Make getter/setter once Base is class based.
-
+        get items() {
             // Get all items.
             return [...this.el.querySelectorAll(".tiptap-item")];
-        },
-    });
+        }
+    }
+
+    return Pattern;
 }
 
 export const factory = ({ app, name, char, plural }) => {

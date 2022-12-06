@@ -1,15 +1,15 @@
 import { focus_handler } from "../focus-handler";
 import { log } from "../tiptap";
-import Base from "@patternslib/patternslib/src/core/base";
-import Registry from "@patternslib/patternslib/src/core/registry";
+import { BasePattern } from "@patternslib/patternslib/src/core/basepattern";
+import registry from "@patternslib/patternslib/src/core/registry";
 import dom from "@patternslib/patternslib/src/core/dom";
 import events from "@patternslib/patternslib/src/core/events";
 
 function source_panel({ app }) {
-    return Base.extend({
-        name: "tiptap-source-panel",
-        trigger: app.options.sourcePanel,
-        autoregister: false,
+    class Pattern extends BasePattern {
+        static name = "tiptap-source-panel";
+        static trigger = app.options.sourcePanel;
+
         init() {
             const source_panel = this.el;
             focus_handler(source_panel);
@@ -66,8 +66,10 @@ function source_panel({ app }) {
                     update_callback
                 );
             }
-        },
-    });
+        }
+    }
+
+    return Pattern;
 }
 
 export function init({ app, button }) {
@@ -85,11 +87,11 @@ export function init({ app, button }) {
         // been clicked and clicking in another tiptap instance would override
         // previous registrations.
         const source_panel_pattern = source_panel({ app: app });
-        Registry.patterns[source_panel_pattern.prototype.name] = source_panel_pattern;
+        registry.patterns[source_panel_pattern.name] = source_panel_pattern;
         document.addEventListener(
             "patterns-injected-delayed",
             (e) => {
-                Registry.scan(e.detail.injected, [source_panel_pattern.prototype.name]);
+                registry.scan(e.detail.injected, [source_panel_pattern.name]);
             },
             { once: true }
         );

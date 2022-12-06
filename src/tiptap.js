@@ -1,6 +1,6 @@
-import Base from "@patternslib/patternslib/src/core/base";
+import { BasePattern } from "@patternslib/patternslib/src/core/basepattern";
 import Parser from "@patternslib/patternslib/src/core/parser";
-import Registry from "@patternslib/patternslib/src/core/registry";
+import registry from "@patternslib/patternslib/src/core/registry";
 import dom from "@patternslib/patternslib/src/core/dom";
 import events from "@patternslib/patternslib/src/core/events";
 import logging from "@patternslib/patternslib/src/core/logging";
@@ -31,11 +31,12 @@ parser.addAlias("context-menu-link", "link-menu");
 parser.addAlias("context-menu-mentions", "mentions-menu");
 parser.addAlias("context-menu-tags", "tags-menu");
 
-export default Base.extend({
-    name: "tiptap",
-    trigger: ".pat-tiptap",
+class Pattern extends BasePattern {
+    static name = "tiptap";
+    static trigger = ".pat-tiptap";
+    parser = parser;
 
-    current_modal: null, // reference to currently open modal dialog
+    current_modal = null; // reference to currently open modal dialog
 
     async init() {
         // Constructor
@@ -152,11 +153,11 @@ export default Base.extend({
             onUpdate() {
                 // Note: ``this`` is the editor instance.
                 setText(this.getHTML());
-                Registry.scan(this.view.dom);
+                registry.scan(this.view.dom);
             },
             onCreate() {
                 // Initially scan the dom for any Patterns in content.
-                Registry.scan(this.view.dom);
+                registry.scan(this.view.dom);
             },
             onFocus: async () => {
                 // Note: ``this`` is the pattern instance.
@@ -182,5 +183,9 @@ export default Base.extend({
             // modal DOM structure otherwise.
             this.current_modal = e.target;
         });
-    },
-});
+    }
+}
+
+registry.register(Pattern);
+export default Pattern;
+export { Pattern };

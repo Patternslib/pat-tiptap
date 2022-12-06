@@ -1,4 +1,4 @@
-import Registry from "@patternslib/patternslib/src/core/registry";
+import registry from "@patternslib/patternslib/src/core/registry";
 import dom from "@patternslib/patternslib/src/core/dom";
 import events from "@patternslib/patternslib/src/core/events";
 import patTooltip from "@patternslib/patternslib/src/pat/tooltip/tooltip";
@@ -23,7 +23,7 @@ export async function context_menu({
         // Close context menu, when new node is selected.
         context_menu_close({
             instance: instance,
-            pattern_name: pattern.prototype.name,
+            pattern_name: pattern.name,
         });
         instance = null;
     }
@@ -36,7 +36,7 @@ export async function context_menu({
         //    to allow multiple tiptap editors on the same page because it
         //    references the current editor instance.
         if (pattern) {
-            Registry.patterns[pattern.prototype.name] = pattern;
+            registry.patterns[pattern.name] = pattern;
         }
 
         // 2) Initialize the tooltip
@@ -77,7 +77,7 @@ export async function context_menu({
                 }
                 context_menu_close({
                     instance: instance,
-                    pattern_name: pattern.prototype.name,
+                    pattern_name: pattern.name,
                 });
             }
         );
@@ -92,7 +92,7 @@ export async function context_menu({
                 }
                 context_menu_close({
                     instance: instance,
-                    pattern_name: pattern.prototype.name,
+                    pattern_name: pattern.name,
                 });
             }
         );
@@ -115,7 +115,7 @@ export function context_menu_close({ instance, pattern_name }) {
 
     // Unregister the pattern
     if (pattern_name) {
-        delete Registry.patterns[pattern_name];
+        delete registry.patterns[pattern_name];
     }
     events.remove_event_listener(document, "tiptap--context_menu_close--click");
     events.remove_event_listener(document, "tiptap--context_menu_close--esc");

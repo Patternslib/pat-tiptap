@@ -4,8 +4,8 @@ import { focus_handler } from "../focus-handler";
 import { log } from "../tiptap";
 import { Node, mergeAttributes } from "@tiptap/core";
 import { Plugin } from "prosemirror-state";
-import Base from "@patternslib/patternslib/src/core/base";
-import Registry from "@patternslib/patternslib/src/core/registry";
+import { BasePattern } from "@patternslib/patternslib/src/core/basepattern";
+import registry from "@patternslib/patternslib/src/core/registry";
 import dom from "@patternslib/patternslib/src/core/dom";
 import events from "@patternslib/patternslib/src/core/events";
 import utils from "@patternslib/patternslib/src/core/utils";
@@ -13,10 +13,10 @@ import utils from "@patternslib/patternslib/src/core/utils";
 let context_menu_instance;
 
 function pattern_embed_context_menu({ app: app }) {
-    return Base.extend({
-        name: "tiptap-embed-context-menu",
-        trigger: ".tiptap-embed-context-menu",
-        autoregister: false,
+    class Pattern extends BasePattern {
+        static name = "tiptap-embed-context-menu";
+        static trigger = ".tiptap-embed-context-menu";
+
         init() {
             focus_handler(this.el);
 
@@ -34,15 +34,17 @@ function pattern_embed_context_menu({ app: app }) {
                     app.editor.commands.deleteSelection();
                     app.editor.commands.focus();
                 });
-        },
-    });
+        }
+    }
+
+    return Pattern;
 }
 
 function embed_panel({ app }) {
-    return Base.extend({
-        name: "tiptap-embed-panel",
-        trigger: app.options.embed?.panel,
-        autoregister: false,
+    class Pattern extends BasePattern {
+        static name = "tiptap-embed-panel";
+        static trigger = app.options.embed?.panel;
+
         init() {
             const embed_panel = this.el;
 
@@ -157,8 +159,10 @@ function embed_panel({ app }) {
                     update_callback
                 );
             }
-        },
-    });
+        }
+    }
+
+    return Pattern;
 }
 
 export function init({ app, button }) {
@@ -176,11 +180,11 @@ export function init({ app, button }) {
         // been clicked and clicking in another tiptap instance would override
         // previous registrations.
         const embed_panel_pattern = embed_panel({ app: app });
-        Registry.patterns[embed_panel_pattern.prototype.name] = embed_panel_pattern;
+        registry.patterns[embed_panel_pattern.name] = embed_panel_pattern;
         document.addEventListener(
             "patterns-injected-delayed",
             (e) => {
-                Registry.scan(e.detail.injected, [embed_panel_pattern.prototype.name]);
+                registry.scan(e.detail.injected, [embed_panel_pattern.name]);
             },
             { once: true }
         );

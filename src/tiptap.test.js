@@ -46,8 +46,8 @@ describe("pat-tiptap", () => {
     it("1.1 - is initialized correctly on textarea elements", async () => {
         document.body.innerHTML = `<textarea class="pat-tiptap">hello</textarea>`;
 
-        new Pattern(document.querySelector(".pat-tiptap"));
-        await utils.timeout(1);
+        const pattern = new Pattern(document.querySelector(".pat-tiptap"));
+        await events.await_pattern_init(pattern);
 
         expect(document.querySelector(".pat-tiptap").style.display).toBe("none"); // prettier-ignore
         expect(document.querySelector(".tiptap-container [contenteditable]").textContent).toBe("hello"); // prettier-ignore
@@ -57,8 +57,8 @@ describe("pat-tiptap", () => {
     it("1.2 - is initialized correctly on div elements", async () => {
         document.body.innerHTML = `<div class="pat-tiptap" contenteditable>hello</div>`;
 
-        new Pattern(document.querySelector(".pat-tiptap"));
-        await utils.timeout(1);
+        const pattern = new Pattern(document.querySelector(".pat-tiptap"));
+        await events.await_pattern_init(pattern);
 
         expect(document.querySelector(".pat-tiptap").style.display).toBe("none"); // prettier-ignore
         expect(document.querySelector(".tiptap-container [contenteditable]").textContent).toBe("hello"); // prettier-ignore
@@ -101,9 +101,10 @@ describe("pat-tiptap", () => {
         </template>
         `;
 
-        new Pattern(document.querySelectorAll(".pat-tiptap")[0]);
-        new Pattern(document.querySelectorAll(".pat-tiptap")[1]);
-        await utils.timeout(1);
+        const pattern1 = new Pattern(document.querySelectorAll(".pat-tiptap")[0]);
+        await events.await_pattern_init(pattern1);
+        const pattern2 = new Pattern(document.querySelectorAll(".pat-tiptap")[1]);
+        await events.await_pattern_init(pattern2);
 
         const containers = document.querySelectorAll(".tiptap-container");
         const button_1 = document.querySelector("#tiptap-external-toolbar-1 .button-link"); // prettier-ignore
@@ -114,7 +115,7 @@ describe("pat-tiptap", () => {
 
         containers[0].querySelector("[contenteditable]").focus(); // Set focus to bypass toolbar check
         button_1.click();
-        await utils.timeout(1);
+        await utils.timeout(10);
 
         document.querySelector("#link-panel [name=tiptap-href]").value = "https://url1.com/"; // prettier-ignore
         document.querySelector("#link-panel [name=tiptap-text]").value = "Link text 1"; // prettier-ignore
@@ -124,13 +125,11 @@ describe("pat-tiptap", () => {
 
         containers[1].querySelector("[contenteditable]").focus(); // Set focus to bypass toolbar check
         button_2.click();
-        await utils.timeout(1);
+        await utils.timeout(10);
 
         document.querySelector("#link-panel [name=tiptap-href]").value = "https://url2.com/"; // prettier-ignore
         document.querySelector("#link-panel [name=tiptap-text]").value = "Link text 2"; // prettier-ignore
         document.querySelector("#link-panel [name=tiptap-confirm]").dispatchEvent(new Event("click")); // prettier-ignore
-        await utils.timeout(1);
-        await utils.timeout(1);
 
         const anchor1 = containers[0].querySelector("a");
         expect(anchor1).toBeTruthy();
@@ -177,9 +176,10 @@ describe("pat-tiptap", () => {
           </template>
         `;
 
-        new Pattern(document.querySelectorAll(".pat-tiptap")[0]);
-        new Pattern(document.querySelectorAll(".pat-tiptap")[1]);
-        await utils.timeout(1);
+        const pattern1 = new Pattern(document.querySelectorAll(".pat-tiptap")[0]);
+        await events.await_pattern_init(pattern1);
+        const pattern2 = new Pattern(document.querySelectorAll(".pat-tiptap")[1]);
+        await events.await_pattern_init(pattern2);
 
         const containers = document.querySelectorAll(".tiptap-container");
         const button_link = document.querySelector("#tiptap-external-toolbar .button-link"); // prettier-ignore
@@ -187,8 +187,9 @@ describe("pat-tiptap", () => {
         new PatternModal(button_link);
 
         containers[0].querySelector("[contenteditable]").focus(); // Set focus to bypass toolbar check
-        button_link.click();
         await utils.timeout(1);
+        button_link.click();
+        await utils.timeout(10);
 
         document.querySelector("#link-panel [name=tiptap-href]").value = "https://url1.com/"; // prettier-ignore
         document.querySelector("#link-panel [name=tiptap-text]").value = "Link text 1"; // prettier-ignore
@@ -197,8 +198,9 @@ describe("pat-tiptap", () => {
         await utils.timeout(1);
 
         containers[1].querySelector("[contenteditable]").focus(); // Set focus to bypass toolbar check
-        button_link.click();
         await utils.timeout(1);
+        button_link.click();
+        await utils.timeout(10);
 
         document.querySelector("#link-panel [name=tiptap-href]").value = "https://url2.com/"; // prettier-ignore
         document.querySelector("#link-panel [name=tiptap-text]").value = "Link text 2"; // prettier-ignore
@@ -225,7 +227,7 @@ describe("pat-tiptap", () => {
         `;
 
         const instance = new Pattern(document.querySelector(".pat-tiptap"));
-        await utils.timeout(1);
+        await events.await_pattern_init(instance);
 
         expect(
             document.querySelector(".tiptap-container [contenteditable]").innerHTML
@@ -242,8 +244,8 @@ describe("pat-tiptap", () => {
 
         const el = document.querySelector(".pat-tiptap");
 
-        new Pattern(el);
-        await utils.timeout(1);
+        const pattern = new Pattern(el);
+        await events.await_pattern_init(pattern);
 
         const tiptap = document.querySelector(".tiptap-container [contenteditable]");
 
@@ -268,8 +270,8 @@ describe("pat-tiptap", () => {
           </textarea>
         `;
 
-        new Pattern(document.querySelector(".pat-tiptap"));
-        await utils.timeout(1);
+        const pattern = new Pattern(document.querySelector(".pat-tiptap"));
+        await events.await_pattern_init(pattern);
 
         expect(
             document.querySelector(
@@ -287,8 +289,8 @@ describe("pat-tiptap", () => {
           </textarea>
         `;
 
-        new Pattern(document.querySelector(".pat-tiptap"));
-        await utils.timeout(1);
+        const pattern = new Pattern(document.querySelector(".pat-tiptap"));
+        await events.await_pattern_init(pattern);
         await utils.timeout(30); // wait some time before tiptap sets focus.
 
         const editor_el = document.querySelector(".tiptap-container *[contenteditable]");
@@ -304,8 +306,8 @@ describe("pat-tiptap", () => {
           </textarea>
         `;
 
-        new Pattern(document.querySelector(".pat-tiptap"));
-        await utils.timeout(1);
+        const pattern = new Pattern(document.querySelector(".pat-tiptap"));
+        await events.await_pattern_init(pattern);
         await utils.timeout(30); // wait some time before tiptap sets focus.
 
         const editor_el = document.querySelector(".tiptap-container *[contenteditable]");
@@ -323,8 +325,8 @@ describe("pat-tiptap", () => {
           </textarea>
         `;
 
-        new Pattern(document.querySelector(".pat-tiptap"));
-        await utils.timeout(1);
+        const pattern = new Pattern(document.querySelector(".pat-tiptap"));
+        await events.await_pattern_init(pattern);
 
         document.querySelector(".tiptap-container [contenteditable]").focus();
         expect(document.querySelector("#tiptap-external-toolbar").classList[0]).toBe("tiptap-focus"); // prettier-ignore
@@ -345,8 +347,8 @@ describe("pat-tiptap", () => {
           </textarea>
         `;
 
-        new Pattern(document.querySelector(".pat-tiptap"));
-        await utils.timeout(1);
+        const pattern = new Pattern(document.querySelector(".pat-tiptap"));
+        await events.await_pattern_init(pattern);
         await utils.timeout(30);
 
         expect(document.querySelector("#tiptap-external-toolbar").classList[0]).toBe("tiptap-focus"); // prettier-ignore
@@ -363,8 +365,8 @@ describe("pat-tiptap", () => {
           </textarea>
         `;
 
-        new Pattern(document.querySelector(".pat-tiptap"));
-        await utils.timeout(1);
+        const pattern = new Pattern(document.querySelector(".pat-tiptap"));
+        await events.await_pattern_init(pattern);
 
         document.querySelector("#tiptap-external-toolbar button").focus();
         expect(document.querySelector("#tiptap-external-toolbar").classList[0]).toBe("tiptap-focus"); // prettier-ignore
@@ -397,8 +399,8 @@ describe("pat-tiptap", () => {
           </template>
         `;
 
-        new Pattern(document.querySelector(".pat-tiptap"));
-        await utils.timeout(1);
+        const pattern = new Pattern(document.querySelector(".pat-tiptap"));
+        await events.await_pattern_init(pattern);
 
         const button_link = document.querySelector("#tiptap-external-toolbar .button-link"); // prettier-ignore
         new PatternModal(button_link);
@@ -406,7 +408,7 @@ describe("pat-tiptap", () => {
         document.querySelector(".tiptap-container [contenteditable]").focus(); // Set focus to bypass toolbar check
 
         button_link.click();
-        await utils.timeout(1);
+        await utils.timeout(10);
 
         document.querySelector("#link-panel [name=tiptap-href]").value = "https://patternslib.com/"; // prettier-ignore
         document.querySelector("#link-panel [name=tiptap-text]").value = "Link text"; // prettier-ignore
@@ -443,8 +445,8 @@ describe("pat-tiptap", () => {
           </template>
         `;
 
-        new Pattern(document.querySelector(".pat-tiptap"));
-        await utils.timeout(1);
+        const pattern = new Pattern(document.querySelector(".pat-tiptap"));
+        await events.await_pattern_init(pattern);
 
         const button_link = document.querySelector("#tiptap-external-toolbar .button-link"); // prettier-ignore
         new PatternModal(button_link);
@@ -452,7 +454,7 @@ describe("pat-tiptap", () => {
         document.querySelector(".tiptap-container [contenteditable]").focus(); // Set focus to bypass toolbar check
 
         button_link.click();
-        await utils.timeout(1);
+        await utils.timeout(10);
 
         document.querySelector("#link-panel [name=tiptap-href]").value = "patternslib.com"; // prettier-ignore
         document.querySelector("#link-panel [name=tiptap-text]").value = "Link text"; // prettier-ignore
@@ -491,8 +493,8 @@ describe("pat-tiptap", () => {
           </template>
         `;
 
-        new Pattern(document.querySelector(".pat-tiptap"));
-        await utils.timeout(1);
+        const pattern = new Pattern(document.querySelector(".pat-tiptap"));
+        await events.await_pattern_init(pattern);
 
         const button_image = document.querySelector("#tiptap-external-toolbar .button-image"); // prettier-ignore
         new PatternModal(button_image);
@@ -500,7 +502,7 @@ describe("pat-tiptap", () => {
         document.querySelector(".tiptap-container [contenteditable]").focus(); // Set focus to bypass toolbar check
 
         button_image.click();
-        await utils.timeout(1);
+        await utils.timeout(10);
 
         document.querySelector("#image-panel [name=tiptap-src]").value = "https://path/to/image.png"; // prettier-ignore
         document.querySelector("#image-panel [name=tiptap-alt]").value = "Alt text for image"; // prettier-ignore
@@ -545,8 +547,8 @@ describe("pat-tiptap", () => {
           <template id="modal-image">
         `;
 
-        new Pattern(document.querySelector(".pat-tiptap"));
-        await utils.timeout(1);
+        const pattern = new Pattern(document.querySelector(".pat-tiptap"));
+        await events.await_pattern_init(pattern);
 
         const button_image = document.querySelector("#tiptap-external-toolbar .button-image"); // prettier-ignore
         new PatternModal(button_image);
@@ -554,7 +556,7 @@ describe("pat-tiptap", () => {
         document.querySelector(".tiptap-container [contenteditable]").focus(); // Set focus to bypass toolbar check
 
         button_image.click();
-        await utils.timeout(1);
+        await utils.timeout(10);
 
         document.querySelector("#image-panel [name=tiptap-src]").value = "https://path/to/image.png"; // prettier-ignore
         document.querySelector("#image-panel [name=tiptap-confirm]").dispatchEvent(new Event("click")); // prettier-ignore
@@ -592,8 +594,8 @@ describe("pat-tiptap", () => {
           </template>
         `;
 
-        new Pattern(document.querySelector(".pat-tiptap"));
-        await utils.timeout(1);
+        const pattern = new Pattern(document.querySelector(".pat-tiptap"));
+        await events.await_pattern_init(pattern);
 
         const button_image = document.querySelector("#tiptap-external-toolbar .button-image"); // prettier-ignore
         new PatternModal(button_image);
@@ -601,7 +603,7 @@ describe("pat-tiptap", () => {
         document.querySelector(".tiptap-container [contenteditable]").focus(); // Set focus to bypass toolbar check
 
         button_image.click();
-        await utils.timeout(1);
+        await utils.timeout(10);
 
         document.querySelector("#image-panel [name=tiptap-src]").value =
             "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAADElEQVQI12P4z8AAAAMBAQAY3Y2wAAAAAElFTkSuQmCC";
@@ -635,8 +637,8 @@ describe("pat-tiptap", () => {
           </textarea>
         `;
 
-        new Pattern(document.querySelector(".pat-tiptap"));
-        await utils.timeout(1);
+        const pattern = new Pattern(document.querySelector(".pat-tiptap"));
+        await events.await_pattern_init(pattern);
 
         // Images are parsed and shown in the editor
         expect(
@@ -676,8 +678,8 @@ describe("pat-tiptap", () => {
           </template>
         `;
 
-        new Pattern(document.querySelector(".pat-tiptap"));
-        await utils.timeout(1);
+        const pattern = new Pattern(document.querySelector(".pat-tiptap"));
+        await events.await_pattern_init(pattern);
 
         const button_embed = document.querySelector("#tiptap-external-toolbar .button-embed"); // prettier-ignore
         new PatternModal(button_embed);
@@ -685,7 +687,7 @@ describe("pat-tiptap", () => {
         document.querySelector(".tiptap-container [contenteditable]").focus(); // Set focus to bypass toolbar check
 
         button_embed.click();
-        await utils.timeout(1);
+        await utils.timeout(10);
 
         document.querySelector("#embed-panel [name=tiptap-src]").value = "https://www.youtube.com/embed/j8It1z7r1g4"; // prettier-ignore
         document.querySelector("#embed-panel [name=tiptap-title]").value = "Title text for video"; // prettier-ignore
@@ -726,8 +728,8 @@ describe("pat-tiptap", () => {
           </template>
         `;
 
-        new Pattern(document.querySelector(".pat-tiptap"));
-        await utils.timeout(1);
+        const pattern = new Pattern(document.querySelector(".pat-tiptap"));
+        await events.await_pattern_init(pattern);
 
         const button_embed = document.querySelector("#tiptap-external-toolbar .button-embed"); // prettier-ignore
         new PatternModal(button_embed);
@@ -735,7 +737,7 @@ describe("pat-tiptap", () => {
         document.querySelector(".tiptap-container [contenteditable]").focus(); // Set focus to bypass toolbar check
 
         button_embed.click();
-        await utils.timeout(1);
+        await utils.timeout(10);
 
         document.querySelector("#embed-panel [name=tiptap-src]").value = "https://www.youtube.com/watch?v=j8It1z7r1g4"; // prettier-ignore
         document.querySelector("#embed-panel [name=tiptap-confirm]").dispatchEvent(new Event("click")); // prettier-ignore
@@ -773,8 +775,8 @@ describe("pat-tiptap", () => {
           </template>
         `;
 
-        new Pattern(document.querySelector(".pat-tiptap"));
-        await utils.timeout(1);
+        const pattern = new Pattern(document.querySelector(".pat-tiptap"));
+        await events.await_pattern_init(pattern);
 
         const button_embed = document.querySelector("#tiptap-external-toolbar .button-embed"); // prettier-ignore
         new PatternModal(button_embed);
@@ -782,7 +784,7 @@ describe("pat-tiptap", () => {
         document.querySelector(".tiptap-container [contenteditable]").focus(); // Set focus to bypass toolbar check
 
         button_embed.click();
-        await utils.timeout(1);
+        await utils.timeout(10);
 
         document.querySelector("#embed-panel [name=tiptap-src]").value = "https://player.vimeo.com/video/9206226"; // prettier-ignore
         document.querySelector("#embed-panel [name=tiptap-title]").value = "Title text for video"; // prettier-ignore
@@ -823,8 +825,8 @@ describe("pat-tiptap", () => {
           </template>
         `;
 
-        new Pattern(document.querySelector(".pat-tiptap"));
-        await utils.timeout(1);
+        const pattern = new Pattern(document.querySelector(".pat-tiptap"));
+        await events.await_pattern_init(pattern);
 
         const button_embed = document.querySelector("#tiptap-external-toolbar .button-embed"); // prettier-ignore
         new PatternModal(button_embed);
@@ -832,7 +834,7 @@ describe("pat-tiptap", () => {
         document.querySelector(".tiptap-container [contenteditable]").focus(); // Set focus to bypass toolbar check
 
         button_embed.click();
-        await utils.timeout(1);
+        await utils.timeout(10);
 
         document.querySelector("#embed-panel [name=tiptap-src]").value = "https://vimeo.com/9206226"; // prettier-ignore
         document.querySelector("#embed-panel [name=tiptap-confirm]").dispatchEvent(new Event("click")); // prettier-ignore
@@ -857,8 +859,8 @@ describe("pat-tiptap", () => {
           </textarea>
         `;
 
-        new Pattern(document.querySelector(".pat-tiptap"));
-        await utils.timeout(1);
+        const pattern = new Pattern(document.querySelector(".pat-tiptap"));
+        await events.await_pattern_init(pattern);
 
         const editable = document.querySelector(".tiptap-container [contenteditable]");
         const range = document.createRange();
@@ -874,6 +876,7 @@ describe("pat-tiptap", () => {
         sel.addRange(range);
 
         await utils.timeout(1); // Wait a tick for the tooltip to open.
+        await utils.timeout(1); // Wait a tick for the suggestion-pattern to be initialized.
         await utils.timeout(1); // Wait a tick for the suggestion-pattern to be initialized.
 
         // Check for class ``tiptap-mentions`` set on tooltip container.
@@ -932,8 +935,8 @@ describe("pat-tiptap", () => {
           </textarea>
         `;
 
-        new Pattern(document.querySelector(".pat-tiptap"));
-        await utils.timeout(1);
+        const pattern = new Pattern(document.querySelector(".pat-tiptap"));
+        await events.await_pattern_init(pattern);
 
         const editable = document.querySelector(".tiptap-container [contenteditable]");
         const range = document.createRange();
@@ -949,6 +952,7 @@ describe("pat-tiptap", () => {
         sel.addRange(range);
 
         await utils.timeout(1); // Wait a tick for the tooltip to open.
+        await utils.timeout(1); // Wait a tick for the suggestion-pattern to be initialized.
         await utils.timeout(1); // Wait a tick for the suggestion-pattern to be initialized.
 
         // Select 2nd
@@ -982,8 +986,8 @@ describe("pat-tiptap", () => {
           </textarea>
         `;
 
-        new Pattern(document.querySelector(".pat-tiptap"));
-        await utils.timeout(1);
+        const pattern = new Pattern(document.querySelector(".pat-tiptap"));
+        await events.await_pattern_init(pattern);
 
         const editable = document.querySelector(".tiptap-container [contenteditable]");
         const range = document.createRange();
@@ -999,6 +1003,7 @@ describe("pat-tiptap", () => {
         sel.addRange(range);
 
         await utils.timeout(1); // Wait a tick for the tooltip to open.
+        await utils.timeout(1); // Wait a tick for the suggestion-pattern to be initialized.
         await utils.timeout(1); // Wait a tick for the suggestion-pattern to be initialized.
 
         const items = document.querySelectorAll(".tiptap-items .tiptap-item");
@@ -1030,8 +1035,8 @@ describe("pat-tiptap", () => {
           </textarea>
         `;
 
-        new Pattern(document.querySelector(".pat-tiptap"));
-        await utils.timeout(1);
+        const pattern = new Pattern(document.querySelector(".pat-tiptap"));
+        await events.await_pattern_init(pattern);
 
         const editable = document.querySelector(".tiptap-container [contenteditable]");
         const range = document.createRange();
@@ -1047,6 +1052,7 @@ describe("pat-tiptap", () => {
         sel.addRange(range);
 
         await utils.timeout(1); // Wait a tick for the tooltip to open.
+        await utils.timeout(1); // Wait a tick for the suggestion-pattern to be initialized.
         await utils.timeout(1); // Wait a tick for the suggestion-pattern to be initialized.
 
         const items = document.querySelectorAll(".tiptap-items .tiptap-item");
@@ -1079,8 +1085,8 @@ describe("pat-tiptap", () => {
           </textarea>
         `;
 
-        new Pattern(document.querySelector(".pat-tiptap"));
-        await utils.timeout(1);
+        const pattern = new Pattern(document.querySelector(".pat-tiptap"));
+        await events.await_pattern_init(pattern);
 
         const editable = document.querySelector(".tiptap-container [contenteditable]");
         const range = document.createRange();
@@ -1096,6 +1102,7 @@ describe("pat-tiptap", () => {
         sel.addRange(range);
 
         await utils.timeout(1); // Wait a tick for the tooltip to open.
+        await utils.timeout(1); // Wait a tick for the suggestion-pattern to be initialized.
         await utils.timeout(1); // Wait a tick for the suggestion-pattern to be initialized.
 
         // Check for class ``tiptap-tags`` set on tooltip container.
@@ -1135,8 +1142,8 @@ describe("pat-tiptap", () => {
           </textarea>
         `;
 
-        new Pattern(document.querySelector(".pat-tiptap"));
-        await utils.timeout(1);
+        const pattern = new Pattern(document.querySelector(".pat-tiptap"));
+        await events.await_pattern_init(pattern);
 
         const editable = document.querySelector(".tiptap-container [contenteditable]");
         const range = document.createRange();
@@ -1152,6 +1159,7 @@ describe("pat-tiptap", () => {
         sel.addRange(range);
 
         await utils.timeout(1); // Wait a tick for the tooltip to open.
+        await utils.timeout(1); // Wait a tick for the suggestion-pattern to be initialized.
         await utils.timeout(1); // Wait a tick for the suggestion-pattern to be initialized.
 
         const items = document.querySelectorAll(".tiptap-items .tiptap-item");
@@ -1245,8 +1253,8 @@ describe("pat-tiptap", () => {
           </textarea>
         `;
 
-        new Pattern(document.querySelector(".pat-tiptap"));
-        await utils.timeout(1);
+        const pattern = new Pattern(document.querySelector(".pat-tiptap"));
+        await events.await_pattern_init(pattern);
 
         const editable = document.querySelector(".tiptap-container [contenteditable]");
         const range = document.createRange();
@@ -1262,6 +1270,7 @@ describe("pat-tiptap", () => {
         sel.addRange(range);
 
         await utils.timeout(1); // Wait a tick for the tooltip to open.
+        await utils.timeout(1); // Wait a tick for the suggestion-pattern to be initialized.
         await utils.timeout(1); // Wait a tick for the suggestion-pattern to be initialized.
 
         const items = document.querySelectorAll(".tiptap-items .tiptap-item");
@@ -1309,8 +1318,8 @@ describe("pat-tiptap", () => {
           </textarea>
         `;
 
-        new Pattern(document.querySelector(".pat-tiptap"));
-        await utils.timeout(1);
+        const pattern = new Pattern(document.querySelector(".pat-tiptap"));
+        await events.await_pattern_init(pattern);
 
         const editable = document.querySelector(".tiptap-container [contenteditable]");
         const range = document.createRange();
@@ -1325,6 +1334,7 @@ describe("pat-tiptap", () => {
         sel.addRange(range);
 
         await utils.timeout(1); // Wait a tick for the tooltip to open.
+        await utils.timeout(1); // Wait a tick for the suggestion-pattern to be initialized.
         await utils.timeout(1); // Wait a tick for the suggestion-pattern to be initialized.
 
         // Check for class ``tiptap-tags`` set on tooltip container.
@@ -1355,8 +1365,8 @@ describe("pat-tiptap", () => {
           </textarea>
         `;
 
-        new Pattern(document.querySelector(".pat-tiptap"));
-        await utils.timeout(1);
+        const pattern = new Pattern(document.querySelector(".pat-tiptap"));
+        await events.await_pattern_init(pattern);
 
         const editable = document.querySelector(".tiptap-container [contenteditable]");
         const range = document.createRange();
@@ -1371,6 +1381,7 @@ describe("pat-tiptap", () => {
         sel.addRange(range);
 
         await utils.timeout(1); // Wait a tick for the tooltip to open.
+        await utils.timeout(1); // Wait a tick for the suggestion-pattern to be initialized.
         await utils.timeout(1); // Wait a tick for the suggestion-pattern to be initialized.
 
         // Check for class ``tiptap-tags`` set on tooltip container.
@@ -1402,8 +1413,8 @@ describe("pat-tiptap", () => {
           </textarea>
         `;
 
-        new Pattern(document.querySelector(".pat-tiptap"));
-        await utils.timeout(1);
+        const pattern = new Pattern(document.querySelector(".pat-tiptap"));
+        await events.await_pattern_init(pattern);
 
         expect(document.querySelector("[data-mention]").textContent).toBe("@James Dean");
     });
@@ -1419,8 +1430,8 @@ describe("pat-tiptap", () => {
           </textarea>
         `;
 
-        new Pattern(document.querySelector(".pat-tiptap"));
-        await utils.timeout(1);
+        const pattern = new Pattern(document.querySelector(".pat-tiptap"));
+        await events.await_pattern_init(pattern);
 
         expect(document.querySelector("[data-mention]").textContent).toBe(
             "@James Byron Dean"

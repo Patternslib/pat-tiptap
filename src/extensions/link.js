@@ -2,8 +2,8 @@ import { context_menu, context_menu_close } from "../context_menu";
 import { focus_handler } from "../focus-handler";
 import { log } from "../tiptap";
 import LinkExtension from "@tiptap/extension-link";
-import Base from "@patternslib/patternslib/src/core/base";
-import Registry from "@patternslib/patternslib/src/core/registry";
+import { BasePattern } from "@patternslib/patternslib/src/core/basepattern";
+import registry from "@patternslib/patternslib/src/core/registry";
 import dom from "@patternslib/patternslib/src/core/dom";
 import events from "@patternslib/patternslib/src/core/events";
 import utils from "@patternslib/patternslib/src/core/utils";
@@ -14,10 +14,11 @@ let dont_open_context_menu = false;
 
 function pattern_link_context_menu({ app }) {
     // Dynamic pattern for the link context menu
-    return Base.extend({
-        name: "tiptap-link-context-menu",
-        trigger: ".tiptap-link-context-menu",
-        autoregister: false,
+
+    class Pattern extends BasePattern {
+        static name = "tiptap-link-context-menu";
+        static trigger = ".tiptap-link-context-menu";
+
         init() {
             focus_handler(this.el);
 
@@ -58,15 +59,17 @@ function pattern_link_context_menu({ app }) {
                     context_menu_instance = null;
                     app.editor.chain().focus().unsetLink().run();
                 });
-        },
-    });
+        }
+    }
+
+    return Pattern;
 }
 
 function link_panel({ app }) {
-    return Base.extend({
-        name: "tiptap-link-panel",
-        trigger: app.options.link?.panel,
-        autoregister: false,
+    class Pattern extends BasePattern {
+        static name = "tiptap-link-panel";
+        static trigger = app.options.link?.panel;
+
         init() {
             // Close eventual opened link context menus.
             //context_menu_close({
@@ -207,8 +210,10 @@ function link_panel({ app }) {
             events.add_event_listener(link_remove, "click", "tiptap_link_remove", () =>
                 app.editor.chain().focus().unsetLink().run()
             );
-        },
-    });
+        }
+    }
+
+    return Pattern;
 }
 
 export function init({ app, button }) {
@@ -226,11 +231,11 @@ export function init({ app, button }) {
         // been clicked and clicking in another tiptap instance would override
         // previous registrations.
         const link_panel_pattern = link_panel({ app: app });
-        Registry.patterns[link_panel_pattern.prototype.name] = link_panel_pattern;
+        registry.patterns[link_panel_pattern.name] = link_panel_pattern;
         document.addEventListener(
             "patterns-injected-delayed",
             (e) => {
-                Registry.scan(e.detail.injected, [link_panel_pattern.prototype.name]);
+                registry.scan(e.detail.injected, [link_panel_pattern.name]);
             },
             { once: true }
         );
