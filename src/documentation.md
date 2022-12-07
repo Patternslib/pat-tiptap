@@ -139,8 +139,8 @@ You can use these elements with these names:
 - ``tiptap-remove``: To remove the link.
 
 You also need to configure ``pat-tiptap`` with the ``link-panel`` option which points to the form element in the overlay.
-pat-tiptap uses a ``MutationObserver`` to check for changes in the overlay's DOM structure and re-initializes the functionality once the DOM structure changes.
-This way, you can use ``pat-inject``, ``pat-tabs``, ``pat-stacks`` or the like which changes the overlays content and always get the link panel form initlized.
+pat-tiptap listens to changes by `pat-inject` in the panel's DOM structure and re-initializes the panel if there is for example a new panel injected.
+This way you can build multi-tabbed panels with different form elements.
 
 This is the related ``pat-tiptap`` config:
 
@@ -245,8 +245,8 @@ You can use these elements with these names:
 - ``tiptap-confirm``: To save the changes back to the editor.
 
 You also need to configure ``pat-tiptap`` with the ``image-panel`` option which points to the form element in the overlay.
-pat-tiptap uses a ``MutationObserver`` to check for changes in the overlay's DOM structure and re-initializes the functionality once the DOM structure changes.
-This way, you can use ``pat-inject``, ``pat-tabs`` or ``pat-stacks`` which changes the overlay content and automatically get the form reinitialized.
+Like in the link panel, pat-tiptap listens also for DOM changes in the image panel.
+This way you can build multi-tabbed panels with different form elements.
 One idea would be to use a list of styled radio buttons with name ``tiptap-src`` and as value the URL of the image. This would then serve as a image selection widget.
 For an upload widget you can use a combination of ``pat-upload`` and ``pat-inject`` to upload a image and then return a form with a hidden ``tiptap-src`` input field with the value of the new image URL.
 If the form is then finally submitted via ``tiptap-confirm`` the image is set into the editor.
@@ -336,8 +336,8 @@ You can use these elements with these names:
 - ``tiptap-confirm``: To save the changes back to the editor.
 
 You also need to configure ``pat-tiptap`` with the ``embed-panel`` option which points to the form element in the overlay.
-pat-tiptap uses a ``MutationObserver`` to check for changes in the overlay's DOM structure and re-initializes the functionality once the DOM structure changes.
-This way, you can use ``pat-inject``, ``pat-tabs`` or ``pat-stacks`` which changes the overlay content and automatically get the form reinitialized.
+Like in the other panels, pat-tiptap listens also for DOM changes in the embed panel.
+This way you can build multi-tabbed panels with different form elements.
 
 This is the related ``pat-tiptap`` config:
 
@@ -413,8 +413,8 @@ You can use these elements with these names:
 - ``tiptap-confirm``: To save the changes back to the editor.
 
 You also need to configure ``pat-tiptap`` with the ``source-panel`` option which points to the form element in the overlay.
-pat-tiptap uses a ``MutationObserver`` to check for changes in the overlay's DOM structure and re-initializes the functionality once the DOM structure changes.
-This way, you can use ``pat-inject``, ``pat-tabs``, ``pat-stacks`` or the like which changes the overlays content and always get the link panel form initlized.
+Like in the other panels, pat-tiptap listens also for DOM changes in the source panel.
+This way you can build multi-tabbed panels with different form elements.
 
 This is the related ``pat-tiptap`` config:
 
