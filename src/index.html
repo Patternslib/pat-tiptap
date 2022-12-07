@@ -142,6 +142,10 @@
           class="pat-tiptap pat-autofocus"
           data-pat-tiptap="
             toolbar-external: #tiptap-external-toolbar;
+            image-panel: .image-panel;
+            link-panel: .link-panel;
+            source-panel: .source-panel;
+            embed-panel: .embed-panel;
             image-menu: #context-menu-image;
             embed-menu: #context-menu-embed;
             link-menu: #context-menu-link;
@@ -215,7 +219,7 @@
 
     <template id="modal-link">
         <h1>Add / Edit Link</h1>
-        <form class="pat-validation" data-pat-validation="disable-selector: [name=tiptap-confirm]">
+        <form class="link-panel pat-validation" data-pat-validation="disable-selector: [name=tiptap-confirm]">
           <label>
             Link URL:
             <input type="url" name="tiptap-href" placeholder="https://"/>
@@ -235,7 +239,7 @@
 
     <template id="modal-image">
         <h1>Add Image</h1>
-        <form class="pat-validation" data-pat-validation="disable-selector: [name=tiptap-confirm]">
+        <form class="image-panel pat-validation" data-pat-validation="disable-selector: [name=tiptap-confirm]">
           <label>
             Image URL:
             <input type="url" name="tiptap-src" placeholder="https://"/>
@@ -259,7 +263,7 @@
 
     <template id="modal-embed">
         <h1>Add Video Embed</h1>
-        <form class="pat-validation" data-pat-validation="disable-selector: [name=tiptap-confirm]">
+        <form class="embed-panel pat-validation" data-pat-validation="disable-selector: [name=tiptap-confirm]">
           <label>
             Video URL:
             <input type="url" name="tiptap-src" placeholder="https://"/>
@@ -279,7 +283,7 @@
 
     <template id="modal-source">
         <h1>Edit Source</h1>
-        <form>
+        <form class="source-panel">
           <label>
             Source:
             <textarea name="tiptap-source"></textarea>

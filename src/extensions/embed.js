@@ -41,6 +41,9 @@ function pattern_embed_context_menu({ app: app }) {
 
 function embed_panel({ app }) {
     return {
+        name: "tiptap-embed-panel",
+        trigger: app.options.embed?.panel,
+
         init(embed_panel) {
             const embed_src = embed_panel.querySelector("[name=tiptap-src]");
             if (!embed_src) {
