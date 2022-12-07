@@ -2,6 +2,16 @@
 
 
 
+## [4.7.1](https://github.com/patternslib/pat-tiptap/compare/4.7.0...4.7.1) (2022-12-07)
+
+
+### Maintenance
+
+
+* Update documentation. ([58472fd](https://github.com/patternslib/pat-tiptap/commit/58472fdb33a4b6768bef72fe037d04b57a0c6eac))
+
+* Upgrade dependencies. ([d4fa774](https://github.com/patternslib/pat-tiptap/commit/d4fa774bc5ce7b1b0dad2b4c721f1c507ec8e3fa))
+
 ## [4.7.0](https://github.com/patternslib/pat-tiptap/compare/4.6.2...4.7.0) (2022-12-06)
 
 
