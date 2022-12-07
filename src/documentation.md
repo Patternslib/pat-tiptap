@@ -111,7 +111,7 @@ Note: You can also load the modal contents from any URL.
 This is the DOM structure with the overlay:
 
     <div id="modal-link" hidden>
-      <form class="pat-validation">
+      <form class="link-panel pat-validation">
         <label>
           Link URL:
           <input type="url" name="tiptap-href" placeholder="https://"/>
@@ -138,8 +138,15 @@ You can use these elements with these names:
 - ``tiptap-confirm``: To save the changes back to the editor.
 - ``tiptap-remove``: To remove the link.
 
+You also need to configure ``pat-tiptap`` with the ``link-panel`` option which points to the form element in the overlay.
 pat-tiptap listens to changes by `pat-inject` in the panel's DOM structure and re-initializes the panel if there is for example a new panel injected.
 This way you can build multi-tabbed panels with different form elements.
+
+This is the related ``pat-tiptap`` config:
+
+    data-pat-tiptap="
+        link-panel: .link-panel;
+    "
 
 ---
 **Note**
@@ -207,7 +214,7 @@ Note: You can also load the modal contents from any URL.
 This is the DOM structure with the overlay:
 
     <div id="modal-image" hidden>
-      <form class="pat-validation">
+      <form class="image-panel pat-validation">
         <label>
           Image URL:
           <input type="url" name="tiptap-src" placeholder="https://"/>
@@ -237,11 +244,18 @@ You can use these elements with these names:
 - ``tiptap-caption``: Caption text placed in a ``figcaption`` tag.
 - ``tiptap-confirm``: To save the changes back to the editor.
 
+You also need to configure ``pat-tiptap`` with the ``image-panel`` option which points to the form element in the overlay.
 Like in the link panel, pat-tiptap listens also for DOM changes in the image panel.
 This way you can build multi-tabbed panels with different form elements.
 One idea would be to use a list of styled radio buttons with name ``tiptap-src`` and as value the URL of the image. This would then serve as a image selection widget.
 For an upload widget you can use a combination of ``pat-upload`` and ``pat-inject`` to upload a image and then return a form with a hidden ``tiptap-src`` input field with the value of the new image URL.
 If the form is then finally submitted via ``tiptap-confirm`` the image is set into the editor.
+
+This is the related ``pat-tiptap`` config:
+
+    data-pat-tiptap="
+        image-panel: .image-panel;
+    "
 
 
 #### Adding a image context menu
@@ -296,7 +310,7 @@ Note: You can also load the modal contents from any URL.
 This is the DOM structure with the overlay:
 
     <div id="modal-embed" hidden>
-      <form class="pat-validation">
+      <form class="embed-panel pat-validation">
         <label>
           Video URL:
           <input type="url" name="tiptap-src" placeholder="https://"/>
@@ -321,8 +335,15 @@ You can use these elements with these names:
 - ``tiptap-caption``: Caption text placed in a ``figcaption`` tag.
 - ``tiptap-confirm``: To save the changes back to the editor.
 
+You also need to configure ``pat-tiptap`` with the ``embed-panel`` option which points to the form element in the overlay.
 Like in the other panels, pat-tiptap listens also for DOM changes in the embed panel.
 This way you can build multi-tabbed panels with different form elements.
+
+This is the related ``pat-tiptap`` config:
+
+    data-pat-tiptap="
+        embed-panel: .embed-panel;
+    "
 
 
 #### Adding a embed context menu
@@ -375,7 +396,7 @@ Note: You can also load the modal contents from any URL.
 This is the DOM structure with the overlay:
 
     <div id="modal-source" hidden>
-      <form>
+      <form class="source-panel">
         <label>
           Source:
           <textarea name="tiptap-source"></textarea>
@@ -391,8 +412,15 @@ You can use these elements with these names:
 - ``tiptap-source``: Textarea for the HTML source code.
 - ``tiptap-confirm``: To save the changes back to the editor.
 
+You also need to configure ``pat-tiptap`` with the ``source-panel`` option which points to the form element in the overlay.
 Like in the other panels, pat-tiptap listens also for DOM changes in the source panel.
 This way you can build multi-tabbed panels with different form elements.
+
+This is the related ``pat-tiptap`` config:
+
+    data-pat-tiptap="
+        source-panel: .source-panel;
+    "
 
 
 #### Adding suggestion functionality
@@ -518,6 +546,9 @@ This is an CSS example to show the placeholder on any empty paragraph:
 | Property               | Type   | Description                                                                        |
 | ---------------------- | ------ | ---------------------------------------------------------------------------------- |
 | toolbar-external       | String | CSS selector pointing to a toolbar container.                                      |
+| link-panel             | String | CSS selector pointing to the link form element in the overlay.                     |
+| image-panel            | String | CSS selector pointing to the image form element in the overlay.                    |
+| source-panel           | String | CSS selector pointing to the source form element in the overlay.                   |
 | link-menu              | String | URL or CSS selector pointing to the link context menu contents.                    |
 | mentions-menu          | String | URL or CSS selector pointing to the mentions context menu contents.                |
 | tags-menu              | String | URL or CSS selector pointing to the tags context menu contents.                    |

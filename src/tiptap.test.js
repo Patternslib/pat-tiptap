@@ -74,6 +74,7 @@ describe("pat-tiptap", () => {
               class="pat-tiptap"
               data-pat-tiptap="
                 toolbar-external: #tiptap-external-toolbar-1;
+                link-panel: #link-panel
               ">
           </textarea>
 
@@ -84,6 +85,7 @@ describe("pat-tiptap", () => {
               class="pat-tiptap"
               data-pat-tiptap="
                 toolbar-external: #tiptap-external-toolbar-2;
+                link-panel: #link-panel
               ">
           </textarea>
 
@@ -152,6 +154,7 @@ describe("pat-tiptap", () => {
               class="pat-tiptap"
               data-pat-tiptap="
                 toolbar-external: #tiptap-external-toolbar;
+                link-panel: #link-panel
               ">
           </textarea>
 
@@ -159,6 +162,7 @@ describe("pat-tiptap", () => {
               class="pat-tiptap"
               data-pat-tiptap="
                 toolbar-external: #tiptap-external-toolbar;
+                link-panel: #link-panel
               ">
           </textarea>
 
@@ -384,6 +388,7 @@ describe("pat-tiptap", () => {
               class="pat-tiptap"
               data-pat-tiptap="
                 toolbar-external: #tiptap-external-toolbar;
+                link-panel: #link-panel
               ">
           </textarea>
           <template id="modal-link">
@@ -430,6 +435,7 @@ describe("pat-tiptap", () => {
               class="pat-tiptap"
               data-pat-tiptap="
                 toolbar-external: #tiptap-external-toolbar;
+                link-panel: #link-panel
               ">
           </textarea>
           <template id="modal-link">
@@ -476,6 +482,7 @@ describe("pat-tiptap", () => {
               class="pat-tiptap"
               data-pat-tiptap="
                 toolbar-external: #tiptap-external-toolbar;
+                image-panel: #image-panel
               ">
           </textarea>
           <template id="modal-image">
@@ -530,6 +537,7 @@ describe("pat-tiptap", () => {
               class="pat-tiptap"
               data-pat-tiptap="
                 toolbar-external: #tiptap-external-toolbar;
+                image-panel: #image-panel
               ">
           </textarea>
           <template id="modal-image">
@@ -580,6 +588,7 @@ describe("pat-tiptap", () => {
               class="pat-tiptap"
               data-pat-tiptap="
                 toolbar-external: #tiptap-external-toolbar;
+                image-panel: #image-panel
               ">
           </textarea>
           <template id="modal-image">
@@ -662,6 +671,7 @@ describe("pat-tiptap", () => {
               class="pat-tiptap"
               data-pat-tiptap="
                 toolbar-external: #tiptap-external-toolbar;
+                embed-panel: #embed-panel
               ">
           </textarea>
           <template id="modal-embed">
@@ -714,6 +724,7 @@ describe("pat-tiptap", () => {
               class="pat-tiptap"
               data-pat-tiptap="
                 toolbar-external: #tiptap-external-toolbar;
+                embed-panel: #embed-panel
               ">
           </textarea>
           <template id="modal-embed">
@@ -759,6 +770,7 @@ describe("pat-tiptap", () => {
               class="pat-tiptap"
               data-pat-tiptap="
                 toolbar-external: #tiptap-external-toolbar;
+                embed-panel: #embed-panel
               ">
           </textarea>
           <template id="modal-embed">
@@ -811,6 +823,7 @@ describe("pat-tiptap", () => {
               class="pat-tiptap"
               data-pat-tiptap="
                 toolbar-external: #tiptap-external-toolbar;
+                embed-panel: #embed-panel
               ">
           </textarea>
           <template id="modal-embed">

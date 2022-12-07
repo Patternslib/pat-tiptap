@@ -42,6 +42,9 @@ function image_panel({ app }) {
     // - We need to reinitialize the pattern on already initialized nodes on possible tab-changes within the modal.
     // - We need to keep the _node_image and _figcaption references among re-initializations.
     return {
+        name: "tiptap-image-panel",
+        trigger: app.options.image?.panel,
+
         init(image_panel) {
             const image_srcs = image_panel.querySelectorAll("[name=tiptap-src]");
             const image_alt = image_panel.querySelector("[name=tiptap-alt]");
