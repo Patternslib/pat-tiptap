@@ -890,7 +890,8 @@ describe("pat-tiptap", () => {
 
         await utils.timeout(1); // Wait a tick for the tooltip to open.
         await utils.timeout(1); // Wait a tick for the suggestion-pattern to be initialized.
-        await utils.timeout(1); // Wait a tick for the suggestion-pattern to be initialized.
+        await utils.timeout(1); // Wait another tick.
+        await utils.timeout(1); // Wait another tick.
 
         // Check for class ``tiptap-mentions`` set on tooltip container.
         expect(
@@ -924,6 +925,7 @@ describe("pat-tiptap", () => {
 
         // select
         editable.dispatchEvent(new KeyboardEvent("keydown", { key: "Enter" }));
+        await utils.timeout(1);
         expect(document.querySelector(".tiptap-items")).toBeFalsy();
         const mention = editable.firstChild.firstChild;
         expect(mention.textContent).toBe("@item a");
@@ -966,7 +968,8 @@ describe("pat-tiptap", () => {
 
         await utils.timeout(1); // Wait a tick for the tooltip to open.
         await utils.timeout(1); // Wait a tick for the suggestion-pattern to be initialized.
-        await utils.timeout(1); // Wait a tick for the suggestion-pattern to be initialized.
+        await utils.timeout(1); // Wait another tick.
+        await utils.timeout(1); // Wait another tick.
 
         // Select 2nd
         const items = document.querySelectorAll(".tiptap-items .tiptap-item");
@@ -975,6 +978,7 @@ describe("pat-tiptap", () => {
 
         // select
         editable.dispatchEvent(new KeyboardEvent("keydown", { key: "Enter" }));
+        await utils.timeout(1);
         expect(document.querySelector(".tiptap-items")).toBeFalsy();
         const mention = editable.firstChild.firstChild;
         expect(mention.textContent).toBe("@item b");
@@ -1017,12 +1021,14 @@ describe("pat-tiptap", () => {
 
         await utils.timeout(1); // Wait a tick for the tooltip to open.
         await utils.timeout(1); // Wait a tick for the suggestion-pattern to be initialized.
-        await utils.timeout(1); // Wait a tick for the suggestion-pattern to be initialized.
+        await utils.timeout(1); // Wait another tick.
+        await utils.timeout(1); // Wait another tick.
 
         const items = document.querySelectorAll(".tiptap-items .tiptap-item");
 
         // click first item
         items[0].querySelector("a").click();
+        await utils.timeout(1);
 
         expect(document.querySelector(".tiptap-items")).toBeFalsy();
         const mention = editable.firstChild.firstChild;
@@ -1066,12 +1072,14 @@ describe("pat-tiptap", () => {
 
         await utils.timeout(1); // Wait a tick for the tooltip to open.
         await utils.timeout(1); // Wait a tick for the suggestion-pattern to be initialized.
-        await utils.timeout(1); // Wait a tick for the suggestion-pattern to be initialized.
+        await utils.timeout(1); // Wait another tick.
+        await utils.timeout(1); // Wait another tick.
 
         const items = document.querySelectorAll(".tiptap-items .tiptap-item");
 
         // click first item
         items[0].querySelector("span").click();
+        await utils.timeout(1);
 
         expect(document.querySelector(".tiptap-items")).toBeFalsy();
         const mention = editable.firstChild.firstChild;
@@ -1116,7 +1124,8 @@ describe("pat-tiptap", () => {
 
         await utils.timeout(1); // Wait a tick for the tooltip to open.
         await utils.timeout(1); // Wait a tick for the suggestion-pattern to be initialized.
-        await utils.timeout(1); // Wait a tick for the suggestion-pattern to be initialized.
+        await utils.timeout(1); // Wait another tick.
+        await utils.timeout(1); // Wait another tick.
 
         // Check for class ``tiptap-tags`` set on tooltip container.
         expect(document.querySelector(".tooltip-container.tiptap-tags")).toBeTruthy();
@@ -1132,6 +1141,7 @@ describe("pat-tiptap", () => {
         expect(items[1].classList.contains("active")).toBe(true);
 
         editable.dispatchEvent(new KeyboardEvent("keydown", { key: "Enter" }));
+        await utils.timeout(1);
         expect(document.querySelector(".tiptap-items")).toBeFalsy();
         const mention = editable.firstChild.firstChild;
         expect(mention.textContent).toBe("#item b");
@@ -1173,10 +1183,12 @@ describe("pat-tiptap", () => {
 
         await utils.timeout(1); // Wait a tick for the tooltip to open.
         await utils.timeout(1); // Wait a tick for the suggestion-pattern to be initialized.
-        await utils.timeout(1); // Wait a tick for the suggestion-pattern to be initialized.
+        await utils.timeout(1); // Wait another tick.
+        await utils.timeout(1); // Wait another tick.
 
         const items = document.querySelectorAll(".tiptap-items .tiptap-item");
         items[0].querySelector("a").click();
+        await utils.timeout(1);
 
         expect(document.querySelector(".tiptap-items")).toBeFalsy();
         const mention = editable.firstChild.firstChild;
@@ -1284,13 +1296,12 @@ describe("pat-tiptap", () => {
 
         await utils.timeout(1); // Wait a tick for the tooltip to open.
         await utils.timeout(1); // Wait a tick for the suggestion-pattern to be initialized.
-        await utils.timeout(1); // Wait a tick for the suggestion-pattern to be initialized.
+        await utils.timeout(1); // Wait another tick.
+        await utils.timeout(1); // Wait another tick.
 
         const items = document.querySelectorAll(".tiptap-items .tiptap-item");
         items[0].querySelector("a").click();
-        await utils.timeout(1); // Wait a tick for the tooltip to open.
-        await utils.timeout(1); // Wait a tick for the tooltip to open.
-        await utils.timeout(1); // Wait a tick for the tooltip to open.
+        await utils.timeout(1);
 
         expect(document.querySelector(".tiptap-items")).toBeFalsy();
         const mention = editable.firstChild.firstChild;
@@ -1348,7 +1359,8 @@ describe("pat-tiptap", () => {
 
         await utils.timeout(1); // Wait a tick for the tooltip to open.
         await utils.timeout(1); // Wait a tick for the suggestion-pattern to be initialized.
-        await utils.timeout(1); // Wait a tick for the suggestion-pattern to be initialized.
+        await utils.timeout(1); // Wait another tick.
+        await utils.timeout(1); // Wait another tick.
 
         // Check for class ``tiptap-tags`` set on tooltip container.
         expect(document.querySelector(".tooltip-container.tiptap-tags")).toBeTruthy();
@@ -1360,6 +1372,7 @@ describe("pat-tiptap", () => {
 
         // Close when clicking outside the suggestion menu
         document.body.dispatchEvent(events.mousedown_event());
+        await utils.timeout(1);
         expect(document.querySelector(".tooltip-container.tiptap-tags")).toBeFalsy();
 
         global.fetch.mockClear();
@@ -1395,7 +1408,8 @@ describe("pat-tiptap", () => {
 
         await utils.timeout(1); // Wait a tick for the tooltip to open.
         await utils.timeout(1); // Wait a tick for the suggestion-pattern to be initialized.
-        await utils.timeout(1); // Wait a tick for the suggestion-pattern to be initialized.
+        await utils.timeout(1); // Wait another tick.
+        await utils.timeout(1); // Wait another tick.
 
         // Check for class ``tiptap-tags`` set on tooltip container.
         expect(document.querySelector(".tooltip-container.tiptap-tags")).toBeTruthy();
@@ -1409,6 +1423,7 @@ describe("pat-tiptap", () => {
                 cancelable: true,
             })
         );
+        await utils.timeout(1);
         expect(document.querySelector(".tooltip-container.tiptap-tags")).toBeFalsy();
 
         global.fetch.mockClear();

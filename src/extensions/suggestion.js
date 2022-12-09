@@ -292,13 +292,13 @@ export const factory = ({ app, name, char, plural }) => {
             this.options.suggestion.render = () => {
                 let _debounced_context_menu;
 
-                const ctx_close = () => {
-                    context_menu_close({
+                const ctx_close = async () => {
+                    this.editor.off("selectionUpdate", _debounced_context_menu);
+                    await context_menu_close({
                         instance: context_menu_instance,
                         pattern_name: "tiptap-suggestion",
                     });
                     context_menu_instance = null;
-                    this.editor.off("selectionUpdate", _debounced_context_menu);
                 };
 
                 return {

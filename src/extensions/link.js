@@ -30,8 +30,8 @@ function pattern_link_context_menu({ app }) {
                 if (attrs?.href) {
                     btn_open.setAttribute("href", attrs.href);
                 }
-                btn_open.addEventListener("click", () => {
-                    context_menu_close({
+                btn_open.addEventListener("click", async () => {
+                    await context_menu_close({
                         instance: context_menu_instance,
                         pattern_name: this.name,
                     });
@@ -40,8 +40,8 @@ function pattern_link_context_menu({ app }) {
             }
 
             btn_edit &&
-                btn_edit.addEventListener("click", () => {
-                    context_menu_close({
+                btn_edit.addEventListener("click", async () => {
+                    await context_menu_close({
                         instance: context_menu_instance,
                         pattern_name: this.name,
                     });
@@ -50,8 +50,8 @@ function pattern_link_context_menu({ app }) {
                 });
 
             btn_unlink &&
-                btn_unlink.addEventListener("click", () => {
-                    context_menu_close({
+                btn_unlink.addEventListener("click", async () => {
+                    await context_menu_close({
                         instance: context_menu_instance,
                         pattern_name: this.name,
                     });
@@ -261,7 +261,7 @@ export function init({ app, button }) {
                     // Link not active anymore. Return.
                     if (context_menu_instance) {
                         // If open, close.
-                        context_menu_close({
+                        await context_menu_close({
                             instance: context_menu_instance,
                             pattern_name: "tiptap-link-context-menu",
                         });
@@ -269,7 +269,6 @@ export function init({ app, button }) {
                     }
                     return;
                 }
-
                 // Initialize the context menu
                 context_menu_instance = await context_menu({
                     url: app.options.link.menu,
