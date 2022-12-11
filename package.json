@@ -55,13 +55,9 @@
         "build:stats": "NODE_ENV=production webpack --config webpack.config.js --json > stats.json",
         "test": "jest"
     },
-    "browserslist": {
-        "production": [
-            ">0.2%",
-            "not dead",
-            "not op_mini all"
-        ]
-    },
+    "browserslist": [
+        "defaults"
+    ],
     "keywords": [
         "patternslib"
     ],
