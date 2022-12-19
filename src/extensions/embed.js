@@ -205,7 +205,7 @@ export function init({ app, button }) {
                     // Embed not active anymore. Return.
                     if (context_menu_instance) {
                         // If open, close.
-                        context_menu_close({
+                        await context_menu_close({
                             instance: context_menu_instance,
                             pattern_name: "tiptap-embed-context-menu",
                         });

@@ -21,7 +21,7 @@ export async function context_menu({
         (cur_node !== prev_node || !instance?.tippy.popperInstance)
     ) {
         // Close context menu, when new node is selected.
-        context_menu_close({
+        await context_menu_close({
             instance: instance,
             pattern_name: pattern.name,
         });
@@ -66,7 +66,7 @@ export async function context_menu({
             document,
             "mousedown",
             "tiptap--context_menu_close--click",
-            (e) => {
+            async (e) => {
                 if (
                     [e.target, ...dom.get_parents(e.target)].includes(
                         instance?.tippy.popper
@@ -75,25 +75,27 @@ export async function context_menu({
                     // Do not close the context menu if we click in it.
                     return;
                 }
-                context_menu_close({
+                await context_menu_close({
                     instance: instance,
                     pattern_name: pattern.name,
                 });
+                instance = null;
             }
         );
         events.add_event_listener(
             document,
             "keydown",
             "tiptap--context_menu_close--esc",
-            (e) => {
+            async (e) => {
                 if (e.key !== "Escape") {
                     // Not a closing key.
                     return;
                 }
-                context_menu_close({
+                await context_menu_close({
                     instance: instance,
                     pattern_name: pattern.name,
                 });
+                instance = null;
             }
         );
 
@@ -105,10 +107,10 @@ export async function context_menu({
     return instance;
 }
 
-export function context_menu_close({ instance, pattern_name }) {
+export async function context_menu_close({ instance, pattern_name }) {
     // Hide and destroy the context menu / tooltip instance
     if (instance) {
-        instance.hide();
+        await instance.hide();
         instance.destroy();
         instance = null;
     }
