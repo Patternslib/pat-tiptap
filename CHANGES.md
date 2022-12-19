@@ -2,6 +2,35 @@
 
 
 
+## [4.7.2](https://github.com/patternslib/pat-tiptap/compare/4.7.1...4.7.2) (2022-12-19)
+
+
+### Bug Fixes
+
+
+* Ensure correct execution order when closing the context menu. ([986379c](https://github.com/patternslib/pat-tiptap/commit/986379ceca9d0eab4781e8cccb7523eeab0724ae))Wait for the tooltip to have been hidden before calling it's destroy
+method. Then also wait for the close_context_menu to have run before
+clearing it's instance. This should ensure a correct execution order
+when closing the context menu.
+
+* Fix the build. ([f4244fb](https://github.com/patternslib/pat-tiptap/commit/f4244fbe8f1293419ad16f0f139ae55fdba676bd))Temporarily depend on a source-checkout of Patterns to include the _sass
+directory in the npm package to fix the pat-tiptap build. Change back
+once Patterns 9.8.0-beta.2 is released.
+
+
+### Maintenance
+
+
+* Add missing dependency prosemirror-tables. ([00a5f6f](https://github.com/patternslib/pat-tiptap/commit/00a5f6f7216d0df094c04012d233b0a6a89ed6d2))
+
+* Fix import for module federation initialization. ([9663a37](https://github.com/patternslib/pat-tiptap/commit/9663a372640f644901255d073947f47244e89192))
+
+* Only include dist/ and src/ directories in the npm package. ([12637bf](https://github.com/patternslib/pat-tiptap/commit/12637bf032d753ad1e68e46b9b4a6eb450263574))
+
+* Upgrade dependencies. ([ebfc763](https://github.com/patternslib/pat-tiptap/commit/ebfc7635eebe7449fe2c7617c2a96fa4b88d64be))
+
+* Use browserslist defaults. ([02a6257](https://github.com/patternslib/pat-tiptap/commit/02a62573d8e919e58506773b588e6e5024a62cb0))
+
 ## [4.7.1](https://github.com/patternslib/pat-tiptap/compare/4.7.0...4.7.1) (2022-12-07)
 
 
