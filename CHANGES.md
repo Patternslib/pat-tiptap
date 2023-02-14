@@ -2,6 +2,25 @@
 
 
 
+## [4.8.0](https://github.com/patternslib/pat-tiptap/compare/4.7.2...4.8.0) (2023-02-14)
+
+
+### Features
+
+
+* Adding Links: Correct mail address without the mailto: scheme. ([36bfeb0](https://github.com/patternslib/pat-tiptap/commit/36bfeb0bd9b2ba1c68273cc1591fa131a0dd82bb))
+
+* Improve util.is_url and add util.is_mail. ([3ba848c](https://github.com/patternslib/pat-tiptap/commit/3ba848c0b08dcaafbf426fda9a590a7161fe672c))util.is_url now allows for protocol schemes without slashes and let it detect e.g. also mailto:
+util.is_mail checks for a valid email adress.
+
+
+### Maintenance
+
+
+* Upgrade dependencies. ([f42cefe](https://github.com/patternslib/pat-tiptap/commit/f42cefe5c6096b099bdf296b7ded3a8baf35d8a8))
+
+* Upgrade dependencies. ([0ce9920](https://github.com/patternslib/pat-tiptap/commit/0ce9920b74f9d80d86e7eac7cfb6b65cf3358f2c))
+
 ## [4.7.2](https://github.com/patternslib/pat-tiptap/compare/4.7.1...4.7.2) (2022-12-19)
 
 
