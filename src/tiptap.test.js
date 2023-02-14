@@ -39,7 +39,7 @@ const SUGGESTION_RESPONSE = `
 `;
 
 describe("pat-tiptap", () => {
-    beforeEach(() => {
+    afterEach(() => {
         document.body.innerHTML = "";
     });
 
@@ -379,98 +379,116 @@ describe("pat-tiptap", () => {
         expect(document.querySelector("#tiptap-external-toolbar").classList.length).toBe(0); // prettier-ignore
     });
 
-    it("5.1 - Adds a link", async () => {
-        document.body.innerHTML = `
-          <div id="tiptap-external-toolbar">
-            <a class="button-link pat-modal" href="#modal-link">Link</a>
-          </div>
-          <textarea
-              class="pat-tiptap"
-              data-pat-tiptap="
-                toolbar-external: #tiptap-external-toolbar;
-                link-panel: #link-panel
-              ">
-          </textarea>
-          <template id="modal-link">
-            <form id="link-panel">
-              <input name="tiptap-href"/>
-              <input name="tiptap-text"/>
-              <button
-                  type="submit"
-                  name="tiptap-confirm"
-                  class="close-panel">submit</button>
-            </form>
-          </template>
-        `;
+    describe("5 - Link tests", () => {
+        let button_link;
 
-        const pattern = new Pattern(document.querySelector(".pat-tiptap"));
-        await events.await_pattern_init(pattern);
+        beforeEach(async () => {
+            document.body.innerHTML = `
+              <div id="tiptap-external-toolbar">
+                <a class="button-link pat-modal" href="#modal-link">Link</a>
+              </div>
+              <textarea
+                  class="pat-tiptap"
+                  data-pat-tiptap="
+                    toolbar-external: #tiptap-external-toolbar;
+                    link-panel: #link-panel
+                  ">
+              </textarea>
+              <template id="modal-link">
+                <form id="link-panel">
+                  <input name="tiptap-href"/>
+                  <input name="tiptap-text"/>
+                  <button
+                      type="submit"
+                      name="tiptap-confirm"
+                      class="close-panel">submit</button>
+                </form>
+              </template>
+            `;
+            const pattern = new Pattern(document.querySelector(".pat-tiptap"));
+            await events.await_pattern_init(pattern);
 
-        const button_link = document.querySelector("#tiptap-external-toolbar .button-link"); // prettier-ignore
-        new PatternModal(button_link);
+            button_link = document.querySelector("#tiptap-external-toolbar .button-link"); // prettier-ignore
+            new PatternModal(button_link);
 
-        document.querySelector(".tiptap-container [contenteditable]").focus(); // Set focus to bypass toolbar check
+            document.querySelector(".tiptap-container [contenteditable]").focus(); // Set focus to bypass toolbar check
 
-        button_link.click();
-        await events.await_event(document, "patterns-injected-delayed");
-        await utils.timeout(1);
+            button_link.click();
+            await events.await_event(document, "patterns-injected-delayed");
+            await utils.timeout(1);
+        });
 
-        document.querySelector("#link-panel [name=tiptap-href]").value = "https://patternslib.com/"; // prettier-ignore
-        document.querySelector("#link-panel [name=tiptap-text]").value = "Link text"; // prettier-ignore
-        document.querySelector("#link-panel [name=tiptap-confirm]").dispatchEvent(new Event("click")); // prettier-ignore
-        await utils.timeout(1);
+        afterEach(() => {
+            document.body.innerHTML = "";
+        });
 
-        const anchor = document.querySelector(".tiptap-container a");
-        expect(anchor).toBeTruthy();
-        expect(anchor.href).toBe("https://patternslib.com/");
-        expect(anchor.textContent).toBe("Link text");
-    });
+        it("5.1 - Adds a link", async () => {
+            document.querySelector("#link-panel [name=tiptap-href]").value = "https://patternslib.com/"; // prettier-ignore
+            document.querySelector("#link-panel [name=tiptap-text]").value = "Link text"; // prettier-ignore
+            document.querySelector("#link-panel [name=tiptap-confirm]").dispatchEvent(new Event("click")); // prettier-ignore
+            await utils.timeout(1);
 
-    it("5.2 - Adds a link with https://, if the protocoll was missing.", async () => {
-        document.body.innerHTML = `
-          <div id="tiptap-external-toolbar">
-            <a class="button-link pat-modal" href="#modal-link">Link</a>
-          </div>
-          <textarea
-              class="pat-tiptap"
-              data-pat-tiptap="
-                toolbar-external: #tiptap-external-toolbar;
-                link-panel: #link-panel
-              ">
-          </textarea>
-          <template id="modal-link">
-            <form id="link-panel">
-              <input name="tiptap-href"/>
-              <input name="tiptap-text"/>
-              <button
-                  type="submit"
-                  name="tiptap-confirm"
-                  class="close-panel">submit</button>
-            </form>
-          </template>
-        `;
+            const anchor = document.querySelector(".tiptap-container a");
+            expect(anchor).toBeTruthy();
+            expect(anchor.href).toBe("https://patternslib.com/");
+            expect(anchor.textContent).toBe("Link text");
+        });
 
-        const pattern = new Pattern(document.querySelector(".pat-tiptap"));
-        await events.await_pattern_init(pattern);
+        it("5.2 - Corrects a link with missing protocoll.", async () => {
+            document.querySelector("#link-panel [name=tiptap-href]").value = "patternslib.com"; // prettier-ignore
+            document.querySelector("#link-panel [name=tiptap-text]").value = "Link text"; // prettier-ignore
+            document.querySelector("#link-panel [name=tiptap-confirm]").dispatchEvent(new Event("click")); // prettier-ignore
+            await utils.timeout(1);
 
-        const button_link = document.querySelector("#tiptap-external-toolbar .button-link"); // prettier-ignore
-        new PatternModal(button_link);
+            const anchor = document.querySelector(".tiptap-container a");
+            expect(anchor).toBeTruthy();
+            expect(anchor.href).toBe("https://patternslib.com/");
+            expect(anchor.textContent).toBe("Link text");
+        });
 
-        document.querySelector(".tiptap-container [contenteditable]").focus(); // Set focus to bypass toolbar check
+        it("5.3 - Adds a mailto address.", async () => {
+            document.querySelector("#link-panel [name=tiptap-href]").value = "mailto:info@patternslib.com"; // prettier-ignore
+            document.querySelector("#link-panel [name=tiptap-text]").value = "Mail text"; // prettier-ignore
+            document.querySelector("#link-panel [name=tiptap-confirm]").dispatchEvent(new Event("click")); // prettier-ignore
+            await utils.timeout(1);
 
-        button_link.click();
-        await events.await_event(document, "patterns-injected-delayed");
-        await utils.timeout(1);
+            const anchor = document.querySelector(".tiptap-container a");
+            expect(anchor.href).toBe("mailto:info@patternslib.com");
+            expect(anchor.textContent).toBe("Mail text");
+        });
 
-        document.querySelector("#link-panel [name=tiptap-href]").value = "patternslib.com"; // prettier-ignore
-        document.querySelector("#link-panel [name=tiptap-text]").value = "Link text"; // prettier-ignore
-        document.querySelector("#link-panel [name=tiptap-confirm]").dispatchEvent(new Event("click")); // prettier-ignore
-        await utils.timeout(1);
+        it("5.4 - Corrects a mailto address with missing protocoll.", async () => {
+            document.querySelector("#link-panel [name=tiptap-href]").value = "info@patternslib.com"; // prettier-ignore
+            document.querySelector("#link-panel [name=tiptap-text]").value = "Mail text"; // prettier-ignore
+            document.querySelector("#link-panel [name=tiptap-confirm]").dispatchEvent(new Event("click")); // prettier-ignore
+            await utils.timeout(1);
 
-        const anchor = document.querySelector(".tiptap-container a");
-        expect(anchor).toBeTruthy();
-        expect(anchor.href).toBe("https://patternslib.com/");
-        expect(anchor.textContent).toBe("Link text");
+            const anchor = document.querySelector(".tiptap-container a");
+            expect(anchor.href).toBe("mailto:info@patternslib.com");
+            expect(anchor.textContent).toBe("Mail text");
+        });
+
+        it("5.5 - Handles exotic protocolls, like ftp://", async () => {
+            document.querySelector("#link-panel [name=tiptap-href]").value = "ftp://patternslib.com"; // prettier-ignore
+            document.querySelector("#link-panel [name=tiptap-text]").value = "FTP text"; // prettier-ignore
+            document.querySelector("#link-panel [name=tiptap-confirm]").dispatchEvent(new Event("click")); // prettier-ignore
+            await utils.timeout(1);
+
+            const anchor = document.querySelector(".tiptap-container a");
+            expect(anchor.href).toBe("ftp://patternslib.com/");
+            expect(anchor.textContent).toBe("FTP text");
+        });
+
+        it("5.6 - ... or callto:", async () => {
+            document.querySelector("#link-panel [name=tiptap-href]").value = "callto:0123456789"; // prettier-ignore
+            document.querySelector("#link-panel [name=tiptap-text]").value = "Callto text"; // prettier-ignore
+            document.querySelector("#link-panel [name=tiptap-confirm]").dispatchEvent(new Event("click")); // prettier-ignore
+            await utils.timeout(1);
+
+            const anchor = document.querySelector(".tiptap-container a");
+            expect(anchor.href).toBe("callto:0123456789");
+            expect(anchor.textContent).toBe("Callto text");
+        });
     });
 
     it("6.1 - Adds an image within <figure> tags including a <figcaption>", async () => {

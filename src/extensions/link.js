@@ -141,7 +141,16 @@ function link_panel({ app }) {
                 cmd.command(async ({ tr }) => {
                     if (!tiptap_utils.is_url(link_href.value)) {
                         // Correct the link href if it's not a valid url.
-                        link_href.value = `https://${link_href.value}`;
+                        if (tiptap_utils.is_mail(link_href.value)) {
+                            // Add `mailto:` if it's an email.
+                            // `is_email` matches for valid e-mail addresses
+                            // with `mailto:` and without, but the previous
+                            // check `is_url` would have already passed for
+                            // `mailto:` links.
+                            link_href.value = `mailto:${link_href.value}`;
+                        } else {
+                            link_href.value = `https://${link_href.value}`;
+                        }
                     }
                     // create = update
                     // create prosemirror tree mark and node

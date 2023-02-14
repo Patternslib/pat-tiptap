@@ -50,16 +50,30 @@ export const accessibility_attributes = [
 /**
  * Test, if a given string is a absolute or relative URL.
  *
- * @param {string} url - The URL to test.
- * @returns {boolean} True, if the URL is absolute or relative.
+ * @param {string} value - The URL to test.
+ * @returns {boolean} True, if the value is a absolute or relative URL.
  */
-export const is_url = (url) => {
-    const re_url = /(^\.?\.?\/|:\/\/)/;
-    return re_url.test(url);
+export const is_url = (value) => {
+    // Search for relative or absolute URLs (e.g. `/`, `./`, `../`) or for
+    // any URL with a protocol (e.g. `http://`, `https://`, `mailto:`).
+    const re_url = /(^\.?\.?\/|^[^\.]+:)/;
+    return re_url.test(value);
+};
+
+/**
+ * Test, if a given string is a valid e-mail address.
+ *
+ * @param {string} value - The e-mail to test.
+ * @returns {boolean} True, if the value is a valid e-mail.
+ */
+export const is_mail = (value) => {
+    const re_mail = /[^@\s]+@[^@\s]+\.[^@\s]+/;
+    return re_mail.test(value);
 };
 
 export default {
     add_search_params: add_search_params,
     accessibility_attributes: accessibility_attributes,
     is_url: is_url,
+    is_mail: is_mail,
 };
