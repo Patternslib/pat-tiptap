@@ -41,7 +41,7 @@ export async function context_menu({
 
         // 2) Initialize the tooltip
         const editor_element = editor.options.element;
-        instance = await new patTooltip(editor_element, {
+        instance = new patTooltip(editor_element, {
             "source": "ajax",
             "url": url,
             "trigger": "none",

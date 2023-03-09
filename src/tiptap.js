@@ -138,6 +138,10 @@ class Pattern extends BasePattern {
             this.focus_handler(this.toolbar_el);
         }
 
+        const scan_debouncer = utils.debounce((dom) => {
+            registry.scan(dom);
+        }, 500);
+
         const toolbar_ext = await import("./toolbar");
         this.toolbar = toolbar_ext.init_pre({ app: this });
         this.editor = new TipTap({
@@ -153,11 +157,11 @@ class Pattern extends BasePattern {
             onUpdate() {
                 // Note: ``this`` is the editor instance.
                 setText(this.getHTML());
-                registry.scan(this.view.dom);
+                scan_debouncer(this.view.dom);
             },
             onCreate() {
                 // Initially scan the dom for any Patterns in content.
-                registry.scan(this.view.dom);
+                scan_debouncer(this.view.dom);
             },
             onFocus: async () => {
                 // Note: ``this`` is the pattern instance.

@@ -198,32 +198,35 @@ export function init({ app, button }) {
             ? button.classList.remove("disabled")
             : button.classList.add("disabled");
 
-        if (app.options.embed.menu) {
-            // Open the context menu with a small delay.
-            utils.debounce(async () => {
-                if (!app.editor.isActive("embed")) {
-                    // Embed not active anymore. Return.
-                    if (context_menu_instance) {
-                        // If open, close.
-                        await context_menu_close({
-                            instance: context_menu_instance,
-                            pattern_name: "tiptap-embed-context-menu",
-                        });
-                        context_menu_instance = null;
-                    }
-                    return;
-                }
-
-                // Initialize the context menu
-                context_menu_instance = await context_menu({
-                    url: app.options.embed.menu,
-                    editor: app.editor,
-                    instance: context_menu_instance,
-                    pattern: pattern_embed_context_menu({ app: app }),
-                    extra_class: "tiptap-embed-menu",
-                });
-            }, 50)();
+        if (!app.options.embed.menu) {
+            // Nothing to do, return.
+            return;
         }
+
+        // Open the context menu with a small delay.
+        utils.debounce(async () => {
+            if (!app.editor.isActive("embed")) {
+                // Embed not active anymore. Return.
+                if (context_menu_instance) {
+                    // If open, close.
+                    await context_menu_close({
+                        instance: context_menu_instance,
+                        pattern_name: "tiptap-embed-context-menu",
+                    });
+                    context_menu_instance = null;
+                }
+                return;
+            }
+
+            // Initialize the context menu
+            context_menu_instance = await context_menu({
+                url: app.options.embed.menu,
+                editor: app.editor,
+                instance: context_menu_instance,
+                pattern: pattern_embed_context_menu({ app: app }),
+                extra_class: "tiptap-embed-menu",
+            });
+        }, 50)();
     });
 }
 
