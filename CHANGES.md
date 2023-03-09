@@ -2,6 +2,25 @@
 
 
 
+## [4.8.1](https://github.com/patternslib/pat-tiptap/compare/4.8.0...4.8.1) (2023-03-09)
+
+
+### Bug Fixes
+
+
+* Fix problem with mention/tagging menus. ([4bd92c6](https://github.com/patternslib/pat-tiptap/commit/4bd92c69c0f62309864b3c843e595e8f6179ee80))Fix a problem where a mention/tagging menu could not be opened when
+there was already a pat-tooltip instance in tiptap's text content.
+The dependency on Patternslib 9.8.3-alpha.1+ solves the problem.
+
+
+### Maintenance
+
+
+* Improve update performance. ([44ab8d2](https://github.com/patternslib/pat-tiptap/commit/44ab8d2c4faad3098091db61fc6f173a062665c9))Do not do a Patterns-scan on the content on each update but debounce it
+for better performance.
+
+* Upgrade dependencies. ([f6a6871](https://github.com/patternslib/pat-tiptap/commit/f6a68719ab3f5b7a113d6e5873fa3f9c192a5d95))
+
 ## [4.8.0](https://github.com/patternslib/pat-tiptap/compare/4.7.2...4.8.0) (2023-02-14)
 
 
