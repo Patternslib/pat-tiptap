@@ -10,14 +10,6 @@
 
 * Upgrade tiptap to 2.0.3 and other dependencies. ([39c3df9](https://github.com/patternslib/pat-tiptap/commit/39c3df9f60bb24b18e5d7d46e2aab2175d747e2b))
 
-## [4.8.2](https://github.com/patternslib/pat-tiptap/compare/4.8.1...4.8.2) (2023-04-17)
-
-
-### Maintenance
-
-
-* Upgrade tiptap to 2.0.3 and other dependencies. ([39c3df9](https://github.com/patternslib/pat-tiptap/commit/39c3df9f60bb24b18e5d7d46e2aab2175d747e2b))
-
 ## [4.8.1](https://github.com/patternslib/pat-tiptap/compare/4.8.0...4.8.1) (2023-03-09)
 
 
