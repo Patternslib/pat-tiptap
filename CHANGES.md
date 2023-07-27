@@ -13,6 +13,17 @@
 
 * Upgrade dependencies. ([7a6f6ae](https://github.com/patternslib/pat-tiptap/commit/7a6f6ae63265b3ff47f1e18d61d1926425271b99))
 
+## [4.8.3](https://github.com/patternslib/pat-tiptap/compare/4.8.2...4.8.3) (2023-07-27)
+
+
+### Maintenance
+
+
+* Upgrade dependencies. ([9d03afd](https://github.com/patternslib/pat-tiptap/commit/9d03afdea63efa792b0fcd45836457dc2b02fdcb))
+
+
+* Upgrade dependencies. ([7a6f6ae](https://github.com/patternslib/pat-tiptap/commit/7a6f6ae63265b3ff47f1e18d61d1926425271b99))
+
 ## [4.8.2](https://github.com/patternslib/pat-tiptap/compare/4.8.1...4.8.2) (2023-04-17)
 
 
