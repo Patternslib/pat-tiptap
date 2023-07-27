@@ -36,7 +36,7 @@
         "@tiptap/suggestion": "^2.0.4"
     },
     "devDependencies": {
-        "@patternslib/dev": "^3.3.5",
+        "@patternslib/dev": "^3.4.0",
         "@patternslib/patternslib": ">=9.9.4"
     },
     "scripts": {
