@@ -13,16 +13,6 @@
 
 * Upgrade dependencies. ([7a6f6ae](https://github.com/patternslib/pat-tiptap/commit/7a6f6ae63265b3ff47f1e18d61d1926425271b99))
 
-## [4.8.3](https://github.com/patternslib/pat-tiptap/compare/4.8.2...4.8.3) (2023-07-27)
-
-
-### Maintenance
-
-
-* Upgrade dependencies. ([9d03afd](https://github.com/patternslib/pat-tiptap/commit/9d03afdea63efa792b0fcd45836457dc2b02fdcb))
-
-
-* Upgrade dependencies. ([7a6f6ae](https://github.com/patternslib/pat-tiptap/commit/7a6f6ae63265b3ff47f1e18d61d1926425271b99))
 
 ## [4.8.2](https://github.com/patternslib/pat-tiptap/compare/4.8.1...4.8.2) (2023-04-17)
 
@@ -31,6 +21,7 @@
 
 
 * Upgrade tiptap to 2.0.3 and other dependencies. ([39c3df9](https://github.com/patternslib/pat-tiptap/commit/39c3df9f60bb24b18e5d7d46e2aab2175d747e2b))
+
 
 ## [4.8.1](https://github.com/patternslib/pat-tiptap/compare/4.8.0...4.8.1) (2023-03-09)
 
@@ -51,6 +42,7 @@ for better performance.
 
 * Upgrade dependencies. ([f6a6871](https://github.com/patternslib/pat-tiptap/commit/f6a68719ab3f5b7a113d6e5873fa3f9c192a5d95))
 
+
 ## [4.8.0](https://github.com/patternslib/pat-tiptap/compare/4.7.2...4.8.0) (2023-02-14)
 
 
@@ -69,6 +61,7 @@ util.is_mail checks for a valid email adress.
 * Upgrade dependencies. ([f42cefe](https://github.com/patternslib/pat-tiptap/commit/f42cefe5c6096b099bdf296b7ded3a8baf35d8a8))
 
 * Upgrade dependencies. ([0ce9920](https://github.com/patternslib/pat-tiptap/commit/0ce9920b74f9d80d86e7eac7cfb6b65cf3358f2c))
+
 
 ## [4.7.2](https://github.com/patternslib/pat-tiptap/compare/4.7.1...4.7.2) (2022-12-19)
 
