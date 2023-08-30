@@ -2,6 +2,14 @@
 
 
 
+## [4.8.4](https://github.com/patternslib/pat-tiptap/compare/4.8.3...4.8.4) (2023-08-30)
+
+
+### Maintenance
+
+
+* Upgrade dependencies. ([ac4ab29](https://github.com/patternslib/pat-tiptap/commit/ac4ab2918ce685730b26d8ca2a4223d78e974490))
+
 ## [4.8.3](https://github.com/patternslib/pat-tiptap/compare/4.8.2...4.8.3) (2023-07-27)
 
 
