@@ -2,6 +2,17 @@
 
 
 
+## [4.8.5](https://github.com/patternslib/pat-tiptap/compare/4.8.4...4.8.5) (2023-09-25)
+
+
+### Maintenance
+
+
+* Mock ClipboardEvent and DragEvent. ([c5bee7a](https://github.com/patternslib/pat-tiptap/commit/c5bee7ad03fe6dcfc2678d3504f49f2566eab0e6))
+
+
+* Upgrade dependencies. ([e063c4a](https://github.com/patternslib/pat-tiptap/commit/e063c4a4d5ba01d98925c0cfe2ad63404070c0d9))
+
 ## [4.8.4](https://github.com/patternslib/pat-tiptap/compare/4.8.3...4.8.4) (2023-08-30)
 
 
