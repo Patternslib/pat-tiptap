@@ -4,6 +4,10 @@ import utils from "@patternslib/patternslib/src/core/utils";
 import tiptap_utils from "./utils";
 import PatternModal from "@patternslib/patternslib/src/pat/modal/modal";
 
+// Mock some events which are needed by TipTap
+window.ClipboardEvent = jest.fn();
+window.DragEvent = jest.fn();
+
 const mockFetch =
     (text = "") =>
     () =>
