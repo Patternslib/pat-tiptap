@@ -152,9 +152,17 @@ class Pattern extends BasePattern {
                 name: this.options.collaboration.document,
                 document: y_doc,
                 token: this.options.collaboration["authentication-token"],
-                onAwarenessUpdate: ({ states }) => {
-                    collaboration_states = states;
-                },
+            });
+
+            provider.on("awarenessUpdate", ({ added, updated, removed }) => {
+                console.log(
+                    `awarenessUpdate - added: ${added}, updated: ${updated}, removed: ${removed}`
+                );
+            });
+
+            provider.on("awarenessChange", ({ states }) => {
+                console.log(`awarenessChange - states: ${states}`);
+                collaboration_states = states;
             });
 
             provider.setAwarenessField("user", {
