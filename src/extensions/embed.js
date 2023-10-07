@@ -264,7 +264,7 @@ export const factory = () => {
         parseHTML() {
             return [
                 {
-                    tag: `iframe[src*="youtube.com"]`,
+                    tag: `iframe[src*="youtube.com"]`, // needs vimeo too??
                     getAttrs: (node) =>
                         (is_youtube(node.getAttribute("src")) ||
                             is_vimeo(node.getAttribute("src")) > -1) &&
