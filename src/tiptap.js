@@ -152,14 +152,12 @@ class Pattern extends BasePattern {
                 token: this.options.collaboration["authentication-token"],
             });
 
-            provider.on("awarenessUpdate", ({ added, updated, removed }) => {
-                console.log(
-                    `awarenessUpdate - added: ${added}, updated: ${updated}, removed: ${removed}`
-                );
+            provider.on("awarenessUpdate", (state) => {
+                console.log(`awarenessUpdate`, state);
             });
 
-            provider.on("awarenessChange", ({ states }) => {
-                console.log(`awarenessChange - states: ${states}`);
+            provider.on("awarenessChange", (states) => {
+                console.log(`awarenessChange`, states);
                 collaboration_states = states;
             });
 
@@ -187,6 +185,7 @@ class Pattern extends BasePattern {
             //            returns true for the following if clause.
             if (y_doc === provider.document) {
                 // Initialize the tiptap editor later with some initial content.
+                console.log("aha, ahsou");
                 config["content"] = getText();
             }
 
@@ -199,6 +198,7 @@ class Pattern extends BasePattern {
             if (connected_users.length === 1) {
                 // Initialize the tiptap editor later with some initial content.
                 config["content"] = getText();
+                console.log("jojo, jo wou");
                 log.info(`
                     This is the main instance and gets text from textfield.
                     Other connected user will get their text from the collaboration server.
