@@ -9,8 +9,6 @@ import utils from "@patternslib/patternslib/src/core/utils";
 export const log = logging.getLogger("tiptap");
 
 export const parser = new Parser("tiptap");
-parser.addArgument("collaboration-server", null);
-parser.addArgument("collaboration-document", null);
 
 parser.addArgument("toolbar-external", null);
 
@@ -25,11 +23,19 @@ parser.addArgument("link-menu", null);
 parser.addArgument("mentions-menu", null);
 parser.addArgument("tags-menu", null);
 
+parser.addArgument("collaboration-server", null);
+parser.addArgument("collaboration-document", null);
+parser.addArgument("collaboration-user", null);
+parser.addArgument("collaboration-color", null);
+parser.addArgument("collaboration-authentication-token", null);
+
 // TODO: Remove with next major version.
 // BBB - Compatibility aliases
 parser.addAlias("context-menu-link", "link-menu");
 parser.addAlias("context-menu-mentions", "mentions-menu");
 parser.addAlias("context-menu-tags", "tags-menu");
+
+let collaboration_states = [];
 
 class Pattern extends BasePattern {
     static name = "tiptap";
@@ -85,8 +91,6 @@ class Pattern extends BasePattern {
             (await import("@tiptap/extension-hard-break")).default.configure(),
             // Gapcursor for images, tables etc to be able to add content below/above.
             (await import("@tiptap/extension-gapcursor")).Gapcursor.configure(),
-            // Allways include undo/redo support via keyboard shortcuts.
-            (await import("@tiptap/extension-history")).History.configure(),
         ];
         const placeholder = this.el.getAttribute("placeholder");
         if (placeholder) {
@@ -129,6 +133,117 @@ class Pattern extends BasePattern {
             );
         }
 
+        const config = {};
+        if (this.options.collaboration.server && this.options.collaboration.document) {
+            // Random color, see: https://css-tricks.com/snippets/javascript/random-hex-color/
+            const random_color = "#" + ((Math.random() * 0xffffff) << 0).toString(16);
+            // Information about the current user
+            const user_name = this.options.collaboration.user || random_color;
+            const user_color = this.options.collaboration.color || random_color;
+
+            // Set up the Hocuspocus WebSocket provider
+            const HocuspocusProvider = (await import("@hocuspocus/provider")).HocuspocusProvider; // prettier-ignore
+            const YDoc = (await import("yjs")).Doc;
+            const y_doc = new YDoc();
+            const provider = new HocuspocusProvider({
+                url: this.options.collaboration.server,
+                name: this.options.collaboration.document,
+                document: y_doc,
+                token: this.options.collaboration["authentication-token"],
+            });
+
+            provider.on("awarenessUpdate", (state) => {
+                console.log(`awarenessUpdate`, state);
+            });
+
+            provider.on("awarenessChange", (states) => {
+                console.log(`awarenessChange`, states);
+                collaboration_states = states;
+            });
+
+            provider.setAwarenessField("user", {
+                name: user_name,
+                color: user_color,
+                document_name: this.options.collaboration.document,
+            });
+
+            // Wait for user being authenticated
+            const authenticated = () =>
+                new Promise((resolve) =>
+                    provider.on("authenticated", resolve, { once: true })
+                );
+            await authenticated();
+
+            // Wait for user being authenticated
+            const synced = () =>
+                new Promise((resolve) => provider.on("synced", resolve, { once: true }));
+            await synced();
+
+            // Attempt 1: Only if the y_doc is the same as the document on the provider object,
+            //            which I believe should be returned from the hocuspocus server.
+            //            The problem here is, that also for the second connection with another browser
+            //            returns true for the following if clause.
+            if (y_doc === provider.document) {
+                // Initialize the tiptap editor later with some initial content.
+                console.log("aha, ahsou");
+                config["content"] = getText();
+            }
+
+            // Attempt 2: Only for the first connecting user.
+            //            The problem here is that I apparently do not reliably get the number of connected users.
+            //            With two browsers connecting, one time I get 0 users, one time 1 user, another time 2.
+            const connected_users = [...provider.awareness.states.values()].map(
+                (it) => it.user
+            );
+            if (connected_users.length === 1) {
+                // Initialize the tiptap editor later with some initial content.
+                config["content"] = getText();
+                console.log("jojo, jo wou");
+                log.info(`
+                    This is the main instance and gets text from textfield.
+                    Other connected user will get their text from the collaboration server.
+                `);
+            }
+
+            console.log("provider");
+            console.log(provider);
+
+            console.log("collaboration states");
+            console.log(collaboration_states);
+
+            console.log("awareness states");
+            console.log(provider.awareness.states);
+
+            console.log("connected users");
+            console.log(connected_users);
+
+            // Collaboration extension
+            const Collaboration = (
+                await import("@tiptap/extension-collaboration")
+            ).default.configure({
+                document: provider.document,
+            });
+            extra_extensions.push(Collaboration);
+
+            // Collaboration cursor
+            if (window.__patternslib_import_styles) {
+                import("./styles/collaboration-cursor.css");
+            }
+            const CollaborationCursor = (
+                await import("@tiptap/extension-collaboration-cursor")
+            ).default.configure({
+                provider: provider,
+                user: {
+                    name: user_name,
+                    color: user_color,
+                },
+            });
+            extra_extensions.push(CollaborationCursor);
+        } else {
+            // Non-collaborative editing is always getting the initial text from the textarea.
+            config["content"] = getText();
+        }
+
         this.toolbar_el = this.options.toolbarExternal
             ? document.querySelector(this.options.toolbarExternal)
             : null;
@@ -153,7 +268,6 @@ class Pattern extends BasePattern {
                 ...(await toolbar_ext.init_extensions({ app: this })),
                 ...extra_extensions,
             ],
-            content: getText(),
             onUpdate() {
                 // Note: ``this`` is the editor instance.
                 setText(this.getHTML());
@@ -177,6 +291,7 @@ class Pattern extends BasePattern {
                 this.toolbar_el?.classList.remove("tiptap-focus");
             },
             autofocus: set_focus,
+            ...config,
         });
         toolbar_ext.init_post({ app: this });
 
