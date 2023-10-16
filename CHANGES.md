@@ -44,6 +44,48 @@ https://tiptap.dev/api/nodes/table#resizable
 
 * Use a different webpack dev server port than the default Patternslib one. ([a099635](https://github.com/patternslib/pat-tiptap/commit/a09963582cff49a22696675a863a971d58dc332c))
 
+## [4.8.6](https://github.com/patternslib/pat-tiptap/compare/4.8.5...4.8.6) (2023-10-16)
+
+
+### Bug Fixes
+
+
+* Fix problem with table not selectable with <ctrl>-<a> ([4284664](https://github.com/patternslib/pat-tiptap/commit/42846644dc06ffe820efa796ad395e093a73a5bc))
+
+  There is a strange problem with tables and selecting all content with
+<ctrl>-<a>. When the last node in the document is a table and the last
+table cell is empty, then pressing <CTRL>-<a> to select everyting only
+selects the very first node in the document. As soon as one of the
+conditions - table not the last node or last table cell not empty - is
+not met, <CTRL>-<a> selects all, as expected.
+
+We fix the problem by making sure some content is following the table
+and add an empty paragraph. When another solution is found we can remove
+this hack again.
+
+More information here:
+- https://github.com/ueberdosis/tiptap/issues/2401
+- https://github.com/ueberdosis/tiptap/issues/3651
+
+
+
+### Maintenance
+
+
+* Disable horizontal table cell resizing. ([81214c6](https://github.com/patternslib/pat-tiptap/commit/81214c6a7f12dea6dc3a4ec91b3cbbf915fb7a4d))
+
+  We would need quite some extra CSS for the `.column-resize-handle` for a
+questionable benefit. Disable it for now until we need it back and find
+a solution for the missing CSS.
+Example for the CSS to be added (touches also table and cell styles):
+https://tiptap.dev/api/nodes/table#resizable
+
+
+* Upgrade dependencies. ([a5ea09b](https://github.com/patternslib/pat-tiptap/commit/a5ea09b7669a768a96d9870d2785a89df550c1de))
+
+
+* Use a different webpack dev server port than the default Patternslib one. ([a099635](https://github.com/patternslib/pat-tiptap/commit/a09963582cff49a22696675a863a971d58dc332c))
+
 ## [4.8.5](https://github.com/patternslib/pat-tiptap/compare/4.8.4...4.8.5) (2023-09-25)
 
 
