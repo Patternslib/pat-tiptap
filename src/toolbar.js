@@ -140,7 +140,7 @@ export async function init_extensions({ app }) {
     ) {
         extensions.push(
             (await import("@tiptap/extension-table")).default.configure({
-                resizable: false,
+                resizable: true,
             })
         );
         extensions.push((await import("@tiptap/extension-table-cell")).default);
