@@ -140,12 +140,14 @@ export async function init_extensions({ app }) {
     ) {
         extensions.push(
             (await import("@tiptap/extension-table")).default.configure({
-                resizable: true,
+                resizable: false,
             })
         );
         extensions.push((await import("@tiptap/extension-table-cell")).default);
         extensions.push((await import("@tiptap/extension-table-header")).default);
         extensions.push((await import("@tiptap/extension-table-row")).default);
+        // For the reason to include the next extension see the trailing-node extension code.
+        extensions.push((await import("./extensions/trailing-node")).factory());
         has_tables = true;
     }
 

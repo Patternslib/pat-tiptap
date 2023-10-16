@@ -31,6 +31,7 @@ module.exports = () => {
 
     if (process.env.NODE_ENV === "development") {
         config.devServer.static.directory = __dirname;
+        config.devServer.port = "3002";
     }
 
     return config;
