@@ -39,6 +39,8 @@ class Pattern extends BasePattern {
     current_modal = null; // reference to currently open modal dialog
 
     async init() {
+        import("./tiptap.scss");
+
         // Constructor
         this.toolbar_el = null;
 
