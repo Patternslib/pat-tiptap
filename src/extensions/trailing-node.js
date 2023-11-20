@@ -33,8 +33,8 @@ export const factory = () => {
         name: "trailingNode",
 
         defaultOptions: {
-            node: "paragraph",
-            notAfter: ["paragraph"],
+            node: "fixed-paragraph",
+            notAfter: ["paragraph", "fixed-paragraph"],
         },
 
         addProseMirrorPlugins() {
@@ -56,7 +56,10 @@ export const factory = () => {
                             return;
                         }
 
-                        return tr.insert(endPosition, type.create());
+                        return tr.insert(
+                            endPosition,
+                            type.create(null, [schema.text(" ")])
+                        );
                     },
                     state: {
                         init: (_, state) => {
