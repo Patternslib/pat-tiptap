@@ -15,7 +15,7 @@ export const factory = () => {
 
         group: "block",
         isolating: true,
-        selectable: false,
+        selectable: true,
 
         parseHTML() {
             return [
