@@ -16,7 +16,7 @@ export const factory = () => {
         allowGapCursor: false,
         draggable: false,
         isolating: true,
-        selectable: false,
+        selectable: true,
 
         parseHTML() {
             return [
