@@ -139,7 +139,7 @@ export async function init_extensions({ app }) {
         tb.table_remove_row
     ) {
         extensions.push(
-            (await import("@tiptap/extension-table")).default.configure({
+            (await import("./extensions/table")).factory().configure({
                 resizable: false,
             })
         );
