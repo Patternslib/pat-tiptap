@@ -1,6 +1,42 @@
 # Changelog
 
 
+
+## [4.9.0](https://github.com/patternslib/pat-tiptap/compare/4.8.6...4.9.0) (2023-11-23)
+
+
+### Features
+
+
+* Always wrap tables in a div.scroll-table wrapper. ([16e1cc5](https://github.com/patternslib/pat-tiptap/commit/16e1cc5899f2d0783aace74dc61bda195b474c73))
+
+
+
+### Bug Fixes
+
+
+* Allow to select the figcaption node. ([aa71dfc](https://github.com/patternslib/pat-tiptap/commit/aa71dfc6cac2a10757791671eb55f5fb2140e049))
+
+
+* Allow to select-all in tables. ([606a4be](https://github.com/patternslib/pat-tiptap/commit/606a4be319e4dbb7c8eb16d5939919dad4820dc1))
+
+  Allow to select all (Ctrl-A, Command-A) with tables in certain
+conditions.
+Due to a tiptap/ProseMirror bug tables with some empty cells and no
+content preceding or following the table, selecting the whole table did
+not work. This fix makes sure that a non-empty paragraph is added at the
+end, if no other content is present at the end of the document.
+
+Follow-up from:
+- https://github.com/Patternslib/pat-tiptap/pull/61
+
+More information here:
+- https://github.com/ueberdosis/tiptap/issues/2401
+- https://github.com/ueberdosis/tiptap/issues/3651
+
+
+* Make fixed-paragraph selectable to make the corresponding table selectable. ([2c69109](https://github.com/patternslib/pat-tiptap/commit/2c691090277ca0d4834a012a8b718ce9e0d85347))
+
 ## [4.8.6](https://github.com/patternslib/pat-tiptap/compare/4.8.5...4.8.6) (2023-10-16)
 
 
