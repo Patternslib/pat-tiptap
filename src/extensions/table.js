@@ -13,8 +13,7 @@ export const factory = () => {
                 {
                     tag: "div",
                     getAttrs: (node) =>
-                        node.matches(".scroll-table").getElementsByTagName("table") !==
-                            null && null,
+                        node.querySelector(".scroll-table > table") ? null : false,
                 },
             ];
         },
