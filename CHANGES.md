@@ -2,6 +2,17 @@
 
 
 
+## [4.9.1](https://github.com/patternslib/pat-tiptap/compare/4.9.0...4.9.1) (2024-07-23)
+
+
+### Bug Fixes
+
+
+* Update getAttrs function to correctly check for the presence of a table inside a div.scroll-table wrapper ([8843e28](https://github.com/patternslib/pat-tiptap/commit/8843e28ad996a021e52fc42877a512e486672d29))
+
+
+* Upgrade node version for GitHub Actions. ([952b4fb](https://github.com/patternslib/pat-tiptap/commit/952b4fb9b45ea6dc1f8fe58e888d0ef1d5fe9933))
+
 ## [4.9.0](https://github.com/patternslib/pat-tiptap/compare/4.8.6...4.9.0) (2023-11-23)
 
 
