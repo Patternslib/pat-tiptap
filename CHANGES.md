@@ -2,6 +2,8 @@
 
 
 
+## [4.9.2](https://github.com/patternslib/pat-tiptap/compare/4.9.1...4.9.2) (2024-07-23)
+
 ## [4.9.1](https://github.com/patternslib/pat-tiptap/compare/4.9.0...4.9.1) (2024-07-23)
 
 
