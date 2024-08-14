@@ -93,16 +93,16 @@ describe("pat-tiptap", () => {
               ">
           </textarea>
 
-        <template id="modal-link">
-          <form id="link-panel">
-            <input name="tiptap-href"/>
-            <input name="tiptap-text"/>
-            <button
-                type="submit"
-                name="tiptap-confirm"
-                class="close-panel">submit</button>
-          </form>
-        </template>
+          <template id="modal-link">
+            <form id="link-panel">
+              <input name="tiptap-href"/>
+              <input name="tiptap-text"/>
+              <button
+                  type="submit"
+                  name="tiptap-confirm"
+                  class="close-panel">submit</button>
+            </form>
+          </template>
         `;
 
         const pattern1 = new Pattern(document.querySelectorAll(".pat-tiptap")[0]);
