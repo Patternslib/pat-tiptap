@@ -114,8 +114,8 @@ describe("pat-tiptap", () => {
         const button_1 = document.querySelector("#tiptap-external-toolbar-1 .button-link"); // prettier-ignore
         const button_2 = document.querySelector("#tiptap-external-toolbar-2 .button-link"); // prettier-ignore
 
-        new PatternModal(button_1);
-        new PatternModal(button_2);
+        await events.await_pattern_init(new PatternModal(button_1));
+        await events.await_pattern_init(new PatternModal(button_2));
 
         containers[0].querySelector("[contenteditable]").focus(); // Set focus to bypass toolbar check
         button_1.click();
@@ -190,7 +190,7 @@ describe("pat-tiptap", () => {
         const containers = document.querySelectorAll(".tiptap-container");
         const button_link = document.querySelector("#tiptap-external-toolbar .button-link"); // prettier-ignore
 
-        new PatternModal(button_link);
+        await events.await_pattern_init(new PatternModal(button_link));
 
         containers[0].querySelector("[contenteditable]").focus(); // Set focus to bypass toolbar check
         await utils.timeout(1);
@@ -413,7 +413,7 @@ describe("pat-tiptap", () => {
             await events.await_pattern_init(pattern);
 
             button_link = document.querySelector("#tiptap-external-toolbar .button-link"); // prettier-ignore
-            new PatternModal(button_link);
+            await events.await_pattern_init(new PatternModal(button_link));
 
             document.querySelector(".tiptap-container [contenteditable]").focus(); // Set focus to bypass toolbar check
 
@@ -525,7 +525,7 @@ describe("pat-tiptap", () => {
         await events.await_pattern_init(pattern);
 
         const button_image = document.querySelector("#tiptap-external-toolbar .button-image"); // prettier-ignore
-        new PatternModal(button_image);
+        await events.await_pattern_init(new PatternModal(button_image));
 
         document.querySelector(".tiptap-container [contenteditable]").focus(); // Set focus to bypass toolbar check
 
@@ -580,7 +580,7 @@ describe("pat-tiptap", () => {
         await events.await_pattern_init(pattern);
 
         const button_image = document.querySelector("#tiptap-external-toolbar .button-image"); // prettier-ignore
-        new PatternModal(button_image);
+        await events.await_pattern_init(new PatternModal(button_image));
 
         document.querySelector(".tiptap-container [contenteditable]").focus(); // Set focus to bypass toolbar check
 
@@ -628,7 +628,7 @@ describe("pat-tiptap", () => {
         await events.await_pattern_init(pattern);
 
         const button_image = document.querySelector("#tiptap-external-toolbar .button-image"); // prettier-ignore
-        new PatternModal(button_image);
+        await events.await_pattern_init(new PatternModal(button_image));
 
         document.querySelector(".tiptap-container [contenteditable]").focus(); // Set focus to bypass toolbar check
 
@@ -713,7 +713,7 @@ describe("pat-tiptap", () => {
         await events.await_pattern_init(pattern);
 
         const button_embed = document.querySelector("#tiptap-external-toolbar .button-embed"); // prettier-ignore
-        new PatternModal(button_embed);
+        await events.await_pattern_init(new PatternModal(button_embed));
 
         document.querySelector(".tiptap-container [contenteditable]").focus(); // Set focus to bypass toolbar check
 
@@ -764,7 +764,7 @@ describe("pat-tiptap", () => {
         await events.await_pattern_init(pattern);
 
         const button_embed = document.querySelector("#tiptap-external-toolbar .button-embed"); // prettier-ignore
-        new PatternModal(button_embed);
+        await events.await_pattern_init(new PatternModal(button_embed));
 
         document.querySelector(".tiptap-container [contenteditable]").focus(); // Set focus to bypass toolbar check
 
@@ -812,7 +812,7 @@ describe("pat-tiptap", () => {
         await events.await_pattern_init(pattern);
 
         const button_embed = document.querySelector("#tiptap-external-toolbar .button-embed"); // prettier-ignore
-        new PatternModal(button_embed);
+        await events.await_pattern_init(new PatternModal(button_embed));
 
         document.querySelector(".tiptap-container [contenteditable]").focus(); // Set focus to bypass toolbar check
 
@@ -863,7 +863,7 @@ describe("pat-tiptap", () => {
         await events.await_pattern_init(pattern);
 
         const button_embed = document.querySelector("#tiptap-external-toolbar .button-embed"); // prettier-ignore
-        new PatternModal(button_embed);
+        await events.await_pattern_init(new PatternModal(button_embed));
 
         document.querySelector(".tiptap-container [contenteditable]").focus(); // Set focus to bypass toolbar check
 
