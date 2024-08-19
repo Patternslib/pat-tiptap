@@ -2,6 +2,24 @@
 
 
 
+## [4.9.3](https://github.com/patternslib/pat-tiptap/compare/4.9.2...4.9.3) (2024-08-19)
+
+
+### Bug Fixes
+
+
+* Await for the modal pattern initialization in tests. ([0ebc3fb](https://github.com/patternslib/pat-tiptap/commit/0ebc3fb0bafcd26e3d284bd847c8b370d4a6555f))
+
+
+
+### Maintenance
+
+
+* Update GitHub Actions. ([54af679](https://github.com/patternslib/pat-tiptap/commit/54af679e2b07dd1d3251f8ca9a8057e95083a65d))
+
+
+* Upgrade dependencies. ([9bd3531](https://github.com/patternslib/pat-tiptap/commit/9bd35312055d324388738c3d23bfd49f676c5c33))
+
 ## [4.9.2](https://github.com/patternslib/pat-tiptap/compare/4.9.1...4.9.2) (2024-07-23)
 
 ## [4.9.1](https://github.com/patternslib/pat-tiptap/compare/4.9.0...4.9.1) (2024-07-23)
