@@ -34,7 +34,10 @@ export const factory = () => {
             ];
         },
 
-        addProseMirrorPlugins() {
+        // NOTE: Deactivate whole ProseMirror plugin while registering the
+        // extension as it is used in the trailing-node extension.
+        // Why is it deactivated? See `TODO` comment below.
+        DEACTIVATED__addProseMirrorPlugins() {
             return [
                 new Plugin({
                     filterTransaction(transaction, state) {
@@ -50,6 +53,8 @@ export const factory = () => {
                             const map = transaction.mapping.maps[index];
                             const oldStart = map.ranges[0];
                             const oldEnd = map.ranges[0] + map.ranges[1];
+                            // TODO: This code breaks for tables when adding
+                            // columns left/right within a table cell.
                             state.doc.nodesBetween(oldStart, oldEnd, (node) => {
                                 if (node.type.name === "fixed-paragraph") {
                                     result = false;
