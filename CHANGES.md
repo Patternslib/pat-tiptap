@@ -26,6 +26,30 @@ until explictly needed again.
 
 * For better demoing and debugging, make the toolbar sticky. ([62155f8](https://github.com/patternslib/pat-tiptap/commit/62155f846bcc28d5e565d2ee386ea65dba1c192d))
 
+## [4.9.4](https://github.com/patternslib/pat-tiptap/compare/4.9.3...4.9.4) (2024-08-20)
+
+
+### Bug Fixes
+
+
+* Fix problem with adding columns in tables and deactivate fixed-paragraph. ([ad5e986](https://github.com/patternslib/pat-tiptap/commit/ad5e98681ac3666e0add6968d42ac36ef472f5c8))
+
+  The fixed-paragraph extension was causing a problem when adding columns.
+This extension adds an extra paragraph at the end of tables, so that
+it's easier to add content below tables. However, we also have the
+"dropcursor" extension activated with tables and other block content for
+the same reason - this one adding a horizontal cursor when navigating
+below tables which helps in adding content there. To allow adding
+columns in tables again, the fixed-paragraph extension is deactivated
+until explictly needed again.
+
+
+
+### Maintenance
+
+
+* For better demoing and debugging, make the toolbar sticky. ([62155f8](https://github.com/patternslib/pat-tiptap/commit/62155f846bcc28d5e565d2ee386ea65dba1c192d))
+
 ## [4.9.3](https://github.com/patternslib/pat-tiptap/compare/4.9.2...4.9.3) (2024-08-19)
 
 
