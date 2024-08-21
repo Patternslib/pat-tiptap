@@ -17,6 +17,21 @@
 
 * Upgrade to tiptap 2.6.5. ([0b4216a](https://github.com/patternslib/pat-tiptap/commit/0b4216a64dd5f2b70f51be2983ad405480381f5c))
 
+## [4.9.5](https://github.com/patternslib/pat-tiptap/compare/4.9.4...4.9.5) (2024-08-21)
+
+
+### Bug Fixes
+
+
+* Fix a deprecated tiptap method in the trailing-node extension. ([49d5062](https://github.com/patternslib/pat-tiptap/commit/49d50629214e45d5f10f7c9920b307f7c43c3873))
+
+
+
+### Maintenance
+
+
+* Upgrade to tiptap 2.6.5. ([0b4216a](https://github.com/patternslib/pat-tiptap/commit/0b4216a64dd5f2b70f51be2983ad405480381f5c))
+
 ## [4.9.4](https://github.com/patternslib/pat-tiptap/compare/4.9.3...4.9.4) (2024-08-20)
 
 
