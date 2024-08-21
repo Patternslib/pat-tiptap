@@ -32,9 +32,11 @@ export const factory = () => {
     return Extension.create({
         name: "trailingNode",
 
-        defaultOptions: {
-            node: "fixed-paragraph",
-            notAfter: ["paragraph", "fixed-paragraph"],
+        addOptions() {
+            return {
+                node: "fixed-paragraph",
+                notAfter: ["paragraph", "fixed-paragraph"],
+          }
         },
 
         addProseMirrorPlugins() {
