@@ -552,5 +552,5 @@ This is an CSS example to show the placeholder on any empty paragraph:
 | link-menu              | String | URL or CSS selector pointing to the link context menu contents.                    |
 | mentions-menu          | String | URL or CSS selector pointing to the mentions context menu contents.                |
 | tags-menu              | String | URL or CSS selector pointing to the tags context menu contents.                    |
-
+| link-extra-protocols   | Array  | Array of extra protocols which are allowed to be used in the <a> `href` attribute. |
 

@@ -25,6 +25,8 @@ parser.addArgument("link-menu", null);
 parser.addArgument("mentions-menu", null);
 parser.addArgument("tags-menu", null);
 
+parser.addArgument("link-extra-protocols", [], undefined, true);
+
 // TODO: Remove with next major version.
 // BBB - Compatibility aliases
 parser.addAlias("context-menu-link", "link-menu");

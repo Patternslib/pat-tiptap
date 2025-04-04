@@ -395,7 +395,8 @@ describe("pat-tiptap", () => {
                   class="pat-tiptap"
                   data-pat-tiptap="
                     toolbar-external: #tiptap-external-toolbar;
-                    link-panel: #link-panel
+                    link-panel: #link-panel;
+                    link-extra-protocols: fantasy;
                   ">
               </textarea>
               <template id="modal-link">
@@ -492,6 +493,18 @@ describe("pat-tiptap", () => {
             const anchor = document.querySelector(".tiptap-container a");
             expect(anchor.href).toBe("callto:0123456789");
             expect(anchor.textContent).toBe("Callto text");
+        });
+
+        it("5.7 - Supports obscure protocols, when configured.", async () => {
+            document.querySelector("#link-panel [name=tiptap-href]").value = "fantasy://patternslib.com"; // prettier-ignore
+            document.querySelector("#link-panel [name=tiptap-text]").value = "Link text"; // prettier-ignore
+            document.querySelector("#link-panel [name=tiptap-confirm]").dispatchEvent(new Event("click")); // prettier-ignore
+            await utils.timeout(1);
+
+            const anchor = document.querySelector(".tiptap-container a");
+            expect(anchor).toBeTruthy();
+            expect(anchor.href).toBe("fantasy://patternslib.com");
+            expect(anchor.textContent).toBe("Link text");
         });
     });
 
