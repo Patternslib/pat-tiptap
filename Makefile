@@ -20,7 +20,7 @@ export
 
 
 yarn.lock install:
-	$(YARN) yarn install
+	$(YARN) install
 
 
 # Unlink any linked dependencies before building a bundle.
