@@ -40,44 +40,6 @@ There is now a new configuration option "link-extra-protocols" to add new ones a
 
 * Upgrade dependencies. ([0701a24](https://github.com/patternslib/pat-tiptap/commit/0701a2419d4caa21fa17dc9152cd9ce8f672a61e))
 
-## [4.10.0](https://github.com/patternslib/pat-tiptap/compare/4.9.5...4.10.0) (2025-04-04)
-
-
-### Features
-
-
-* Support configuration of extra link protocols. ([57f71a2](https://github.com/patternslib/pat-tiptap/commit/57f71a297fc505f13b5c4b4afed868264cc32609))
-
-  This fixes a problem where Lotus Notes URLs were stripped out.
-These URLs have a notes:// protocol.
-There is now a new configuration option "link-extra-protocols" to add new ones along well-known like https, ftp, mail, etc.
-
-
-
-### Bug Fixes
-
-
-* Fix a Makefile error. ([444fb15](https://github.com/patternslib/pat-tiptap/commit/444fb15b6b9066a460c8b5c32af5b2f8a3fc50e2))
-
-
-
-### Maintenance
-
-
-* @patternslib/dev upgrade - create eslint.config.js. ([0cff516](https://github.com/patternslib/pat-tiptap/commit/0cff51615ca925cfd41e00efd0085c8d0347a2a1))
-
-
-* @patternslib/dev upgrade - remove .husky directory in favor of git hooks. ([8da34c2](https://github.com/patternslib/pat-tiptap/commit/8da34c2781b8f9c347ba95e532ad43193488e226))
-
-
-* @patternslib/dev upgrade - remove old .eslintrc.js. ([d7977d6](https://github.com/patternslib/pat-tiptap/commit/d7977d649eeada004325f33e81c6b9828b9a2431))
-
-
-* @patternslib/dev upgrade - upgrade Makefile. ([37db131](https://github.com/patternslib/pat-tiptap/commit/37db13150daa9c63c0d8070c7afe28aa8a2fcfb8))
-
-
-* Upgrade dependencies. ([0701a24](https://github.com/patternslib/pat-tiptap/commit/0701a2419d4caa21fa17dc9152cd9ce8f672a61e))
-
 ## [4.9.5](https://github.com/patternslib/pat-tiptap/compare/4.9.4...4.9.5) (2024-08-21)
 
 
