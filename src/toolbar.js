@@ -164,6 +164,7 @@ export async function init_extensions({ app }) {
                 HTMLAttributes: { target: null, rel: null }, // don't set these attributes.
                 openOnClick: false, // don't open documents while editing.
                 linkOnPaste: true,
+                protocols: app.options.link["extra-protocols"],
             })
         );
     }
