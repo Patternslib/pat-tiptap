@@ -396,6 +396,7 @@ describe("pat-tiptap", () => {
                   data-pat-tiptap="
                     toolbar-external: #tiptap-external-toolbar;
                     link-panel: #link-panel;
+                    link-menu: #context-menu-link;
                     link-extra-protocols: fantasy;
                   ">
               </textarea>
@@ -408,6 +409,20 @@ describe("pat-tiptap", () => {
                       name="tiptap-confirm"
                       class="close-panel">submit</button>
                 </form>
+              </template>
+              <template id="context-menu-link">
+                <div class="tiptap-link-context-menu">
+                    <a
+                      class="close-panel tiptap-open-new-link"
+                      target="_blank"
+                      href="">Visit linked web page</a>
+                    <button
+                      type="button"
+                      class="close-panel tiptap-edit-link">Edit link</button>
+                    <button
+                      type="button"
+                      class="close-panel tiptap-unlink">Unlink</button>
+                </div>
               </template>
             `;
             const pattern = new Pattern(document.querySelector(".pat-tiptap"));
@@ -505,6 +520,52 @@ describe("pat-tiptap", () => {
             expect(anchor).toBeTruthy();
             expect(anchor.href).toBe("fantasy://patternslib.com");
             expect(anchor.textContent).toBe("Link text");
+        });
+
+        it("5.8 - Opens a link context menu", async () => {
+            // Add a link to test the context menu on.
+            document.querySelector("#link-panel [name=tiptap-href]").value = "https://patternslib.com"; // prettier-ignore
+            document.querySelector("#link-panel [name=tiptap-text]").value = "Link text"; // prettier-ignore
+            document.querySelector("#link-panel [name=tiptap-confirm]").dispatchEvent(new Event("click")); // prettier-ignore
+            await utils.timeout(1);
+
+            const editable = document.querySelector(
+                ".tiptap-container [contenteditable]",
+            );
+            const range = document.createRange();
+            const sel = window.getSelection();
+
+            // Add the triggering character into the content editable
+            editable.innerHTML = "<p>@</p>";
+
+            // Set the cursor right after the @-sign.
+            range.setStart(editable.childNodes[0].childNodes[0], 1);
+            range.collapse(true);
+            sel.removeAllRanges();
+            sel.addRange(range);
+
+            // Wait some ticks.
+            await utils.timeout(1);
+            await utils.timeout(1);
+
+            // Context menu not yet opened.
+            expect(document.querySelector(".tiptap-link-context-menu")).toBeFalsy();
+
+            // Context menu opens with a 50ms delay.
+            await utils.timeout(50);
+
+            // Context menu should be opened now.
+            expect(document.querySelector(".tiptap-link-context-menu")).toBeTruthy();
+
+            // Wait two more ticks for the context menu to be fully initialized.
+            await utils.timeout(1);
+            await utils.timeout(1);
+
+            // UI elements should be initialized now.
+            expect(
+                document.querySelector(".tiptap-link-context-menu .tiptap-open-new-link")
+                    .href,
+            ).toBe("https://patternslib.com/");
         });
     });
 

@@ -254,7 +254,7 @@ export function init({ app, button }) {
         app.editor.isActive("link")
             ? button.classList.add("active")
             : button.classList.remove("active");
-        app.editor.can().setLink()
+        app.editor.can().setLink({})
             ? button.classList.remove("disabled")
             : button.classList.add("disabled");
 
