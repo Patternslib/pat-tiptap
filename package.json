@@ -50,6 +50,9 @@
         "/dist",
         "/src"
     ],
+    "engines": {
+        "node": ">=22"
+    },
     "browserslist": [
         "defaults"
     ],
