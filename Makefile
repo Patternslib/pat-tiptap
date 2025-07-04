@@ -18,6 +18,7 @@
 -include .env
 export
 
+YARN		?= npx yarn
 
 yarn.lock install:
 	$(YARN) install
