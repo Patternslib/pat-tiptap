@@ -2,6 +2,27 @@
 
 
 
+## [4.10.1](https://github.com/patternslib/pat-tiptap/compare/4.10.0...4.10.1) (2025-07-04)
+
+
+### Bug Fixes
+
+
+* Add missing yarn definition in the Makefile. ([2ac5791](https://github.com/patternslib/pat-tiptap/commit/2ac5791c91a55e848b2a329d48395349b63f6ff5))
+
+
+* Fix an issue where the link context menu wasn't opened anymore. ([c09b1e4](https://github.com/patternslib/pat-tiptap/commit/c09b1e485b074e7f14e1ef186c439e77a7374bb4))
+
+
+
+### Maintenance
+
+
+* Update the compatible node version to the current LTS version. ([dc25cbb](https://github.com/patternslib/pat-tiptap/commit/dc25cbb731e87faa684697642deb65e0f7f9a224))
+
+
+* Upgrade dependencies. ([8ba63c5](https://github.com/patternslib/pat-tiptap/commit/8ba63c56f3d7fdcd3401792719e019309d3a4163))
+
 ## [4.10.0](https://github.com/patternslib/pat-tiptap/compare/4.9.5...4.10.0) (2025-04-04)
 
 
