@@ -12,6 +12,7 @@
 
 
 * Fix an issue where the link context menu wasn't opened anymore. ([c09b1e4](https://github.com/patternslib/pat-tiptap/commit/c09b1e485b074e7f14e1ef186c439e77a7374bb4))
+  See: https://github.com/ueberdosis/tiptap/commit/1c2fefe3d61ab1c8fbaa6d6b597251e1b6d9aaed
 
 
 
