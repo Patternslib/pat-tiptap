@@ -569,6 +569,127 @@ describe("pat-tiptap", () => {
         });
     });
 
+    describe("5b - Link target tests", () => {
+        // The link panel's "Open in new window" checkbox is ``checked`` by
+        // default in these tests.
+        // When editing an existing link, the checkbox must always reflect the
+        // link's actual ``target`` attribute - even if the default is
+        // ``checked``. Otherwise a default-checked checkbox could not be unset
+        // for links which do not open in a new window.
+
+        const setup = async ({ content = "" } = {}) => {
+            document.body.innerHTML = `
+              <div id="tiptap-external-toolbar">
+                <a class="button-link pat-modal" href="#modal-link">Link</a>
+              </div>
+              <textarea
+                  class="pat-tiptap"
+                  data-pat-tiptap="
+                    toolbar-external: #tiptap-external-toolbar;
+                    link-panel: #link-panel;
+                  ">${content}</textarea>
+              <template id="modal-link">
+                <form id="link-panel">
+                  <input name="tiptap-href"/>
+                  <input name="tiptap-text"/>
+                  <label>
+                    Open in new window:
+                    <input type="checkbox" name="tiptap-target" value="_blank" checked />
+                  </label>
+                  <button
+                      type="submit"
+                      name="tiptap-confirm"
+                      class="close-panel">submit</button>
+                </form>
+              </template>
+            `;
+            const pattern = new Pattern(document.querySelector(".pat-tiptap"));
+            await events.await_pattern_init(pattern);
+
+            const button_link = document.querySelector("#tiptap-external-toolbar .button-link"); // prettier-ignore
+            await events.await_pattern_init(new PatternModal(button_link));
+
+            return { pattern, button_link };
+        };
+
+        const open_panel = async (button_link) => {
+            button_link.click();
+            await events.await_event(document, "patterns-injected-delayed");
+            await utils.timeout(1);
+        };
+
+        afterEach(() => {
+            document.body.innerHTML = "";
+        });
+
+        it("5b.1 - A new link defaults to open in a new window when the checkbox is checked by default", async () => {
+            const { button_link } = await setup();
+
+            document.querySelector(".tiptap-container [contenteditable]").focus(); // Set focus to bypass toolbar check
+            await open_panel(button_link);
+
+            // The checkbox is checked by default.
+            expect(document.querySelector("#link-panel [name=tiptap-target]").checked).toBe(true); // prettier-ignore
+
+            document.querySelector("#link-panel [name=tiptap-href]").value = "https://patternslib.com/"; // prettier-ignore
+            document.querySelector("#link-panel [name=tiptap-text]").value = "Link text"; // prettier-ignore
+            document.querySelector("#link-panel [name=tiptap-confirm]").dispatchEvent(new Event("click")); // prettier-ignore
+            await utils.timeout(1);
+
+            const anchor = document.querySelector(".tiptap-container a");
+            expect(anchor).toBeTruthy();
+            expect(anchor.getAttribute("target")).toBe("_blank");
+        });
+
+        it("5b.2 - Editing a link without a target unsets the default-checked checkbox", async () => {
+            const { pattern, button_link } = await setup({
+                content: `<a href="https://patternslib.com/">Link text</a>`,
+            });
+
+            // Place the cursor within the existing link.
+            document.querySelector(".tiptap-container [contenteditable]").focus(); // Set focus to bypass toolbar check
+            pattern.editor.commands.setTextSelection(3);
+
+            await open_panel(button_link);
+
+            // Even though the checkbox is ``checked`` by default, it must be
+            // unset because the edited link has no target.
+            expect(document.querySelector("#link-panel [name=tiptap-target]").checked).toBe(false); // prettier-ignore
+
+            // Confirming keeps the link without a target.
+            document.querySelector("#link-panel [name=tiptap-confirm]").dispatchEvent(new Event("click")); // prettier-ignore
+            await utils.timeout(1);
+
+            const anchor = document.querySelector(".tiptap-container a");
+            expect(anchor).toBeTruthy();
+            expect(anchor.hasAttribute("target")).toBe(false);
+        });
+
+        it("5b.3 - Editing a link with a target checks the checkbox and allows unsetting the target", async () => {
+            const { pattern, button_link } = await setup({
+                content: `<a href="https://patternslib.com/" target="_blank">Link text</a>`,
+            });
+
+            // Place the cursor within the existing link.
+            document.querySelector(".tiptap-container [contenteditable]").focus(); // Set focus to bypass toolbar check
+            pattern.editor.commands.setTextSelection(3);
+
+            await open_panel(button_link);
+
+            // The checkbox reflects the link's existing target.
+            expect(document.querySelector("#link-panel [name=tiptap-target]").checked).toBe(true); // prettier-ignore
+
+            // Unset the target and confirm.
+            document.querySelector("#link-panel [name=tiptap-target]").checked = false;
+            document.querySelector("#link-panel [name=tiptap-confirm]").dispatchEvent(new Event("click")); // prettier-ignore
+            await utils.timeout(1);
+
+            const anchor = document.querySelector(".tiptap-container a");
+            expect(anchor).toBeTruthy();
+            expect(anchor.hasAttribute("target")).toBe(false);
+        });
+    });
+
     it("6.1 - Adds an image within <figure> tags including a <figcaption>", async () => {
         document.body.innerHTML = `
           <div id="tiptap-external-toolbar">
