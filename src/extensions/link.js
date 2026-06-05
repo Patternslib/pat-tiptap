@@ -115,8 +115,10 @@ function link_panel({ app }) {
                 link_href.value = attrs.href;
                 link_href.dispatchEvent(new Event("input"));
             }
-            if (attrs?.target && link_target) {
-                link_target.checked = true;
+
+            // Set the target checkbox in the link modal to checked or unchecked.
+            if (is_link && link_target) {
+                link_target.checked = !!attrs?.target;
                 link_target.dispatchEvent(new Event("input"));
             }
 
