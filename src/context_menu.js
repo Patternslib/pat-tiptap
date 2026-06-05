@@ -54,7 +54,7 @@ export async function context_menu({
         const reference_position = posToDOMRect(
             editor.view,
             editor.state.selection.from,
-            editor.state.selection.to
+            editor.state.selection.to,
         );
 
         instance.tippy?.setProps({
@@ -69,7 +69,7 @@ export async function context_menu({
             async (e) => {
                 if (
                     [e.target, ...dom.get_parents(e.target)].includes(
-                        instance?.tippy.popper
+                        instance?.tippy.popper,
                     )
                 ) {
                     // Do not close the context menu if we click in it.
@@ -80,7 +80,7 @@ export async function context_menu({
                     pattern_name: pattern.name,
                 });
                 instance = null;
-            }
+            },
         );
         events.add_event_listener(
             document,
@@ -96,7 +96,7 @@ export async function context_menu({
                     pattern_name: pattern.name,
                 });
                 instance = null;
-            }
+            },
         );
 
         instance.show();
@@ -112,7 +112,7 @@ export async function context_menu_close({ instance, pattern_name }) {
     if (instance) {
         await instance.hide();
         instance.destroy();
-        instance = null;
+        instance = null; // eslint-disable-line no-useless-assignment
     }
 
     // Unregister the pattern
