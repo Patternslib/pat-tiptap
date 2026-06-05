@@ -25,7 +25,7 @@ yarn.lock install:
 
 
 # Unlink any linked dependencies before building a bundle.
-bundle-pre:
+bundle-pre::
 	-$(YARN) unlink @patternslib/dev
 	-$(YARN) unlink @patternslib/patternslib
 	$(YARN) install --force
