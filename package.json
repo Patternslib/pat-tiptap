@@ -36,8 +36,8 @@
         "@tiptap/suggestion": "^2.24.1"
     },
     "devDependencies": {
-        "@patternslib/dev": "^3.8.1",
-        "@patternslib/patternslib": "^9.10.2"
+        "@patternslib/dev": "^4.0.0",
+        "@patternslib/patternslib": "^9.10.5"
     },
     "scripts": {
         "start": "NODE_ENV=development webpack serve --config webpack.config.js",
