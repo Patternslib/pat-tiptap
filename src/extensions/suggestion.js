@@ -1,5 +1,5 @@
 import { Node, mergeAttributes } from "@tiptap/core";
-import { PluginKey } from "prosemirror-state";
+import { PluginKey } from "@tiptap/pm/state";
 import { Suggestion as ProseMirrorSuggestion } from "@tiptap/suggestion";
 import { context_menu, context_menu_close } from "../context_menu";
 import { focus_handler } from "../focus-handler";

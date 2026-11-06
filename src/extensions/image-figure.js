@@ -1,7 +1,7 @@
 import { context_menu, context_menu_close } from "../context_menu";
 import { focus_handler } from "../focus-handler";
 import { Node, mergeAttributes } from "@tiptap/core";
-import { Plugin } from "prosemirror-state";
+import { Plugin } from "@tiptap/pm/state";
 import { BasePattern } from "@patternslib/patternslib/src/core/basepattern";
 import dom from "@patternslib/patternslib/src/core/dom";
 import events from "@patternslib/patternslib/src/core/events";

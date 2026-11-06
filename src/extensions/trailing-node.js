@@ -17,7 +17,7 @@
 //
 
 import { Extension } from "@tiptap/core";
-import { PluginKey, Plugin } from "prosemirror-state";
+import { PluginKey, Plugin } from "@tiptap/pm/state";
 
 function nodeEqualsType({ types, node }) {
     return (Array.isArray(types) && types.includes(node.type)) || node.type === types;
