@@ -18,16 +18,12 @@
 -include .env
 export
 
-YARN		?= npx yarn
+PNPM ?= npx pnpm
 
-yarn.lock install:
-	$(YARN) install
+.PHONY: install
+pnpm-lock.yaml install: .git/hooks/commit-msg
+	$(PNPM) install
 
-
-# Unlink any linked dependencies before building a bundle.
-bundle-pre::
-	-$(YARN) unlink @patternslib/dev
-	-$(YARN) unlink @patternslib/patternslib
-	$(YARN) install --force
-
-#
+.git/hooks/commit-msg:
+	echo "npx commitlint --edit" > .git/hooks/commit-msg
+	chmod u+x .git/hooks/commit-msg

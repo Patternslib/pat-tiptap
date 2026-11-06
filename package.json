@@ -4,6 +4,7 @@
     "description": "A pattern for tiptap",
     "license": "MIT",
     "main": "./src/tiptap.js",
+    "packageManager": "pnpm@12.16.1",
     "dependencies": {
         "@tiptap/core": "2.27.2",
         "@tiptap/extension-blockquote": "^2.27.2",
