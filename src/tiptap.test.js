@@ -237,9 +237,12 @@ describe("pat-tiptap", () => {
         const instance = new Pattern(document.querySelector(".pat-tiptap"));
         await events.await_pattern_init(instance);
 
-        expect(
-            document.querySelector(".tiptap-container [contenteditable]").innerHTML
-        ).toBe("<p>hello<br><br>there</p>");
+        // ProseMirror adds separator images around inline atoms in the view.
+        const content = document
+            .querySelector(".tiptap-container [contenteditable]")
+            .cloneNode(true);
+        content.querySelectorAll(".ProseMirror-separator").forEach((el) => el.remove());
+        expect(content.innerHTML).toBe("<p>hello<br><br>there</p>");
 
         expect(instance.editor.getHTML()).toBe("<p>hello<br><br>there</p>");
     });
@@ -1144,7 +1147,7 @@ describe("pat-tiptap", () => {
         editable.dispatchEvent(new KeyboardEvent("keydown", { key: "Enter" }));
         await utils.timeout(1);
         expect(document.querySelector(".tiptap-items")).toBeFalsy();
-        const mention = editable.firstChild.firstChild;
+        const mention = editable.querySelector("a[data-mention], a[data-tag]");
         expect(mention.textContent).toBe("@item a");
         expect(mention.href).toBe("https://demo.com/itema");
         expect(mention.hasAttribute("data-mention")).toBe(true);
@@ -1197,7 +1200,7 @@ describe("pat-tiptap", () => {
         editable.dispatchEvent(new KeyboardEvent("keydown", { key: "Enter" }));
         await utils.timeout(1);
         expect(document.querySelector(".tiptap-items")).toBeFalsy();
-        const mention = editable.firstChild.firstChild;
+        const mention = editable.querySelector("a[data-mention], a[data-tag]");
         expect(mention.textContent).toBe("@item b");
         expect(mention.href).toBe("https://demo.com/itemb");
         expect(mention.getAttribute("class")).toBe("class_item_b");
@@ -1248,7 +1251,7 @@ describe("pat-tiptap", () => {
         await utils.timeout(1);
 
         expect(document.querySelector(".tiptap-items")).toBeFalsy();
-        const mention = editable.firstChild.firstChild;
+        const mention = editable.querySelector("a[data-mention], a[data-tag]");
         expect(mention.textContent).toBe("@item a");
         expect(mention.href).toBe("https://demo.com/itema");
         expect(mention.hasAttribute("data-mention")).toBe(true);
@@ -1299,7 +1302,7 @@ describe("pat-tiptap", () => {
         await utils.timeout(1);
 
         expect(document.querySelector(".tiptap-items")).toBeFalsy();
-        const mention = editable.firstChild.firstChild;
+        const mention = editable.querySelector("a[data-mention], a[data-tag]");
         expect(mention.textContent).toBe("@item a");
         expect(mention.href).toBe("https://demo.com/itema");
         expect(mention.hasAttribute("data-mention")).toBe(true);
@@ -1360,7 +1363,7 @@ describe("pat-tiptap", () => {
         editable.dispatchEvent(new KeyboardEvent("keydown", { key: "Enter" }));
         await utils.timeout(1);
         expect(document.querySelector(".tiptap-items")).toBeFalsy();
-        const mention = editable.firstChild.firstChild;
+        const mention = editable.querySelector("a[data-mention], a[data-tag]");
         expect(mention.textContent).toBe("#item b");
         expect(mention.href).toBe("https://demo.com/itemb");
         expect(mention.classList.contains("class_item_b")).toBe(true);
@@ -1408,7 +1411,7 @@ describe("pat-tiptap", () => {
         await utils.timeout(1);
 
         expect(document.querySelector(".tiptap-items")).toBeFalsy();
-        const mention = editable.firstChild.firstChild;
+        const mention = editable.querySelector("a[data-mention], a[data-tag]");
         expect(mention.textContent).toBe("#item a");
         expect(mention.href).toBe("https://demo.com/itema");
         expect(mention.classList.contains("class_item_a")).toBe(true);
@@ -1521,7 +1524,7 @@ describe("pat-tiptap", () => {
         await utils.timeout(1);
 
         expect(document.querySelector(".tiptap-items")).toBeFalsy();
-        const mention = editable.firstChild.firstChild;
+        const mention = editable.querySelector("a[data-mention], a[data-tag]");
         expect(mention.textContent).toBe("#item a");
 
         // Test all attributes
