@@ -1,5 +1,30 @@
 # Changelog
 
+## [4.11.1](https://github.com/Patternslib/pat-tiptap/compare/4.11.0...4.11.1) (2026-11-09)
+
+### Bug Fixes
+
+- **pat-tiptap:** Fix code review issues in tests and trailing-node extension ([5f99d69](https://github.com/Patternslib/pat-tiptap/commit/5f99d693e56f7e437e115d64f9562e6d57e55ba6))
+
+    - Remove redundant DOM clone/separator-filter assertion; editor.getHTML() is authoritative.
+    - Use type-specific selectors (a[data-mention] / a[data-tag]) in suggestion tests
+      instead of a combined selector to prevent stale nodes from shadowing results.
+    - Add null guard (expect(mention).not.toBeNull()) before property access in all
+      mention/tag tests so insertion failures produce clear Jest messages.
+    - Rewrite trailing-node plugin to compute shouldInsertNodeAtEnd directly in
+      appendTransaction instead of via PluginKey.getState(), eliminating a silent
+      failure mode when two copies of prosemirror-state are resolved by pnpm.
+
+    Assisted-by: Claude Sonnet 4.6 <noreply@anthropic.com>
+
+### Maintenance
+
+- Fix plugin instantiation problems with updated dependencies. ([e4cf280](https://github.com/Patternslib/pat-tiptap/commit/e4cf280d6f6bec7d323c814068bfaaa088a0e245))
+- Fix tests to work with new ProseMirror version. ([5440d8b](https://github.com/Patternslib/pat-tiptap/commit/5440d8b8bd3516df413875bacbbd170336750f98))
+- Switch to pnpm. ([f6a16b4](https://github.com/Patternslib/pat-tiptap/commit/f6a16b49b1dcbff10af223d0b9777b26e12fa81b))
+- Update dependencies. ([d72f99e](https://github.com/Patternslib/pat-tiptap/commit/d72f99e0e9b90b2f06ddd222d3f67ded6705564c))
+- Upgrade dependencies. ([2483ba8](https://github.com/Patternslib/pat-tiptap/commit/2483ba88ff56d2515ee53de0c2cb40424cd85bdc))
+
 ## [4.11.0](https://github.com/Patternslib/pat-tiptap/compare/4.10.1...4.11.0) (2026-06-05)
 
 ### Features
