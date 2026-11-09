@@ -1,6 +1,6 @@
 // From: tiptap/demos/src/Experiments/GenericFigure/Vue/figure.ts
 import { Node, mergeAttributes } from "@tiptap/core";
-import { Plugin } from "prosemirror-state";
+import { Plugin } from "@tiptap/pm/state";
 
 export const factory = () => {
     return Node.create({

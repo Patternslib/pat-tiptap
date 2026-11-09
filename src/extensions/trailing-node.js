@@ -17,7 +17,7 @@
 //
 
 import { Extension } from "@tiptap/core";
-import { PluginKey, Plugin } from "prosemirror-state";
+import { Plugin } from "@tiptap/pm/state";
 
 function nodeEqualsType({ types, node }) {
     return (Array.isArray(types) && types.includes(node.type)) || node.type === types;
@@ -40,17 +40,19 @@ export const factory = () => {
         },
 
         addProseMirrorPlugins() {
-            const plugin = new PluginKey(this.name);
             const disabledNodes = Object.entries(this.editor.schema.nodes)
                 .map(([, value]) => value)
                 .filter((node) => this.options.notAfter.includes(node.name));
 
             return [
                 new Plugin({
-                    key: plugin,
                     appendTransaction: (_, __, state) => {
                         const { doc, tr, schema } = state;
-                        const shouldInsertNodeAtEnd = plugin.getState(state);
+                        const lastNode = doc.lastChild;
+                        const shouldInsertNodeAtEnd = !nodeEqualsType({
+                            node: lastNode,
+                            types: disabledNodes,
+                        });
                         const endPosition = doc.content.size;
                         const type = schema.nodes[this.options.node];
 
@@ -62,26 +64,6 @@ export const factory = () => {
                             endPosition,
                             type.create(null, [schema.text(" ")])
                         );
-                    },
-                    state: {
-                        init: (_, state) => {
-                            const lastNode = state.tr.doc.lastChild;
-                            return !nodeEqualsType({
-                                node: lastNode,
-                                types: disabledNodes,
-                            });
-                        },
-                        apply: (tr, value) => {
-                            if (!tr.docChanged) {
-                                return value;
-                            }
-
-                            const lastNode = tr.doc.lastChild;
-                            return !nodeEqualsType({
-                                node: lastNode,
-                                types: disabledNodes,
-                            });
-                        },
                     },
                 }),
             ];
